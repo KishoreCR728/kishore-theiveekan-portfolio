@@ -2921,7 +2921,7 @@ export function PageMarkup({ v }) {
           </div>
           <div>
             <div style={{ fontWeight: "500", color: "#0f0e0c", marginBottom: "6px" }}>{"Elsewhere"}</div>
-            <a href={"https://www.linkedin.com/in/kishore-theiveekan-3a39bb23b"} rel={"noopener me"} target={"_blank"}>
+            <a href={"https://www.linkedin.com/in/kishore-theiveekan"} rel={"noopener me"} target={"_blank"}>
               {"LinkedIn"}
             </a>
             <br />
