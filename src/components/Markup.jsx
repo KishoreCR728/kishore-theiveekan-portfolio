@@ -2739,6 +2739,24 @@ export function PageMarkup({ v }) {
                 {"Outside of work"}
               </div>
             </div>
+            <p
+              data-fade={"1"}
+              style={{
+                margin: "0 0 56px",
+                fontSize: "clamp(19px,1.7vw,24px)",
+                lineHeight: "1.45",
+                color: "#4a4740",
+                maxWidth: "62ch",
+                textWrap: "pretty",
+                opacity: "0",
+                transform: "translateY(30px)",
+                transition: "opacity 1s .2s,transform 1.1s .2s cubic-bezier(.2,.8,.2,1)",
+              }}
+            >
+              {
+                "Beyond engineering, I'm drawn to classic automotive design, motorcycles, scenic roads, music and emerging technology. Whether it's exploring a new idea with AI agents, planning a ride or discovering a quiet mountain lake, I enjoy experiences that combine curiosity, creativity and exploration."
+              }
+            </p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(6,minmax(0,1fr))", gap: "28px", alignItems: "start" }}>
               {v.interests.map((k, $index) => (
                 <Fragment key={$index}>
@@ -2911,6 +2929,20 @@ export function PageMarkup({ v }) {
             <br />
             <span style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>
               {"Photos: Unsplash license"}
+              <br />
+              <a
+                href={"https://commons.wikimedia.org/wiki/File:1969_Ford_Mustang_Mach_1_428CJ_(22605179204).jpg"}
+                rel={"noopener"}
+                target={"_blank"}
+              >
+                {"Mustang"}
+              </a>
+              {": Sicnag, CC BY 2.0"}
+              <br />
+              <a href={"https://commons.wikimedia.org/wiki/File:Royal_Enfield_Continental_GT_650.jpg"} rel={"noopener"} target={"_blank"}>
+                {"Continental GT"}
+              </a>
+              {": Kiranpawar3210, CC BY-SA 4.0"}
             </span>
           </div>
         </footer>

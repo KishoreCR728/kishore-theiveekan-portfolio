@@ -130,9 +130,9 @@ export const traits = [
 ];
 
 export const interests = [
-  { t: 'Cars', d: 'A black 1969 Mustang. The dream car.', img: '/images/1626668893632-6f3a4466d22f.webp', alt: 'Black muscle car under garage lights' },
-  { t: 'Bikes', d: 'Rides a Royal Enfield Electra 350. The dream is a silver Continental GT.', img: '/images/1502744688674-c619d1586c9e.webp', alt: 'Café racer motorcycle at dusk' },
-  { t: 'Mountains and lakes', d: 'Mountain and lake views, and more of them still to explore. The Alps are high on the list.', img: '/images/1476514525535-07fb3b4ae5f1.webp', alt: 'Mountain lake with reflection' },
-  { t: 'Music on the ride', d: 'Music on every ride.', img: '/images/1558980664-769d59546b3d.webp', alt: 'Rider on an open road at dusk' },
-  { t: 'Late nights with agents', d: 'Late nights building and thinking with AI agents. That habit became Jarvis, a Python assistant that runs locally.', img: '/images/1677442136019-21780ecad995.webp', alt: 'Abstract glowing network on dark background' },
+  { t: 'Cars', d: 'The 1969 Ford Mustang is my dream car, especially in black. What draws me to it is its unmistakable vintage design and classic appearance. It\'s one of those cars I\'d love to own someday.', img: '/images/mustang-1969-mach-1.jpg', alt: 'Black 1969 Ford Mustang Mach 1' },
+  { t: 'Bikes', d: 'I currently ride a Royal Enfield Electra 350, but my dream motorcycle is the silver Royal Enfield Continental GT 650. Its design and the riding experience I imagine with it make it the bike I\'d love to own next.', img: '/images/continental-gt-650.jpg', alt: 'Royal Enfield Continental GT 650 in silver chrome' },
+  { t: 'Mountains and lakes', d: 'I\'m drawn to scenic mountains and peaceful lakes, especially places tucked away from crowded tourist destinations. I don\'t have one particular destination in mind; discovering hidden mountain lakes and unexplored landscapes is the adventure itself.', img: '/images/1476514525535-07fb3b4ae5f1.webp', alt: 'Mountain lake with reflection' },
+  { t: 'Music on the ride', d: 'Not every ride needs the same soundtrack. Sometimes it\'s energetic international music; other times, it\'s Tamil film songs. I like letting the road and the mood decide what plays next.', img: '/images/1558980664-769d59546b3d.webp', alt: 'Rider on an open road at dusk' },
+  { t: 'Late nights with agents', d: 'I\'m fascinated by how AI agents are changing the way software can be built. I enjoy experimenting with Claude Code, exploring multi-agent workflows and discovering how AI-assisted development can turn ambitious ideas into working applications.', img: '/images/1677442136019-21780ecad995.webp', alt: 'Abstract glowing network on dark background' },
 ];

@@ -27,7 +27,7 @@ i.ac { font-family: "Instrument Serif", Georgia, serif; font-style: italic; font
   [data-screen-label="Work"] > div:nth-child(2) > * { grid-column: 1 / -1 !important; margin-top: 0 !important; }
   [data-screen-label="Stack"] { padding: 10vh 6vw !important; }
   [data-screen-label="Stack"] > div:nth-child(2) { grid-template-columns: minmax(0, 1fr) !important; gap: 36px !important; }
-  [data-screen-label="Off the clock"] > div:nth-child(2) { grid-template-columns: minmax(0, 1fr) !important; }
+  [data-screen-label="Off the clock"] > div:has(> [data-float]) { grid-template-columns: minmax(0, 1fr) !important; }
   [data-screen-label="Off the clock"] [data-float] { grid-column: 1 / -1 !important; margin-top: 0 !important; }
   [data-screen-label="Off the clock"] { padding-top: 12vh !important; }
   footer { grid-template-columns: minmax(0, 1fr) !important; gap: 24px !important; }
