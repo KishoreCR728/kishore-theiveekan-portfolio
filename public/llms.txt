@@ -1,0 +1,20 @@
+# Kishore Theiveekan
+
+> Frontend engineer based in Chennai, India, open to relocation and remote work worldwide. Builds fast, secure web products with Angular, React, Next.js, TypeScript and three.js. More than three and a half years at Finstein.
+
+## Contact
+- Email: kishore.theiveekan@gmail.com
+- LinkedIn: https://www.linkedin.com/in/kishore-theiveekan-3a39bb23b
+- GitHub: https://github.com/KishoreCR728
+
+## Case studies
+- [MES Product Site](https://kishore-theiveekan.vercel.app/work/mes-product-site): A manufacturing execution product presented in 3D.
+- [ERP Product Platform](https://kishore-theiveekan.vercel.app/work/erp-product-platform): Content as data. Quality checks as build steps.
+- [Privacy Advisory · 19 languages](https://kishore-theiveekan.vercel.app/work/privacy-advisory-site): A build gate that blocks blank pages in 19 languages.
+- [Consent Product Site](https://kishore-theiveekan.vercel.app/work/consent-product-site): A consent product site with no cookies and 9 KB of JavaScript.
+- [Security Platform + QA Loop](https://kishore-theiveekan.vercel.app/work/security-platform-qa): A 57-route site verified by an automated design-QA process.
+- [Jarvis Assistant](https://kishore-theiveekan.vercel.app/work/jarvis-assistant): A local-first AI assistant with three model backends.
+- [Finstein.ai Corporate Site](https://kishore-theiveekan.vercel.app/work/finstein-corporate-site): A corporate site kept fast and secure without a framework.
+- [Finstein Cyber Website](https://kishore-theiveekan.vercel.app/work/finstein-cyber-website): 20 pages assembled by a bespoke component build.
+- [Security & Delivery Loop](https://kishore-theiveekan.vercel.app/work/security-delivery-loop): From VAPT finding to verified production change, across 11 repositories.
+- [Compliance Platform Site](https://kishore-theiveekan.vercel.app/work/compliance-platform-site): A 59-page site moved to Next.js with every page intact.
