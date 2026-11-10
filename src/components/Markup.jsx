@@ -859,7 +859,7 @@ export function PageMarkup({ v }) {
                 }}
               >
                 {
-                  "Kishore Theiveekan is a frontend engineer based in Chennai, open to relocation and remote work worldwide, with more than three and a half years at Finstein building corporate sites, product platforms, a manufacturing execution console and a bank's test automation estate."
+                  "Kishore Theiveekan is a frontend engineer based in Chennai, open to relocation and remote work worldwide, with more than three and a half years at Finstein building corporate sites, product platforms, a manufacturing execution console and automated testing for banking applications."
                 }
               </p>
               <p
@@ -1087,7 +1087,7 @@ export function PageMarkup({ v }) {
                   style={{ margin: "30px 0 0", fontSize: "clamp(16px,1.3vw,19px)", lineHeight: "1.55", color: "#4a4740", maxWidth: "46ch" }}
                 >
                   {
-                    "Each district is one year of work, from the first enterprise screens to product platforms, a manufacturing console and a bank's test estate."
+                    "Each district is one year of work, from the first enterprise screens to product platforms, a manufacturing console and banking application testing."
                   }
                 </p>
               </div>
