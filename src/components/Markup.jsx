@@ -2754,43 +2754,58 @@ export function PageMarkup({ v }) {
               }}
             >
               {
-                "Beyond engineering, I'm drawn to classic automotive design, motorcycles, scenic roads, music and emerging technology. Whether it's exploring a new idea with AI agents, planning a ride or discovering a quiet mountain lake, I enjoy experiences that combine curiosity, creativity and exploration."
+                "Away from the screen, you'll usually find me riding through the city at night or lost in music. And there is a longer list of machines and places I am still working toward."
               }
             </p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(6,minmax(0,1fr))", gap: "28px", alignItems: "start" }}>
-              {v.interests.map((k, $index) => (
-                <Fragment key={$index}>
-                  <div data-float={"1"} style={{ gridColumn: `span ${k.span}`, marginTop: k.offset, willChange: "transform,opacity" }}>
-                    <div
-                      style={{
-                        borderRadius: "18px",
-                        overflow: "hidden",
-                        aspectRatio: k.ratio,
-                        position: "relative",
-                        background: "#131211",
-                      }}
-                    >
-                      <div data-par={"1"} style={{ position: "absolute", inset: "-12% 0" }}>
-                        <img
-                          src={k.img}
-                          alt={k.alt}
-                          loading={"lazy"}
-                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                        />
-                      </div>
-                    </div>
-                    <div style={{ padding: "18px 4px 0" }}>
+            {v.interestGroups.map((group) => (
+              <div key={group.label} data-interest-group={"1"} style={{ marginBottom: "96px" }}>
+                <div
+                  style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62", marginBottom: "28px" }}
+                >
+                  {group.label}
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(6,minmax(0,1fr))", gap: "56px 28px", alignItems: "start" }}>
+                  {group.items.map((k) => (
+                    <div key={k.t} data-float={"1"} style={{ gridColumn: `span ${k.span}`, willChange: "transform,opacity" }}>
                       <div
-                        style={{ fontSize: "clamp(24px,2.4vw,36px)", letterSpacing: "-.025em", lineHeight: "1.05", marginBottom: "8px" }}
+                        data-card-images={"1"}
+                        style={{ display: "grid", gridTemplateColumns: `repeat(${k.images.length},minmax(0,1fr))`, gap: "28px" }}
                       >
-                        {k.t}
+                        {k.images.map((image) => (
+                          <div
+                            key={image.src}
+                            style={{
+                              borderRadius: "18px",
+                              overflow: "hidden",
+                              aspectRatio: k.ratio,
+                              position: "relative",
+                              background: "#131211",
+                            }}
+                          >
+                            <div data-par={"1"} style={{ position: "absolute", inset: "-12% 0" }}>
+                              <img
+                                src={image.src}
+                                alt={image.alt}
+                                loading={"lazy"}
+                                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                              />
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <div style={{ fontSize: "16px", lineHeight: "1.5", color: "#4a4740", maxWidth: "34ch" }}>{k.d}</div>
+                      <div style={{ padding: "20px 4px 0" }}>
+                        <div
+                          style={{ fontSize: "clamp(24px,2.4vw,36px)", letterSpacing: "-.025em", lineHeight: "1.05", marginBottom: "10px" }}
+                        >
+                          {k.t}
+                        </div>
+                        <div style={{ fontSize: "17px", lineHeight: "1.55", color: "#4a4740", maxWidth: "72ch" }}>{k.d}</div>
+                      </div>
                     </div>
-                  </div>
-                </Fragment>
-              ))}
-            </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </section>
           <section
             id={"contact"}
@@ -2928,21 +2943,9 @@ export function PageMarkup({ v }) {
             {"No cookies, no trackers"}
             <br />
             <span style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>
-              {"Photos: Unsplash license"}
+              {"Work photos: Unsplash license"}
               <br />
-              <a
-                href={"https://commons.wikimedia.org/wiki/File:1969_Ford_Mustang_Mach_1_428CJ_(22605179204).jpg"}
-                rel={"noopener"}
-                target={"_blank"}
-              >
-                {"Mustang"}
-              </a>
-              {": Sicnag, CC BY 2.0"}
-              <br />
-              <a href={"https://commons.wikimedia.org/wiki/File:Royal_Enfield_Continental_GT_650.jpg"} rel={"noopener"} target={"_blank"}>
-                {"Continental GT"}
-              </a>
-              {": Kiranpawar3210, CC BY-SA 4.0"}
+              {"Off the clock images created with AI"}
             </span>
           </div>
         </footer>

@@ -396,7 +396,6 @@ export default class Experience extends Component {
     const P = d ? d.projects : [], cs0 = P[s.caseIdx >= 0 ? s.caseIdx : 0];
     const cs = cs0 ? { ...cs0, built: cs0.built.map((t, i) => ({ n: i + 1, t })), results: cs0.results.map(([v, l]) => ({ v, l })), nextName: P[(s.caseIdx + 1) % P.length].name } : {};
     const spans = ['7', '5', '5', '7', '6', '6', '5', '7', '7', '5'], ratios = ['3/2', '4/3', '4/3', '3/2', '4/3', '4/3', '4/3', '3/2', '3/2', '4/3'];
-    const kSpan = ['3', '3', '4', '2', '6'], kRatio = ['4/3', '4/3', '16/9', '3/4', '21/9'], kOff = ['0', '8vh', '0', '6vh', '0'];
     return {
       loaderOn: s.phase !== 'ready', topT: s.phase === 'exit' ? 'translateY(-101%)' : 'translateY(0)', botT: s.phase === 'exit' ? 'translateY(101%)' : 'translateY(0)', loaderTextO: s.phase === 'exit' ? '0' : '1',
       count: s.count, word: s.word, time: s.time, menuOpen: s.menuOpen, menuLabel: s.menuOpen ? 'Close' : 'Menu',
@@ -412,7 +411,7 @@ export default class Experience extends Component {
       stacks: d ? d.stacks.map(([name, items]) => ({ name, items: items.map(t => ({ t })) })) : [],
       method: d ? d.method.map(([name, desc], i) => ({ n: i + 1, name, desc })) : [],
       traits: d ? d.traits.map(([name, desc]) => ({ name, desc })) : [],
-      interests: d ? d.interests.map((k, i) => ({ ...k, span: kSpan[i], ratio: kRatio[i], offset: kOff[i] })) : [],
+      interestGroups: d ? [['do', 'What I do'], ['dream', 'What I dream of']].map(([id, label]) => ({ label, items: d.interests.filter(k => k.group === id) })) : [],
     };
   }
 
