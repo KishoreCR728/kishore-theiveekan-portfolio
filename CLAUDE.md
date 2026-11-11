@@ -13,8 +13,10 @@ After every piece of work or decision, update `.handover/` in the same turn: PRO
 ## Project rules
 
 - Next.js 16 static export (`output: "export"`), React 19, Three.js 0.160. No server.
-- `src/components/Markup.jsx` (markup) and `src/components/Experience.jsx` (scroll, 3D and interaction logic) came from the Claude Design file by a one-off converter and are now edited directly. Do not regenerate them.
-- Content lives in `src/content/portfolio.js` and `src/content/site.ts`. Every claim must be true and checked; client names stay hidden.
+- Home page: hand-written components in `src/components/home/`, text in `src/content/home.ts`.
+- Case studies: flagships are Markdown in `src/content/work/`; shorter ones come from `src/content/portfolio.js`. Articles are Markdown in `src/content/writing/`. After adding or renaming content, run `npm run og` for share images.
+- `/journey` (`src/journey/`) is the original immersive design converted from the Claude Design prototype; edit it directly, never regenerate it. It reads `portfolio.js`.
+- Every claim must be true and checked; client names stay hidden.
 - Before reporting work as done: `npm run build`, then `npm test` (with `QA_BANNED` set as in `.handover/PROJECT-STATUS.md`), and check desktop and phone in a real browser.
 - Publishing is done by the owner: `git push` and `npx vercel deploy --prod --yes`.
 </content>
