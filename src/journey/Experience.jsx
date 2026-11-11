@@ -2,6 +2,9 @@
 /* Scroll, 3D and interaction logic for the portfolio. Ported from the Claude Design prototype. */
 import { Component, createRef } from "react";
 import * as portfolio from "../content/portfolio";
+import "@fontsource-variable/dm-sans/opsz.css";
+import "@fontsource/instrument-serif/400.css";
+import "@fontsource/instrument-serif/400-italic.css";
 import "./journey.css";
 import "./hover.css";
 import { PageMarkup } from "./Markup";

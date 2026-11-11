@@ -14,7 +14,14 @@ export default function HeroScene() {
     const canvas = ref.current;
     if (!canvas) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches || innerWidth < 821) return;
-    try { if (!document.createElement("canvas").getContext("webgl2")) return; } catch { return; }
+    try {
+      const gl = document.createElement("canvas").getContext("webgl2");
+      if (!gl) return;
+      // Software renderers draw each frame in hundreds of milliseconds: keep the CSS backdrop instead.
+      const info = gl.getExtension("WEBGL_debug_renderer_info");
+      const name = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "";
+      if (/swiftshader|llvmpipe|software|basic render/i.test(name)) return;
+    } catch { return; }
 
     let disposed = false;
     let cleanup = () => {};
@@ -71,11 +78,14 @@ export default function HeroScene() {
         camera.updateProjectionMatrix();
       };
       size();
-      let visible = true, raf = 0, last = performance.now();
+      let visible = true, raf = 0, last = performance.now(), slow = 0, frames = 0;
       const loop = (now: number) => {
         raf = requestAnimationFrame(loop);
         if (!visible || document.hidden) { last = now; return; }
-        const dt = Math.min(0.05, (now - last) / 1000), t = now / 1000;
+        const gap = now - last;
+        // A device that can't keep up gets the static backdrop back.
+        if (frames++ > 10 && gap > 50 && ++slow > 20) { cleanup(); canvas.removeAttribute("data-ready"); return; }
+        const dt = Math.min(0.05, gap / 1000), t = now / 1000;
         last = now;
         group.rotation.y += (mouse.x * 0.3 - group.rotation.y) * 0.05;
         group.rotation.x += (mouse.y * 0.2 - group.rotation.x) * 0.05;

@@ -1,7 +1,7 @@
-html, body { margin: 0; background: #f0efe9; color: #0f0e0c; font-family: "DM Sans Variable", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; font-weight: 400; }
+html, body { margin: 0; background: #f0efe9; color: #0f0e0c; font-family: var(--font-sans), "DM Sans Variable", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; font-weight: 400; }
 a { color: #0f0e0c; text-decoration: none; }
 a:hover { color: #e0562a; }
-i.ac { font-family: "Instrument Serif", Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
+i.ac { font-family: var(--font-serif), "Instrument Serif", Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
 :focus-visible { outline: 2px solid #e0562a; outline-offset: 3px; }
 @keyframes rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
 @keyframes lift { from { transform: translateY(110%); } to { transform: none; } }
