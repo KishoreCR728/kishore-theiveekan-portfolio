@@ -6,3 +6,7 @@ next-env.d.ts
 .env*
 qa/output
 .vercel
+
+# Private, local-only project tracker and Claude settings (repo is public)
+.handover/
+.claude/
