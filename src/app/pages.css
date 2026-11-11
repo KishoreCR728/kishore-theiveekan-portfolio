@@ -133,3 +133,13 @@
 .dg-note-muted { fill: var(--muted); font-size: 13.5px; letter-spacing: 0.02em; }
 .dg-note-accent { fill: var(--accent-ink); }
 @media (max-width: 820px) { .diagram { padding: 18px 14px 14px; border-radius: 18px; margin-left: calc(-1 * var(--gutter) + 8px); margin-right: calc(-1 * var(--gutter) + 8px); } }
+
+/* Videos */
+.video-block { margin: 0 0 8vh; }
+.video-block video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 20px; background: #131211; }
+.video-block figcaption { margin-top: 12px; color: var(--muted); font-size: 15px; line-height: 1.5; }
+.video-block b { color: var(--ink-2); font-weight: 500; }
+.video-block details { margin-top: 8px; }
+.video-block summary { cursor: pointer; color: var(--ink-2); width: fit-content; }
+.video-block details p { margin: 8px 0 0; max-width: 70ch; }
+.prose .video-block { margin: 1.4em 0 2em; }

@@ -121,3 +121,6 @@
   .hero h1, .hero-line, .hero-backdrop span { animation: none; }
   .work-card, .more-grid a { transition: none; }
 }
+.colophon-video { margin-top: 10vh; max-width: 900px; }
+.colophon-video .video-block { margin-bottom: 0; }
+.contact .colophon { margin-top: 4vh; }

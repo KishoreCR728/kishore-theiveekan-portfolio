@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import "../../pages.css";
 import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
 import { CaseDiagram } from "@/components/site/Diagrams";
+import VideoBlock from "@/components/site/VideoBlock";
 import { allCases } from "@/lib/cases";
 import { renderMarkdown } from "@/lib/markdown";
 import { site } from "@/content/site";
@@ -69,6 +70,7 @@ export default async function CasePage({ params }: Props) {
         )}
 
         <CaseDiagram slug={c.slug} />
+        {c.video && <VideoBlock id={c.video} note={c.video === "jarvis" ? "the console footage is a real recording; the model and safety scenes are animated from the code" : undefined} />}
 
         <div className="case-grid">
           <dl className="facts">

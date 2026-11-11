@@ -12,6 +12,7 @@ scale: About 107 Python modules (~32k lines), 103 tools, 1,500+ automated tests
 proof: Open source on GitHub · Linux desktop builds (AppImage, .deb)
 ai: Built with Claude Code as a pair; the design, safety rules and verification are mine
 code: https://github.com/KishoreCR728/jarvis-assistant
+video: jarvis
 metric1: 103|tools
 metric2: 1,500+|automated tests
 metric3: 3|model backends, one offline

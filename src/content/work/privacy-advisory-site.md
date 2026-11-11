@@ -15,6 +15,7 @@ metric1: 97|mobile Lighthouse, live
 metric2: 851 → 387 ms|mobile LCP
 metric3: 6|blocking build steps
 article: blank-page-build-gate
+video: build-gate
 ---
 
 ## The problem

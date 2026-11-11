@@ -5,6 +5,7 @@ import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
 import { articles, formatMonth, readingMinutes } from "@/lib/content";
 import { renderMarkdown } from "@/lib/markdown";
 import { site } from "@/content/site";
+import VideoBlock from "@/components/site/VideoBlock";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -56,7 +57,7 @@ export default async function ArticlePage({ params }: Props) {
             <p className="lede">{a.meta.description}</p>
             <p className="byline">{site.name} · {formatMonth(a.meta.date)} · {readingMinutes(a.body)} min read</p>
           </header>
-          <article className="prose">{nodes}</article>
+          <article className="prose">{a.meta.video && <VideoBlock id={a.meta.video} />}{nodes}</article>
           <nav className="next-link" aria-label="Next article">
             <span className="label">Next article</span>
             <a href={`/writing/${next.slug}`}>{next.meta.title} <i>→</i></a>

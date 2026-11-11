@@ -17,6 +17,7 @@ export type Case = {
   facts: [string, string][];
   metrics: [string, string][];
   code?: string;
+  video?: string;
   body: string;
 };
 
@@ -39,6 +40,7 @@ const fromMarkdown = (): Case[] =>
     ).filter((f): f is [string, string] => Boolean(f[1])),
     metrics: ["metric1", "metric2", "metric3"].filter((m) => meta[m]).map((m) => meta[m].split("|") as [string, string]),
     code: meta.code,
+    video: meta.video,
     body,
   }));
 
