@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: `${site.url}/`, priority: 1 },
     { url: `${site.url}/writing`, priority: 0.8 },
+    { url: `${site.url}/lab`, priority: 0.6 },
     ...allCases().map((c) => ({ url: `${site.url}/work/${c.slug}`, priority: c.flagship ? 0.9 : 0.6 })),
     ...articles().map((a) => ({ url: `${site.url}/writing/${a.slug}`, lastModified: a.meta.date, priority: 0.8 })),
   ];

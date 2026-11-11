@@ -6,6 +6,7 @@ import Work from "@/components/home/Work";
 import Career from "@/components/home/Career";
 import MoreWork from "@/components/home/MoreWork";
 import Writing from "@/components/home/Writing";
+import LabTeaser from "@/components/home/LabTeaser";
 import Skills from "@/components/home/Skills";
 import About from "@/components/home/About";
 import Contact from "@/components/home/Contact";
@@ -37,6 +38,7 @@ export default function Home() {
         <Work cases={allCases().filter((c) => c.flagship)} />
         <Career />
         <MoreWork />
+        <LabTeaser />
         <Writing posts={articles()} />
         <Skills />
         <About />
