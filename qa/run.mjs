@@ -8,10 +8,13 @@ const files = walk(root).filter((f) => /\.(html|txt|xml|js)$/.test(f));
 for (const f of files) { const t = fs.readFileSync(f, "utf8"); for (const b of banned) if (new RegExp(b, "i").test(t)) fail(`banned term "${b}" in ${f}`); if (f.endsWith(".html") && t.includes("{{")) fail(`template token in ${f}`); }
 const slugs = fs.readdirSync(path.join(root, "work")).filter((f) => f.endsWith(".html")).map((f) => f.replace(".html", ""));
 if (slugs.length !== 10) fail(`expected 10 case studies, found ${slugs.length}`);
+const posts = fs.readdirSync(path.join(root, "writing")).filter((f) => f.endsWith(".html")).map((f) => f.replace(".html", ""));
+if (posts.length !== 5) fail(`expected 5 articles, found ${posts.length}`);
+if (!fs.existsSync(path.join(root, "writing.html"))) fail("missing writing index");
 for (const f of ["robots.txt", "sitemap.xml", "llms.txt", "og.png", "Kishore-Theiveekan-CV.pdf", "404.html"]) if (!fs.existsSync(path.join(root, f))) fail(`missing ${f}`);
 const server = await serve(root, port);
 const browser = await chromium.launch({ channel: "chrome", args: ["--use-angle=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist", "--enable-unsafe-swiftshader"] });
-for (const width of [320, 390, 768, 1024, 1440, 1920]) for (const route of ["/", `/work/${slugs[0]}`]) {
+for (const width of [320, 390, 768, 1024, 1440, 1920]) for (const route of ["/", `/work/${slugs[0]}`, "/writing", `/writing/${posts[0]}`]) {
   const ctx = await browser.newContext({ viewport: { width, height: 800 } }); const page = await ctx.newPage(); const errs = [];
   page.on("pageerror", (e) => errs.push(e.message)); page.on("console", (m) => { if (m.type() === "error") errs.push(m.text()); });
   const r = await page.goto(base + route); if (!r.ok()) fail(`${route} returned ${r.status()}`); await page.waitForTimeout(route === "/" ? 6000 : 1200);

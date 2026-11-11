@@ -1,27 +1,89 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import CaseStudy from "@/components/CaseStudy";
-import { projects } from "@/content/portfolio";
+import "../../pages.css";
+import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
+import { allCases } from "@/lib/cases";
+import { renderMarkdown } from "@/lib/markdown";
 import { site } from "@/content/site";
 
-type Project = { slug: string; name: string; short: string; overview: string };
-const all = projects as Project[];
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() { return all.map((p) => ({ slug: p.slug })); }
+export function generateStaticParams() {
+  return allCases().map((c) => ({ slug: c.slug }));
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const p = all.find((x) => x.slug === slug);
-  if (!p) return {};
-  return { title: p.name, description: `${p.short} ${p.overview}`.slice(0, 158), alternates: { canonical: `/work/${p.slug}` }, twitter: { card: "summary_large_image", title: `${p.name} | ${site.name}`, description: p.short, images: ["/og.png"] }, openGraph: { type: "article", siteName: site.name, url: `/work/${p.slug}`, title: `${p.name} | ${site.name}`, description: p.short, images: ["/og.png"] } };
+  const c = allCases().find((x) => x.slug === slug);
+  if (!c) return {};
+  const title = `${c.title} | ${site.name}`;
+  return {
+    title: c.title,
+    description: c.description,
+    alternates: { canonical: `/work/${c.slug}` },
+    openGraph: { type: "article", siteName: site.name, url: `/work/${c.slug}`, title, description: c.oneLiner, images: ["/og.png"] },
+    twitter: { card: "summary_large_image", title, description: c.oneLiner, images: ["/og.png"] },
+  };
 }
 
-export default async function Page({ params }: Props) {
+export default async function CasePage({ params }: Props) {
   const { slug } = await params;
-  const i = all.findIndex((x) => x.slug === slug);
+  const cases = allCases();
+  const i = cases.findIndex((x) => x.slug === slug);
   if (i < 0) notFound();
-  const p = all[i];
-  const ld = { "@context": "https://schema.org", "@type": "CreativeWork", name: p.name, description: p.overview, url: `${site.url}/work/${p.slug}`, author: { "@type": "Person", name: site.name, url: site.url } };
-  return (<><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} /><CaseStudy index={i} /></>);
+  const c = cases[i];
+  const next = cases[(i + 1) % cases.length];
+  const { nodes } = renderMarkdown(c.body);
+  const ld = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: c.title,
+    description: c.description,
+    url: `${site.url}/work/${c.slug}`,
+    author: { "@type": "Person", name: site.name, url: site.url },
+  };
+
+  return (
+    <div className="page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
+      <SiteHeader current="work" />
+      <main className="wrap">
+        <header className="hero-block">
+          <div className="label">Case study{c.flagship ? "" : " · short"}</div>
+          <h1>{c.title}</h1>
+          <p className="lede">{c.oneLiner}</p>
+          {c.status && <p className="status">{c.status}</p>}
+          <ul className="chips" aria-label="Technologies">
+            {c.tags.map((t) => <li key={t} className="chip">{t}</li>)}
+          </ul>
+        </header>
+
+        {c.metrics.length > 0 && (
+          <section className="metrics" aria-label="Key numbers">
+            {c.metrics.map(([v, l]) => (
+              <div key={l} className="metric"><b>{v}</b><span>{l}</span></div>
+            ))}
+          </section>
+        )}
+
+        <div className="case-grid">
+          <dl className="facts">
+            {c.facts.map(([k, v]) => (
+              <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
+            ))}
+            {c.code && (
+              <div><dt>Code</dt><dd><a href={c.code} target="_blank" rel="noopener noreferrer">{c.code.replace("https://", "")}</a></dd></div>
+            )}
+          </dl>
+          <article className="prose">{nodes}</article>
+        </div>
+
+        <nav className="next-link" aria-label="Next case study">
+          <span className="label">Next case study</span>
+          <a href={`/work/${next.slug}`}>{next.title} <i>→</i></a>
+        </nav>
+      </main>
+      <SiteFooter />
+    </div>
+  );
 }
