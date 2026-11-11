@@ -10,3 +10,4 @@ qa/output
 # Private, local-only project tracker and Claude settings (repo is public)
 .handover/
 .claude/
+.lighthouseci/

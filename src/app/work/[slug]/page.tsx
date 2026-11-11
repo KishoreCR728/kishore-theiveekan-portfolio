@@ -17,12 +17,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const c = allCases().find((x) => x.slug === slug);
   if (!c) return {};
   const title = `${c.title} | ${site.name}`;
+  const image = c.flagship ? `/og/work-${c.slug}.png` : "/og.png";
   return {
     title: c.title,
     description: c.description,
     alternates: { canonical: `/work/${c.slug}` },
-    openGraph: { type: "article", siteName: site.name, url: `/work/${c.slug}`, title, description: c.oneLiner, images: ["/og.png"] },
-    twitter: { card: "summary_large_image", title, description: c.oneLiner, images: ["/og.png"] },
+    openGraph: { type: "article", siteName: site.name, url: `/work/${c.slug}`, title, description: c.oneLiner, images: [image] },
+    twitter: { card: "summary_large_image", title, description: c.oneLiner, images: [image] },
   };
 }
 

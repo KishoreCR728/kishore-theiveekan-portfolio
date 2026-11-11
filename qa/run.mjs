@@ -11,6 +11,7 @@ if (slugs.length !== 10) fail(`expected 10 case studies, found ${slugs.length}`)
 const posts = fs.readdirSync(path.join(root, "writing")).filter((f) => f.endsWith(".html")).map((f) => f.replace(".html", ""));
 if (posts.length !== 5) fail(`expected 5 articles, found ${posts.length}`);
 if (!fs.existsSync(path.join(root, "writing.html"))) fail("missing writing index");
+for (const f of walk(root).filter((f) => f.endsWith(".html"))) { const t = fs.readFileSync(f, "utf8"); const og = t.match(/property="og:image" content="[^"]*?(\/og[^"]*)"/); if (/noindex/.test(t) || f.endsWith("404.html") || f.includes("_not-found")) continue; if (!og) fail(`no og:image in ${f}`); else if (!fs.existsSync(path.join(root, og[1]))) fail(`og:image ${og[1]} missing for ${f}`); if (!/<meta name="description"/.test(t)) fail(`no description in ${f}`); if (!/rel="canonical"/.test(t)) fail(`no canonical in ${f}`); }
 for (const f of ["robots.txt", "sitemap.xml", "llms.txt", "og.png", "Kishore-Theiveekan-CV.pdf", "404.html"]) if (!fs.existsSync(path.join(root, f))) fail(`missing ${f}`);
 const server = await serve(root, port);
 const browser = await chromium.launch({ channel: "chrome", args: ["--use-angle=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist", "--enable-unsafe-swiftshader"] });

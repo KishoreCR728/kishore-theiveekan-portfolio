@@ -10,7 +10,8 @@ export const metadata: Metadata = {
   title: "Writing",
   description,
   alternates: { canonical: "/writing" },
-  openGraph: { type: "website", siteName: site.name, url: "/writing", title: `Writing | ${site.name}`, description, images: ["/og.png"] },
+  openGraph: { type: "website", siteName: site.name, url: "/writing", title: `Writing | ${site.name}`, description, images: ["/og/writing.png"] },
+  twitter: { card: "summary_large_image", title: `Writing | ${site.name}`, description, images: ["/og/writing.png"] },
 };
 
 export default function WritingIndex() {
