@@ -14,10 +14,10 @@ if (!fs.existsSync(path.join(root, "writing.html"))) fail("missing writing index
 for (const f of ["robots.txt", "sitemap.xml", "llms.txt", "og.png", "Kishore-Theiveekan-CV.pdf", "404.html"]) if (!fs.existsSync(path.join(root, f))) fail(`missing ${f}`);
 const server = await serve(root, port);
 const browser = await chromium.launch({ channel: "chrome", args: ["--use-angle=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist", "--enable-unsafe-swiftshader"] });
-for (const width of [320, 390, 768, 1024, 1440, 1920]) for (const route of ["/", `/work/${slugs[0]}`, "/writing", `/writing/${posts[0]}`]) {
+for (const width of [320, 390, 768, 1024, 1440, 1920]) for (const route of ["/", "/journey", `/work/${slugs[0]}`, "/writing", `/writing/${posts[0]}`]) {
   const ctx = await browser.newContext({ viewport: { width, height: 800 } }); const page = await ctx.newPage(); const errs = [];
   page.on("pageerror", (e) => errs.push(e.message)); page.on("console", (m) => { if (m.type() === "error") errs.push(m.text()); });
-  const r = await page.goto(base + route); if (!r.ok()) fail(`${route} returned ${r.status()}`); await page.waitForTimeout(route === "/" ? 6000 : 1200);
+  const r = await page.goto(base + route); if (!r.ok()) fail(`${route} returned ${r.status()}`); await page.waitForTimeout(route === "/journey" ? 4000 : 1500);
   const over = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); if (over > 0) fail(`${route} overflows ${over}px at ${width}`);
   errs.forEach((e) => fail(`${route} @${width}: ${e.slice(0, 140)}`)); await ctx.close();
 }

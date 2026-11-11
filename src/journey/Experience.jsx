@@ -2,6 +2,8 @@
 /* Scroll, 3D and interaction logic for the portfolio. Ported from the Claude Design prototype. */
 import { Component, createRef } from "react";
 import * as portfolio from "../content/portfolio";
+import "./journey.css";
+import "./hover.css";
 import { PageMarkup } from "./Markup";
 
 function hasWebGL() {
@@ -27,9 +29,9 @@ export default class Experience extends Component {
     let skip = false; try { skip = sessionStorage.getItem('skipLoader') === '1'; sessionStorage.removeItem('skipLoader'); } catch {}
     if (skip && !this._static) this.setState({ phase: 'ready', count: 100 });
     if (!this._static && !skip) this._pre = setInterval(() => {
-      c = Math.min(100, c + Math.ceil(Math.random() * 2.2));
+      c = Math.min(100, c + 3 + Math.ceil(Math.random() * 5));
       { const n = document.querySelector('[data-count]'), w = document.querySelector('[data-word]'); if (n) n.textContent = c; if (w) w.textContent = words[Math.min(4, Math.floor(c / 20))]; }
-      if (c >= 100) { clearInterval(this._pre); setTimeout(() => this.setState({ phase: 'exit' }), 500); setTimeout(() => this.setState({ phase: 'ready' }), 1750); }
+      if (c >= 100) { clearInterval(this._pre); setTimeout(() => this.setState({ phase: 'exit' }), 120); setTimeout(() => this.setState({ phase: 'ready' }), 700); }
     }, 30);
     const tick = () => this.setState({ time: new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }).format(new Date()) });
     tick(); this._t = setInterval(tick, 30000);

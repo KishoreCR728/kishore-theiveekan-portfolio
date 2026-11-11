@@ -4,7 +4,6 @@ import "@fontsource-variable/dm-sans/opsz.css";
 import "@fontsource/instrument-serif/400.css";
 import "@fontsource/instrument-serif/400-italic.css";
 import "./globals.css";
-import "./hover.css";
 import { site } from "@/content/site";
 
 export const metadata: Metadata = {

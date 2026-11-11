@@ -329,7 +329,7 @@ export function PageMarkup({ v }) {
                   top: "0",
                   height: "50.5%",
                   background: "#0f0e0c",
-                  transition: "transform 1.1s cubic-bezier(.76,0,.24,1)",
+                  transition: "transform .55s cubic-bezier(.76,0,.24,1)",
                   transform: v.topT,
                 }}
               ></div>
@@ -341,7 +341,7 @@ export function PageMarkup({ v }) {
                   bottom: "0",
                   height: "50.5%",
                   background: "#0f0e0c",
-                  transition: "transform 1.1s cubic-bezier(.76,0,.24,1)",
+                  transition: "transform .55s cubic-bezier(.76,0,.24,1)",
                   transform: v.botT,
                 }}
               ></div>

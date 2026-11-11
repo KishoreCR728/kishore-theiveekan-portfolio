@@ -1,7 +1,7 @@
 /* Header and footer shared by the content pages (case studies and writing). */
 import { site } from "@/content/site";
 
-type Section = "work" | "writing" | undefined;
+type Section = "home" | "work" | "writing" | undefined;
 
 export function SiteHeader({ current }: { current?: Section }) {
   return (
@@ -10,6 +10,7 @@ export function SiteHeader({ current }: { current?: Section }) {
       <nav aria-label="Main">
         <a className="pill hide-sm" href="/#work" aria-current={current === "work" ? "page" : undefined}>Work</a>
         <a className="pill" href="/writing" aria-current={current === "writing" ? "page" : undefined}>Writing</a>
+        <a className="pill hide-sm" href="/Kishore-Theiveekan-CV.pdf">CV</a>
         <a className="pill dark" href={`mailto:${site.email}`}>Contact</a>
       </nav>
     </header>
