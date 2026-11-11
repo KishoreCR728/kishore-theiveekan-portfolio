@@ -50,7 +50,7 @@ export default async function CasePage({ params }: Props) {
     <div className="page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
       <SiteHeader current="work" />
-      <main className="wrap">
+      <main id="main" className="wrap">
         <header className="hero-block">
           <div className="label">Case study{c.flagship ? "" : " · short"}</div>
           <h1>{c.title}</h1>

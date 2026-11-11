@@ -1,5 +1,5 @@
 ---
-title: Every code was "Invalid": a login lockout, and a fix that didn't deploy
+title: Every code was “Invalid”: a login lockout, and a fix that didn't deploy
 order: 3
 topic: Authentication
 date: 2026-11-11

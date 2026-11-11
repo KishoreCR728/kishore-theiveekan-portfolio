@@ -3,10 +3,9 @@
  * It returns React elements (never raw HTML), so content can't inject markup.
  * Supported: ## / ### headings, paragraphs, - and 1. lists, ``` code blocks,
  * > callouts, | tables |, and inline **bold**, *italic*, `code`, [links](url).
+ * Malformed input (unsafe link, unclosed fence, headerless table) fails the build.
  */
 import type { ReactNode } from "react";
-
-export type Heading = { id: string; text: string };
 
 const slugify = (s: string) =>
   s.toLowerCase().replace(/[`*_]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -25,7 +24,8 @@ function inline(text: string, key = "i"): ReactNode[] {
     else if (tok.startsWith("`")) out.push(<code key={k}>{tok.slice(1, -1)}</code>);
     else if (tok.startsWith("[")) {
       const [, label, href] = tok.match(/^\[([^\]]+)\]\(([^)\s]+)\)$/) ?? [];
-      const safe = /^(https?:\/\/|\/|#|mailto:)/.test(href) ? href : "#";
+      if (!/^(https?:\/\/|\/(?!\/)|#|mailto:)/.test(href ?? "")) throw new Error(`Unsafe or malformed link in Markdown: ${tok}`);
+      const safe = href;
       const ext = safe.startsWith("http");
       out.push(
         <a key={k} href={safe} {...(ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
@@ -41,10 +41,11 @@ function inline(text: string, key = "i"): ReactNode[] {
 
 const cells = (row: string) => row.trim().replace(/^\||\|$/g, "").split("|").map((c) => c.trim());
 
-export function renderMarkdown(src: string): { nodes: ReactNode[]; headings: Heading[] } {
+export function renderMarkdown(src: string): { nodes: ReactNode[] } {
   const lines = src.replace(/\r\n/g, "\n").split("\n");
   const nodes: ReactNode[] = [];
-  const headings: Heading[] = [];
+  const used = new Map<string, number>();
+  const uniqueId = (text: string) => { const base = slugify(text) || "section"; const n = used.get(base) ?? 0; used.set(base, n + 1); return n ? `${base}-${n + 1}` : base; };
   let i = 0;
   let k = 0;
   const isBlockStart = (l: string) => /^(#{2,3} |```|> ?|- |\d+\. |\|)/.test(l) || l.trim() === "";
@@ -58,6 +59,7 @@ export function renderMarkdown(src: string): { nodes: ReactNode[]; headings: Hea
       const body: string[] = [];
       i++;
       while (i < lines.length && !lines[i].startsWith("```")) body.push(lines[i++]);
+      if (i >= lines.length) throw new Error("Unclosed code fence in Markdown");
       i++;
       nodes.push(
         <pre key={k++} data-lang={lang || undefined}>
@@ -70,9 +72,8 @@ export function renderMarkdown(src: string): { nodes: ReactNode[]; headings: Hea
     const h = line.match(/^(#{2,3}) (.+)$/);
     if (h) {
       const text = h[2].trim();
-      const id = slugify(text);
+      const id = uniqueId(text);
       if (h[1] === "##") {
-        headings.push({ id, text: text.replace(/[`*]/g, "") });
         nodes.push(<h2 key={k++} id={id}>{inline(text)}</h2>);
       } else nodes.push(<h3 key={k++} id={id}>{inline(text)}</h3>);
       i++;
@@ -84,9 +85,9 @@ export function renderMarkdown(src: string): { nodes: ReactNode[]; headings: Hea
       while (i < lines.length && lines[i].startsWith(">")) body.push(lines[i++].replace(/^> ?/, ""));
       const paras = body.join("\n").split(/\n\s*\n/);
       nodes.push(
-        <aside key={k++} className="callout">
+        <div key={k++} className="callout" role="note">
           {paras.map((p, j) => <p key={j}>{inline(p.replace(/\n/g, " "), `c${j}`)}</p>)}
-        </aside>,
+        </div>,
       );
       continue;
     }
@@ -98,6 +99,7 @@ export function renderMarkdown(src: string): { nodes: ReactNode[]; headings: Hea
         i++;
       }
       const [head, ...body] = rows;
+      if (!head) throw new Error("Markdown table without a header row");
       nodes.push(
         <div key={k++} className="table-wrap">
           <table>
@@ -112,6 +114,7 @@ export function renderMarkdown(src: string): { nodes: ReactNode[]; headings: Hea
     const list = line.match(/^(- |\d+\. )/);
     if (list) {
       const ordered = list[1] !== "- ";
+      const start = ordered ? parseInt(list[1], 10) : 1;
       const items: string[] = [];
       while (i < lines.length && /^(- |\d+\. )/.test(lines[i])) {
         let item = lines[i++].replace(/^(- |\d+\. )/, "");
@@ -119,7 +122,7 @@ export function renderMarkdown(src: string): { nodes: ReactNode[]; headings: Hea
         items.push(item);
       }
       const lis = items.map((t, j) => <li key={j}>{inline(t, `l${j}`)}</li>);
-      nodes.push(ordered ? <ol key={k++}>{lis}</ol> : <ul key={k++}>{lis}</ul>);
+      nodes.push(ordered ? <ol key={k++} start={start === 1 ? undefined : start}>{lis}</ol> : <ul key={k++}>{lis}</ul>);
       continue;
     }
 
@@ -128,5 +131,5 @@ export function renderMarkdown(src: string): { nodes: ReactNode[]; headings: Hea
     if (!para.length) para.push(lines[i++]);
     nodes.push(<p key={k++}>{inline(para.join(" "))}</p>);
   }
-  return { nodes, headings };
+  return { nodes };
 }

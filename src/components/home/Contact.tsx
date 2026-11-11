@@ -13,7 +13,7 @@ export default function Contact() {
         <a className="pill" href="/Kishore-Theiveekan-CV.pdf">Download CV</a>
       </div>
       <div className="colophon-video"><VideoBlock id="inside-portfolio" /></div>
-      <p className="colophon">How this site is built: a Next.js static export with hand-written React components, self-hosted fonts and images, no cookies or trackers, six security headers, and release checks in real Chrome at six screen widths. <a href={`${site.github}/kishore-theiveekan-portfolio`} target="_blank" rel="noopener noreferrer">Source on GitHub</a>.</p>
+      <p className="colophon">How this site is built: a Next.js static export with custom React components (no UI kit), built with Claude Code as a pair, self-hosted fonts and images, no cookies or trackers, six security headers, and release checks in real Chrome at six screen widths. <a href={`${site.github}/kishore-theiveekan-portfolio`} target="_blank" rel="noopener noreferrer">Source on GitHub</a>.</p>
     </section>
   );
 }

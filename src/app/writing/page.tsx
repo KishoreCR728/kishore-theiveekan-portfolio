@@ -19,7 +19,7 @@ export default function WritingIndex() {
   return (
     <div className="page">
       <SiteHeader current="writing" />
-      <main className="wrap">
+      <main id="main" className="wrap">
         <header className="hero-block">
           <div className="label">Writing</div>
           <h1>Real problems, <i className="ac">solved in production.</i></h1>

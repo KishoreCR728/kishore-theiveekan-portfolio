@@ -20,6 +20,7 @@ export default function HeroScene() {
       // Software renderers draw each frame in hundreds of milliseconds: keep the CSS backdrop instead.
       const info = gl.getExtension("WEBGL_debug_renderer_info");
       const name = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "";
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
       if (/swiftshader|llvmpipe|software|basic render/i.test(name)) return;
     } catch { return; }
 
@@ -103,7 +104,11 @@ export default function HeroScene() {
       addEventListener("pointermove", onMove);
       raf = requestAnimationFrame(loop);
       canvas.dataset.ready = "1";
+      const onNarrow = () => { if (innerWidth < 821) { cleanup(); canvas.removeAttribute("data-ready"); } };
+      addEventListener("resize", onNarrow);
       cleanup = () => {
+        cleanup = () => {};
+        removeEventListener("resize", onNarrow);
         cancelAnimationFrame(raf);
         io.disconnect();
         removeEventListener("resize", size);
@@ -115,10 +120,14 @@ export default function HeroScene() {
       };
     };
 
-    const idle = (cb: () => void) =>
-      "requestIdleCallback" in window ? (window as Window & { requestIdleCallback: (f: () => void, o?: object) => number }).requestIdleCallback(cb, { timeout: 2000 }) : setTimeout(cb, 600);
-    idle(() => { start().catch(() => {}); });
-    return () => { disposed = true; cleanup(); };
+    const w = window as Window & { requestIdleCallback?: (f: () => void, o?: object) => number; cancelIdleCallback?: (id: number) => void };
+    const run = () => { start().catch(() => {}); };
+    const idleId = w.requestIdleCallback ? w.requestIdleCallback(run, { timeout: 2000 }) : window.setTimeout(run, 600);
+    return () => {
+      disposed = true;
+      if (w.cancelIdleCallback) w.cancelIdleCallback(idleId); else window.clearTimeout(idleId);
+      cleanup();
+    };
   }, []);
 
   return <canvas ref={ref} className="hero-canvas" aria-hidden="true" />;

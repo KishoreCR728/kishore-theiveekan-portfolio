@@ -1,5 +1,5 @@
 ---
-title: "Reject All" didn't stop the trackers
+title: “Reject All” didn’t stop the trackers
 order: 1
 topic: Privacy and consent
 date: 2026-11-11

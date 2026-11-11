@@ -30,7 +30,8 @@ const Note = ({ x, y, children, anchor = "start", tone }: { x: number; y: number
 function Frame({ title, height, children, caption }: { title: string; height: number; children: ReactNode; caption: string }) {
   return (
     <figure className="diagram">
-      <div className="diagram-scroll">
+      <p className="diagram-hint" aria-hidden="true">Scroll sideways to see the whole diagram →</p>
+      <div className="diagram-scroll" tabIndex={0} role="region" aria-label={`${title} (scrolls sideways on small screens)`}>
         <svg viewBox={`0 0 1200 ${height}`} role="img" aria-label={title}>
           <title>{title}</title>
           <defs>

@@ -6,7 +6,7 @@ import { chromium } from "playwright-core";
 const root = process.cwd(), out = path.join(root, "public", "og");
 const font = (f) => `url(data:font/woff2;base64,${fs.readFileSync(path.join(root, "src", "fonts", f)).toString("base64")})`;
 const read = (dir) => fs.readdirSync(path.join(root, "src/content", dir)).filter((f) => f.endsWith(".md")).map((f) => {
-  const raw = fs.readFileSync(path.join(root, "src/content", dir, f), "utf8");
+  const raw = fs.readFileSync(path.join(root, "src/content", dir, f), "utf8").replace(/\r\n/g, "\n");
   const meta = Object.fromEntries(raw.split("\n---")[0].split("\n").filter((l) => l.includes(": ")).map((l) => [l.slice(0, l.indexOf(": ")), l.slice(l.indexOf(": ") + 2)]));
   return { slug: f.replace(/\.md$/, ""), meta };
 });
@@ -14,7 +14,7 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, 
 
 const cards = [
   ...read("work").map(({ slug, meta }) => ({ file: `work-${slug}.png`, label: "Case study", title: meta.title, sub: meta.oneLiner })),
-  ...read("writing").map(({ slug, meta }) => ({ file: `writing-${slug}.png`, label: `Writing · ${meta.topic}`, title: meta.title, sub: "" })),
+  ...read("writing").map(({ slug, meta }) => ({ file: `writing-${slug}.png`, label: meta.topic ? `Writing · ${meta.topic}` : "Writing", title: meta.title, sub: "" })),
   { file: "../og.png", label: "Chennai, India · open to relocation", title: "Kishore Theiveekan", sub: "Frontend engineer. I build web products that have to be fast, secure and well made, and I stay with them all the way to production." },
   { file: "lab.png", label: "Lab", title: "three.js, running live.", sub: "GLSL shaders, a fragment-shader field, a post-processing pipeline and physically based materials." },
   { file: "writing.png", label: "Writing", title: "Real problems, solved in production.", sub: "Write-ups of production bugs: what broke, how it was found, and what changed." },

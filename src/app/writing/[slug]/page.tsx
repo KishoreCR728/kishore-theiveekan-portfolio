@@ -49,7 +49,7 @@ export default async function ArticlePage({ params }: Props) {
     <div className="page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
       <SiteHeader current="writing" />
-      <main className="wrap article">
+      <main id="main" className="wrap article">
         <div className="narrow">
           <header className="article-head">
             <a className="label" href="/writing">← Writing</a>
@@ -58,6 +58,14 @@ export default async function ArticlePage({ params }: Props) {
             <p className="byline">{site.name} · {formatMonth(a.meta.date)} · {readingMinutes(a.body)} min read</p>
           </header>
           <article className="prose">{a.meta.video && <VideoBlock id={a.meta.video} />}{nodes}</article>
+          <aside className="author-card" aria-label="About the author">
+            <p><b>{site.name}</b> · Frontend engineer in Chennai, open to relocation and remote work.</p>
+            <div>
+              <a className="pill dark" href={`mailto:${site.email}`}>Email</a>
+              <a className="pill" href="/Kishore-Theiveekan-CV.pdf">CV</a>
+              <a className="pill" href="/#work">Case studies</a>
+            </div>
+          </aside>
           <nav className="next-link" aria-label="Next article">
             <span className="label">Next article</span>
             <a href={`/writing/${next.slug}`}>{next.meta.title} <i>→</i></a>

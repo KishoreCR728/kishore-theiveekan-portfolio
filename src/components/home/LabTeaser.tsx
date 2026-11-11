@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 const items = [
   ["shaders", "GLSL vertex shader"],
   ["shaders2", "Fragment shader patterns"],

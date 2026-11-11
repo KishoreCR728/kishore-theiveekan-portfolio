@@ -9,5 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default function Journey() {
-  return <Experience />;
+  return (
+    <>
+      <a href="/" className="journey-back">← Back to the portfolio</a>
+      <Experience />
+    </>
+  );
 }

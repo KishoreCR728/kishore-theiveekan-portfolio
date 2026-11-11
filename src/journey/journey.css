@@ -1,4 +1,8 @@
 /* Styles for the immersive /journey page (the original design converted from the Claude Design prototype). Loaded only on that route. */
+@keyframes rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+@keyframes lift { from { transform: translateY(110%); } to { transform: none; } }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes spin { to { transform: rotate(360deg); } }
 [data-case] { overscroll-behavior: contain; }
 [data-loader-name] { font-size: clamp(40px, 9vw, 150px) !important; white-space: nowrap; }
 
@@ -51,3 +55,5 @@ html.static-mode div:has(> [data-card]) { flex-wrap: wrap !important; transform:
   [data-yr] p { font-size: 13px !important; line-height: 1.4 !important; }
   [data-yr] > a { display: none !important; }
 }
+.journey-back { position: fixed; left: 16px; bottom: 16px; z-index: 70; background: #0f0e0c; color: #f0efe9 !important; border-radius: 999px; padding: 11px 16px; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.5); }
+.journey-back:hover { background: #2a2824; }

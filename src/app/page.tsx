@@ -31,9 +31,8 @@ export default function Home() {
   return (
     <div className="page home">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }} />
-      <a className="skip" href="#work">Skip to the work</a>
       <SiteHeader current="home" />
-      <main className="wrap">
+      <main id="main" className="wrap">
         <Hero />
         <Work cases={allCases().filter((c) => c.flagship)} />
         <Career />

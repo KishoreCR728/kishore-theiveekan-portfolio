@@ -1,0 +1,58 @@
+WEBVTT
+
+1
+00:00:00.367 --> 00:00:01.884
+This is my portfolio.
+
+2
+00:00:01.884 --> 00:00:06.727
+I built it with Claude Code as a pair, the way I build client work.
+
+3
+00:00:07.633 --> 00:00:09.076
+The work comes first:
+
+4
+00:00:09.076 --> 00:00:13.061
+four case studies, each with the decisions, the tradeoffs,
+
+5
+00:00:13.061 --> 00:00:16.153
+what went wrong, and a diagram of the system.
+
+6
+00:00:17.067 --> 00:00:20.287
+The writing is five real production problems,
+
+7
+00:00:20.287 --> 00:00:24.939
+and each one says plainly what was mine and what an AI agent did.
+
+8
+00:00:25.833 --> 00:00:29.386
+The Lab runs live three.js code, not video.
+
+9
+00:00:29.386 --> 00:00:35.169
+On the home page, phones and reduced motion get a still image instead.
+
+10
+00:00:36.067 --> 00:00:39.557
+Every release runs checks in real Chrome:
+
+11
+00:00:39.557 --> 00:00:45.177
+every page, six screen widths, no console errors, no broken links.
+
+12
+00:00:45.177 --> 00:00:47.731
+Lighthouse runs on every push.
+
+13
+00:00:48.633 --> 00:00:52.546
+No cookies, no trackers, six security headers,
+
+14
+00:00:52.546 --> 00:00:55.353
+and the code is public on GitHub.
+

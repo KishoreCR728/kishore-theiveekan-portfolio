@@ -25,6 +25,7 @@
 .pill { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 11px 18px; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; background: var(--card); color: var(--ink); white-space: nowrap; }
 .pill.dark { background: var(--ink); color: var(--bg); }
 .pill.dark:hover { color: #fff; background: #2a2824; }
+.pill:not(.dark):hover { color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
 .pill[aria-current="page"] { outline: 1.5px solid var(--ink); }
 
 .hero-block { padding: 9vh 0 6vh; }
@@ -46,6 +47,7 @@
 .facts a { text-decoration: underline; text-underline-offset: 3px; }
 
 .prose { font-size: 18px; line-height: 1.7; color: var(--ink-2); min-width: 0; }
+.case-grid .prose { max-width: 72ch; }
 .prose h2 { color: var(--ink); font-weight: 400; font-size: clamp(28px, 2.6vw, 38px); letter-spacing: -0.02em; line-height: 1.15; margin: 2.2em 0 0.6em; scroll-margin-top: 90px; }
 .prose > h2:first-child { margin-top: 0; }
 .prose h3 { color: var(--ink); font-weight: 500; font-size: 20px; letter-spacing: -0.01em; margin: 1.8em 0 0.4em; scroll-margin-top: 90px; }
@@ -86,7 +88,8 @@
 
 .site-foot { border-top: 1px solid var(--line); padding: 40px var(--gutter) 48px; display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; color: var(--muted); font-size: 15px; }
 .site-foot nav { display: flex; gap: 20px; flex-wrap: wrap; }
-.site-foot a { color: var(--ink-2); }
+.site-foot a { color: var(--ink-2); display: inline-block; padding: 8px 0; }
+.article-head > a.label { display: inline-block; padding: 8px 0; }
 
 @media (max-width: 820px) {
   .case-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
@@ -96,13 +99,19 @@
   .prose pre { font-size: 13.5px; padding: 16px; margin-left: calc(-1 * var(--gutter) + 8px); margin-right: calc(-1 * var(--gutter) + 8px); border-radius: 10px; }
   .post-list a { grid-template-columns: minmax(0, 1fr); }
   .post-list .meta { grid-column: 1; grid-row: auto; }
-  .site-head .hide-sm { display: none; }
+  .site-head .hide-md { display: none; }
   .site-head .brand { font-size: 16px; }
   .site-head .pill { padding: 10px 14px; font-size: 12px; }
 }
+.brand-short { display: none; }
+@media (max-width: 600px) {
+  .site-head .hide-sm { display: none; }
+  .brand-full { display: none; }
+  .brand-short { display: inline; }
+}
 @media (max-width: 400px) {
   .site-head { padding-left: 16px; padding-right: 16px; }
-  .site-head .brand { white-space: normal; max-width: 9ch; line-height: 1.15; font-size: 15px; }
+  .site-head .brand { font-size: 15px; }
   .site-head nav { gap: 6px; }
   .site-head .pill { padding: 9px 12px; }
 }
@@ -132,14 +141,25 @@
 .dg-note { fill: var(--ink-2); font-size: 14.5px; }
 .dg-note-muted { fill: var(--muted); font-size: 13.5px; letter-spacing: 0.02em; }
 .dg-note-accent { fill: var(--accent-ink); }
-@media (max-width: 820px) { .diagram { padding: 18px 14px 14px; border-radius: 18px; margin-left: calc(-1 * var(--gutter) + 8px); margin-right: calc(-1 * var(--gutter) + 8px); } }
+.diagram-hint { display: none; }
+@media (max-width: 820px) {
+  .diagram { padding: 18px 14px 14px; border-radius: 18px; }
+  .diagram svg { min-width: 1000px; }
+  .diagram-hint { display: block; margin: 0 0 8px; color: var(--muted); font-size: 13px; letter-spacing: 0.04em; }
+}
 
 /* Videos */
 .video-block { margin: 0 0 8vh; }
-.video-block video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 20px; background: #131211; }
+.video-block video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 20px; background: #131211; box-shadow: 0 0 0 1px var(--line), 0 30px 60px -40px rgba(15, 14, 12, 0.5); }
 .video-block figcaption { margin-top: 12px; color: var(--muted); font-size: 15px; line-height: 1.5; }
 .video-block b { color: var(--ink-2); font-weight: 500; }
 .video-block details { margin-top: 8px; }
 .video-block summary { cursor: pointer; color: var(--ink-2); width: fit-content; }
 .video-block details p { margin: 8px 0 0; max-width: 70ch; }
 .prose .video-block { margin: 1.4em 0 2em; }
+
+/* Author card at the end of articles */
+.author-card { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; background: var(--card); border-radius: 20px; padding: 22px 26px; margin: 0 0 6vh; }
+.author-card p { margin: 0; color: var(--ink-2); font-size: 16px; line-height: 1.5; }
+.author-card b { color: var(--ink); font-weight: 500; }
+.author-card div { display: flex; gap: 8px; flex-wrap: wrap; }

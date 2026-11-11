@@ -20,6 +20,9 @@ function parse(file: string): Doc {
     if (at > 0) meta[line.slice(0, at).trim()] = line.slice(at + 2).trim();
   }
   for (const req of ["title", "description"]) if (!meta[req]) throw new Error(`${file}: missing "${req}"`);
+  if (meta.order !== undefined && Number.isNaN(Number(meta.order))) throw new Error(`${file}: "order" must be a number`);
+  if (file.includes(`${path.sep}writing${path.sep}`)) for (const req of ["date", "topic"]) if (!meta[req]) throw new Error(`${file}: missing "${req}"`);
+  if (meta.date && Number.isNaN(Date.parse(meta.date))) throw new Error(`${file}: "date" must be YYYY-MM-DD`);
   return { slug: path.basename(file, ".md"), meta, body: m[2].trim() };
 }
 

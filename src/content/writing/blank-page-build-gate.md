@@ -4,7 +4,7 @@ order: 5
 topic: Build and release
 date: 2026-11-11
 video: build-gate
-description: A prerender fallback I designed shipped hundreds of empty pages to crawlers for two weeks while the build stayed green. How it was found, and the build gate that replaced it.
+description: A prerender fallback I designed shipped hundreds of empty pages to crawlers for up to two weeks while the build stayed green. How it was found, and the build gate that replaced it.
 ---
 For up to two weeks, a site I lead shipped hundreds of pages that looked perfect in a browser and were empty to anything that didn't run JavaScript. The build was green the whole time. I had designed it that way.
 

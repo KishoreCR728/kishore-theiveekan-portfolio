@@ -5,10 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "npx serve out",
-    "lint": "tsc --noEmit",
+    "start": "node -e \"import('./qa/serve.mjs').then((m) => m.serve('out', 3000)).then(() => console.log('http://127.0.0.1:3000'))\"",
     "test": "node qa/run.mjs",
-    "og": "node scripts/og.mjs"
+    "og": "node scripts/og.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.3.0",

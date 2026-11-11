@@ -20,7 +20,7 @@ export default function Skills() {
           <li key={t}><span>{String(i + 1).padStart(2, "0")}</span><b>{t}</b><p>{d}</p></li>
         ))}
       </ol>
-      <aside className="ai-note"><b>Working with AI.</b> {aiNote}</aside>
+      <div className="ai-note" role="note"><b>Working with AI.</b> {aiNote}</div>
     </section>
   );
 }

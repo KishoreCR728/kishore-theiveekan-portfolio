@@ -28,6 +28,7 @@ export const metadata: Metadata = {
   openGraph: { type: "website", url: "/", siteName: site.name, title: site.title, description: site.description, images: ["/og.png"] },
   twitter: { card: "summary_large_image", title: site.title, description: site.description, images: ["/og.png"] },
   robots: { index: true, follow: true },
+  other: { "color-scheme": "light" },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

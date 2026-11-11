@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { about } from "@/content/home";
 import { interests } from "@/content/portfolio";
 
@@ -16,7 +15,7 @@ export default function About() {
       <ul className="clock">
         {(interests as Interest[]).map((it) => (
           <li key={it.t}>
-            <img src={it.images[0].src} alt={it.images[0].alt} loading="lazy" decoding="async" width={480} height={320} />
+            <img src={it.images[0].src.replace("/images/", "/images/small/")} alt={it.images[0].alt} loading="lazy" decoding="async" width={720} height={480} />
             <b>{it.t}</b>
             <p>{it.d}</p>
           </li>

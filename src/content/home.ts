@@ -43,18 +43,18 @@ export const career = {
       ],
     },
   ],
-  education: "B.Tech, Information Technology · Park College of Engineering and Technology, Coimbatore · 2017 – 2021",
+  education: "B.Tech, Information Technology · Park College of Engineering and Technology, Coimbatore · 2017\u00a0–\u00a02021",
 };
 
 export type MoreItem = { name: string; line: string; proof: string; href?: string };
 
 export const moreWork: MoreItem[] = [
-  { name: "Consent product site", line: "A consent product's site with no cookies, no analytics and 9 KB of gzipped JavaScript.", proof: "98 mobile / 100 desktop Lighthouse", href: "/work/consent-product-site" },
-  { name: "Compliance platform site", line: "A 59-page site moved to a static Next.js export, verified page by page in a real browser.", proof: "96 mobile Lighthouse", href: "/work/compliance-platform-site" },
-  { name: "Security and delivery", line: "Security findings taken from report to verified production change.", proof: "10 test rounds, 6 websites", href: "/work/security-delivery-loop" },
-  { name: "Finstein.ai", line: "The company site, kept maintainable without a framework. Lead developer since July 2025.", proof: "100 accessibility and SEO", href: "/work/finstein-corporate-site" },
-  { name: "Finstein Cyber", line: "A 20-page site assembled from components by a hand-written build, with llms.txt for answer engines.", proof: "Component build, no framework", href: "/work/finstein-cyber-website" },
-  { name: "Design QA harness", line: "Python scripts that captured, compared and scored a 57-route site at four breakpoints.", proof: "898 comparison screenshots", href: "/work/security-platform-qa" },
+  { name: "Consent Product Site", line: "A consent product's site with no cookies, no analytics and 9 KB of gzipped JavaScript.", proof: "98 mobile / 100 desktop Lighthouse", href: "/work/consent-product-site" },
+  { name: "Compliance Platform Site", line: "A 59-page site moved to a static Next.js export, verified page by page in a real browser.", proof: "96 mobile Lighthouse", href: "/work/compliance-platform-site" },
+  { name: "Security & Delivery Loop", line: "Security findings taken from report to verified production change.", proof: "10 test rounds, 6 websites", href: "/work/security-delivery-loop" },
+  { name: "Finstein.ai Corporate Site", line: "The company site, kept maintainable without a framework. Lead developer since July 2025.", proof: "100 accessibility and SEO", href: "/work/finstein-corporate-site" },
+  { name: "Finstein Cyber Website", line: "A 20-page site assembled from components by a hand-written build, with llms.txt for answer engines.", proof: "Component build, no framework", href: "/work/finstein-cyber-website" },
+  { name: "Security Platform + QA Loop", line: "Python scripts that captured, compared and scored a 57-route site at four breakpoints.", proof: "898 comparison screenshots", href: "/work/security-platform-qa" },
   { name: "Jarvis Mobile", line: "A voice and text assistant for Android, running in Termux with Gemini.", proof: "Open source", href: "https://github.com/KishoreCR728/jarvis-mobile" },
   { name: "Obsidian Sprint", line: "A React and three.js experience that scales its effects to the device's GPU.", proof: "Open source", href: "https://github.com/KishoreCR728/obsidian-sprint" },
   { name: "Project-to-Video skill", line: "An AI agent skill that turns a repository or URL into a Remotion video.", proof: "Open source", href: "https://github.com/KishoreCR728/project-to-video-skill" },

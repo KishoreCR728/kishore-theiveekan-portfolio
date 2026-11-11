@@ -11,7 +11,7 @@ export function GET() {
   const lines = [
     `# ${site.name}`,
     "",
-    `> Frontend engineer based in Chennai, India, open to relocation and remote work worldwide. Builds fast, secure web products with Angular, React, Next.js, TypeScript and three.js. At Finstein since March 2023.`,
+    `> ${site.description} At Finstein since March 2023.`,
     "",
     hero.line,
     "",
@@ -22,7 +22,7 @@ export function GET() {
     `- CV: ${site.url}/Kishore-Theiveekan-CV.pdf`,
     "",
     "## Case studies",
-    ...cases.filter((c) => c.flagship).map((c) => `- [${c.title}](${site.url}/work/${c.slug}): ${c.oneLiner}`),
+    ...cases.filter((c) => c.flagship).map((c) => `- [${c.title}](${site.url}/work/${c.slug}): ${c.status ? `(${c.status}) ` : ""}${c.oneLiner}`),
     "",
     "## Shorter case studies",
     ...cases.filter((c) => !c.flagship).map((c) => `- [${c.title}](${site.url}/work/${c.slug}): ${c.oneLiner}`),

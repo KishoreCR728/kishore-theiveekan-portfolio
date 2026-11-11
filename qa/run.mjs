@@ -15,14 +15,29 @@ for (const f of walk(root).filter((f) => f.endsWith(".html"))) { const t = fs.re
 for (const f of ["robots.txt", "sitemap.xml", "llms.txt", "og.png", "Kishore-Theiveekan-CV.pdf", "404.html"]) if (!fs.existsSync(path.join(root, f))) fail(`missing ${f}`);
 const server = await serve(root, port);
 const browser = await chromium.launch({ channel: "chrome", args: ["--use-angle=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist", "--enable-unsafe-swiftshader"] });
-for (const width of [320, 390, 768, 1024, 1440, 1920]) for (const route of ["/", "/journey", "/lab", `/work/${slugs[0]}`, "/writing", `/writing/${posts[0]}`]) {
-  const ctx = await browser.newContext({ viewport: { width, height: 800 } }); const page = await ctx.newPage(); const errs = [];
-  page.on("pageerror", (e) => errs.push(e.message)); page.on("console", (m) => { if (m.type() === "error") errs.push(m.text()); });
-  const r = await page.goto(base + route); if (!r.ok()) fail(`${route} returned ${r.status()}`); await page.waitForTimeout(route === "/journey" ? 4000 : 1500);
-  const over = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); if (over > 0) fail(`${route} overflows ${over}px at ${width}`);
-  errs.forEach((e) => fail(`${route} @${width}: ${e.slice(0, 140)}`)); await ctx.close();
+// Every page, at every width: loads, no horizontal overflow, no console errors.
+const routes = ["/", "/journey", "/lab", "/writing", "/404", ...slugs.map((s) => `/work/${s}`), ...posts.map((s) => `/writing/${s}`)];
+for (const width of [320, 390, 768, 1024, 1440, 1920]) {
+  const ctx = await browser.newContext({ viewport: { width, height: 800 } });
+  for (const route of routes) {
+    const page = await ctx.newPage(); const errs = [];
+    page.on("pageerror", (e) => errs.push(e.message)); page.on("console", (m) => { if (m.type() === "error" && !(route === "/404" && /404/.test(m.text()))) errs.push(m.text()); });
+    const r = await page.goto(base + route); if (route !== "/404" && !r.ok()) fail(`${route} returned ${r.status()}`);
+    await page.waitForTimeout(route === "/journey" ? 4000 : route === "/" ? 1500 : 500);
+    const over = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); if (over > 0) fail(`${route} overflows ${over}px at ${width}`);
+    errs.forEach((e) => fail(`${route} @${width}: ${e.slice(0, 140)}`)); await page.close();
+  }
+  await ctx.close();
 }
-const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } }); const page = await ctx.newPage(); await page.goto(base + "/"); await page.waitForTimeout(1000);
-const links = await page.evaluate(() => [...new Set([...document.querySelectorAll("a[href]")].map((a) => a.getAttribute("href")))]);
-for (const l of links) { if (l === "#") fail("dead # link"); if (l.startsWith("/")) { const r = await ctx.request.get(base + l); if (!r.ok()) fail(`broken link ${l}`); } if (l.startsWith("#") && !(await page.locator(l).count())) fail(`missing anchor ${l}`); }
+// Every link and anchor on every page resolves to a file in out/ (internal) or is a known external scheme.
+const exists = (u) => { let p = decodeURIComponent(u.split(/[?#]/)[0]); if (p.endsWith("/")) p += "index.html"; const f = path.join(root, p); return fs.existsSync(f) && !fs.statSync(f).isDirectory() || fs.existsSync(f + ".html"); };
+for (const f of walk(root).filter((f) => f.endsWith(".html") && !f.includes(`${path.sep}lab${path.sep}demos${path.sep}`))) {
+  const t = fs.readFileSync(f, "utf8"); const ids = new Set([...t.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
+  for (const [, href] of t.matchAll(/<a[^>]*\shref="([^"]*)"/g)) {
+    if (href === "" || href === "#") fail(`dead link in ${f}`);
+    else if (href.startsWith("#")) { if (!ids.has(href.slice(1))) fail(`missing anchor ${href} in ${f}`); }
+    else if (href.startsWith("/")) { if (!exists(href)) fail(`broken link ${href} in ${f}`); }
+    else if (!/^(https:\/\/|mailto:)/.test(href)) fail(`unexpected link ${href} in ${f}`);
+  }
+}
 await browser.close(); server.close(); console.log(fails.length ? `${fails.length} FAILED` : "ALL CHECKS PASSED"); process.exit(fails.length ? 1 : 0);

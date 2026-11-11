@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import type { Metadata } from "next";
 import "../pages.css";
 import "./lab.css";
@@ -27,7 +26,7 @@ export default function Lab() {
   return (
     <div className="page">
       <SiteHeader current="lab" />
-      <main className="wrap">
+      <main id="main" className="wrap">
         <header className="hero-block">
           <div className="label">Lab</div>
           <h1>three.js, <i className="ac">running live.</i></h1>
@@ -36,7 +35,7 @@ export default function Lab() {
         <ul className="lab-grid">
           {demos.map((d) => (
             <li key={d.id}>
-              <a className="lab-shot" href={`/lab/demos/${d.id}.html`}>
+              <a className="lab-shot" href={`/lab/demos/${d.id}.html`} tabIndex={-1} aria-hidden="true">
                 <img src={`/lab/${d.id}.webp`} alt={`Screenshot of the ${d.title.toLowerCase()} experiment`} width={800} height={500} loading="lazy" decoding="async" />
               </a>
               <div className="lab-text">
@@ -44,8 +43,8 @@ export default function Lab() {
                 <p>{d.text}</p>
                 <p className="lab-tags">{d.tags}</p>
                 <div className="lab-actions">
-                  <a className="pill dark" href={`/lab/demos/${d.id}.html`}>Open live</a>
-                  <a className="pill" href={`${repo}/blob/main/${d.src}`} target="_blank" rel="noopener noreferrer">Code</a>
+                  <a className="pill dark" href={`/lab/demos/${d.id}.html`}>Open live<span className="sr-only"> {d.title.toLowerCase()} demo</span></a>
+                  <a className="pill" href={`${repo}/blob/main/${d.src}`} target="_blank" rel="noopener noreferrer">Code<span className="sr-only"> for the {d.title.toLowerCase()} demo</span></a>
                 </div>
               </div>
             </li>

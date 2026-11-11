@@ -11,6 +11,8 @@ npm install
 npm run dev     # http://localhost:3000
 npm run build   # static site in out/
 npm test        # release checks against out/ (run after a build)
+npm start       # serve out/ at http://127.0.0.1:3000 the way the host does
+npm run typecheck
 npm run og      # regenerate share images after adding or renaming content
 ```
 
@@ -46,15 +48,15 @@ Content is data: adding an article is one Markdown file in `src/content/writing/
 ## Decisions
 
 - **Static export, no server.** It's a portfolio; HTML files on a CDN are the fastest and safest thing to serve.
-- **Markdown rendered to React elements.** No `dangerouslySetInnerHTML` for content, so a typo in a file can't inject markup. The renderer supports only what the writing uses.
-- **three.js is optional.** The hero scene loads only on desktop-sized screens with hardware WebGL and no reduced-motion preference, after the browser is idle. It pauses off screen and switches itself off if frames take longer than 50 ms. Everyone else gets a CSS backdrop.
+- **Markdown rendered to React elements.** No `dangerouslySetInnerHTML` for content, so a file can't inject markup, and an unsafe link, unclosed code block or broken front matter fails the build. The renderer supports only what the writing uses.
+- **three.js is optional.** The hero scene loads only on desktop-sized screens with hardware WebGL and no reduced-motion preference, after the browser is idle. It pauses off screen and switches itself off if frames take longer than 50 ms. Phones and reduced-motion visitors get a still image of the same scene.
 - **Fonts through `next/font/local`.** Preloaded, with metric-matched fallbacks, so text doesn't move when fonts arrive (layout shift 0).
 - **The immersive version is kept, not deleted.** `/journey` is the original design, a scroll-driven city with one district a year. It is code converted from the design prototype, so it lives in its own folder with its own CSS and is not indexed.
 
 ## Quality checks
 
-- `npm test`: every route at six widths (320 to 1920 px) in real Chrome, with no horizontal overflow, no console errors, no broken links or anchors, a description, canonical URL and share image on every indexable page, and a list of banned terms (client names stay off the site).
-- GitHub Actions runs Lighthouse CI on every push: mobile performance at least 85, and accessibility, best practices and SEO at least 95.
+- `npm test`: every page (home, case studies, articles, Lab, journey, 404) at six widths (320 to 1920 px) in real Chrome, with no horizontal overflow and no console errors; every link and anchor on every page resolves; every indexable page has a description, canonical URL and an existing share image. Locally it also fails on a list of banned terms (`QA_BANNED`), so client names stay off the site; that list isn't in the repo.
+- GitHub Actions (read-only token, actions pinned to commits) type-checks, builds and runs Lighthouse CI on every push: mobile performance at least 85, and accessibility, best practices and SEO at least 95.
 - Measured locally with compression, mobile: 98–100 performance, 100 accessibility, best practices and SEO.
 
 ## Security
@@ -63,4 +65,4 @@ Six headers from `vercel.json`: a Content-Security-Policy, HSTS, `X-Frame-Option
 
 ## About the content
 
-Client names are hidden on purpose. Work done with AI coding agents (Claude Code) is labelled as such on each case study and article, including what was mine.
+Client names are hidden on purpose. Work done with AI coding agents (Claude Code) is labelled as such on each case study, article and video, including what was mine; this site was built with Claude Code as a pair too. The videos use an AI-generated voice.
