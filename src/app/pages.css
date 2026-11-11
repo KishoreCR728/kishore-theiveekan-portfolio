@@ -106,3 +106,30 @@
   .site-head nav { gap: 6px; }
   .site-head .pill { padding: 9px 12px; }
 }
+
+/* Architecture diagrams */
+.diagram { margin: 0 0 8vh; background: var(--card); border-radius: 24px; padding: 28px 28px 20px; }
+.diagram-scroll { overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 760px; height: auto; font-family: var(--font-sans), Helvetica, Arial, sans-serif; }
+.diagram figcaption { margin-top: 14px; color: var(--muted); font-size: 15px; line-height: 1.5; }
+.dg-box rect { fill: #f7f6f2; stroke: rgba(15, 14, 12, 0.16); stroke-width: 1.2; }
+.dg-box .dg-title { fill: var(--ink); font-size: 17px; font-weight: 500; }
+.dg-box .dg-sub { fill: var(--muted); font-size: 13.5px; }
+.dg-dark rect { fill: var(--ink); stroke: var(--ink); }
+.dg-dark .dg-title { fill: var(--bg); }
+.dg-dark .dg-sub { fill: #b9b4aa; }
+.dg-accent rect { fill: #fbe7dd; stroke: #e9a587; }
+.dg-accent .dg-title { fill: var(--accent-ink); }
+.dg-soft rect { fill: #efe9dc; stroke: rgba(15, 14, 12, 0.1); }
+.dg-group { fill: none; stroke: rgba(15, 14, 12, 0.18); stroke-dasharray: 5 6; stroke-width: 1.2; }
+.dg-group-dark { fill: rgba(15, 14, 12, 0.03); }
+.dg-line { fill: none; stroke: #8a857c; stroke-width: 1.6; }
+.dg-dashed { stroke-dasharray: 6 6; }
+.dg-stopline { stroke: var(--accent); }
+.dg-head { fill: #8a857c; }
+.dg-stophead { fill: var(--accent); }
+.dg-cross { stroke: var(--accent); stroke-width: 2.2; }
+.dg-note { fill: var(--ink-2); font-size: 14.5px; }
+.dg-note-muted { fill: var(--muted); font-size: 13.5px; letter-spacing: 0.02em; }
+.dg-note-accent { fill: var(--accent-ink); }
+@media (max-width: 820px) { .diagram { padding: 18px 14px 14px; border-radius: 18px; margin-left: calc(-1 * var(--gutter) + 8px); margin-right: calc(-1 * var(--gutter) + 8px); } }
