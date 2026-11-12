@@ -1,7 +1,6 @@
 /* llms.txt for answer engines, generated from the same content as the pages. */
 import { allCases } from "@/lib/cases";
 import { articles } from "@/lib/content";
-import { hero } from "@/content/home";
 import { site } from "@/content/site";
 
 export const dynamic = "force-static";
@@ -13,7 +12,7 @@ export function GET() {
     "",
     `> ${site.description} At Finstein since March 2023.`,
     "",
-    hero.line,
+    "I build web products that have to be fast, secure and well made, and I stay with them all the way to production.",
     "",
     "## Contact",
     `- Email: ${site.email}`,

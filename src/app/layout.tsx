@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable}`}>
+    <html lang="en" className={`${sans.variable} ${serif.variable}`} suppressHydrationWarning>
       <body>
         <noscript><style>{`[data-loader]{display:none!important}[data-reveal] [data-w],[data-fade],[data-float]{opacity:1!important;transform:none!important}`}</style></noscript>
         {children}

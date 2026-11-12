@@ -5,7 +5,6 @@
  */
 import { caseStudies } from "./content";
 import { projects } from "@/content/portfolio";
-import { moreWork } from "@/content/home";
 
 const TAG_NAMES: Record<string, string> = {
   vite: "Vite", playwright: "Playwright", "lighthouse ci": "Lighthouse CI", vercel: "Vercel", html: "HTML", scss: "SCSS", css: "CSS",
@@ -14,8 +13,7 @@ const TAG_NAMES: Record<string, string> = {
   "next.js 16": "Next.js 16", "react 19": "React 19", typescript: "TypeScript",
 };
 const tagName = (t: string) => TAG_NAMES[t.toLowerCase()] ?? t.charAt(0).toUpperCase() + t.slice(1);
-/** Short case studies follow the order of the "More work" grid on the home page. */
-const homeOrder = (slug: string) => { const i = moreWork.findIndex((m) => m.href === `/work/${slug}`); return i < 0 ? 99 : i; };
+
 
 export type Case = {
   slug: string;
@@ -62,7 +60,6 @@ const fromMarkdown = (): Case[] =>
 const fromLegacy = (skip: Set<string>): Case[] =>
   (projects as Legacy[])
     .filter((p) => !skip.has(p.slug))
-    .sort((a, b) => homeOrder(a.slug) - homeOrder(b.slug))
     .map((p) => ({
       slug: p.slug,
       title: p.name,

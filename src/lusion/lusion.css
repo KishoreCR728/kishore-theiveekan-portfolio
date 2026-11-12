@@ -1,4 +1,6 @@
-/* Styles for the immersive /journey page (the original design converted from the Claude Design prototype). Loaded only on that route. */
+/* Styles for the home page design (converted from the Claude Design prototype "Lusion"). */
+@keyframes rise-t { from { transform: translateY(30px); } to { transform: none; } }
+html.static-mode [data-loader] { display: none !important; }
 @keyframes rise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
 @keyframes lift { from { transform: translateY(110%); } to { transform: none; } }
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
@@ -41,7 +43,7 @@ html.static-mode *, html.static-mode *::before, html.static-mode *::after { anim
 html.static-mode [data-reveal] [data-w], html.static-mode [data-fade], html.static-mode [data-float], html.static-mode [data-screen-label="Work"] > div:nth-child(2) > * { opacity: 1 !important; transform: none !important; }
 html.static-mode [data-screen-label="Journey"], html.static-mode [data-screen-label="How I work"], html.static-mode [data-screen-label="3D panel"] { height: auto !important; }
 html.static-mode [data-screen-label="Journey"] > div, html.static-mode [data-screen-label="How I work"] > div { position: relative !important; height: auto !important; padding: 12vh 4.5vw; }
-html.static-mode [data-screen-label="Journey"] canvas, html.static-mode [data-screen-label="Journey"] div:has(> [data-rail]), html.static-mode [data-screen-label="Journey"] div:has(> [role="button"] + [role="button"]) { display: none !important; }
+html.static-mode [data-screen-label="Journey"] canvas, html.static-mode [data-screen-label="3D panel"] canvas, html.static-mode [data-screen-label="Journey"] div:has(> [data-rail]), html.static-mode [data-screen-label="Journey"] div:has(> [role="button"] + [role="button"]) { display: none !important; }
 html.static-mode [data-yr] { position: relative !important; top: auto !important; left: auto !important; opacity: 1 !important; transform: none !important; width: auto !important; max-width: 720px; margin-bottom: 64px; pointer-events: auto !important; }
 html.static-mode [data-screen-label="3D panel"] > div { position: relative !important; top: auto !important; height: 40vh !important; }
 html.static-mode div:has(> [data-card]) { flex-wrap: wrap !important; transform: none !important; width: auto !important; }
@@ -55,5 +57,4 @@ html.static-mode div:has(> [data-card]) { flex-wrap: wrap !important; transform:
   [data-yr] p { font-size: 13px !important; line-height: 1.4 !important; }
   [data-yr] > a { display: none !important; }
 }
-.journey-back { position: fixed; left: 16px; bottom: 16px; z-index: 70; background: #0f0e0c; color: #f0efe9 !important; border-radius: 999px; padding: 11px 16px; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.5); }
-.journey-back:hover { background: #2a2824; }
+html.static-mode [data-screen-label="3D panel"] > div { background: #131211 url(/images/hero-still.webp) center / cover no-repeat !important; }

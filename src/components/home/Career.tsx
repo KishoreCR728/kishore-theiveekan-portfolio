@@ -1,4 +1,4 @@
-import { career, teamSystems } from "@/content/home";
+import { career } from "@/content/home";
 
 export default function Career() {
   return (
@@ -8,23 +8,17 @@ export default function Career() {
         <h2 id="exp-title">{career.company}</h2>
         <p className="block-lede">{career.title} · {career.place} · {career.dates}</p>
       </div>
-      <div className="two-col">
-        <div>
-          <p className="body-lg">{career.summary}</p>
+      <div className="career">
+        <p className="body-lg">{career.summary}</p>
+        <div className="career-phases">
           {career.phases.map((ph) => (
             <div key={ph.name} className="phase">
               <h3>{ph.name} <span>{ph.when}</span></h3>
               <ul>{ph.points.map((p) => <li key={p}>{p}</li>)}</ul>
             </div>
           ))}
-          <p className="edu">{career.education}</p>
         </div>
-        <div>
-          <h3 className="sub">Team systems I contributed to</h3>
-          <ul className="rows">
-            {teamSystems.map(([n, d]) => <li key={n}><b>{n}</b><span>{d}</span></li>)}
-          </ul>
-        </div>
+        <p className="edu">{career.education}</p>
       </div>
     </section>
   );

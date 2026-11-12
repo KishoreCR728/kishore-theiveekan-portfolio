@@ -86,12 +86,7 @@ export const contributed = [
   ['Manufacturing execution system', 'Feature work + technical documentation', 'A manufacturing execution system: 616-endpoint NestJS backend, 148-component Angular 19 SSR console with D3 dashboards, barcode labels and CASL permissions. Authored the system documentation.'],
   ['Banking application testing', 'Test automation contributor', 'Wrote automated tests in an existing WebdriverIO + Appium framework and tested banking applications across Android, iOS, web, macOS and Safari.'],
   ['Learning platform', 'Frontend, learner and admin apps', 'Two Angular applications on a shared 191-endpoint API: the student experience and a separately deployed administration console.'],
-  ['Asset management API', 'Backend contributor', 'Containerised NestJS API with RabbitMQ messaging and Swagger documentation.'],
   ['Gold-loan back-office', 'Frontend contributor', 'A 332-component Angular console for an gold-loan lender, organised as 41 lazily-loaded modules.'],
-  ['WhatsApp commerce bot', 'Supporting engineer', 'A NestJS bot putting a WooCommerce/Dokan marketplace inside WhatsApp: search, cart, cash-on-delivery checkout, order history and a quote-request flow.'],
-  ['Workflow, analytics and forms products', 'Feature contributor', 'Approval workflows, a region draw-box selector, a schema-driven form builder and founder-profile screens on a reusable NestJS platform.'],
-  ['Financial consolidation product site', 'Shared build with a teammate', 'A Next.js 16 static marketing site with a real-browser QA harness covering overflow, clipping, errors and behaviour.'],
-  ['Venture firm website', 'Sole developer', 'A static corporate site with regulatory disclosure pages, taken through two VAPT rounds.'],
 ];
 
 export const timeline = [

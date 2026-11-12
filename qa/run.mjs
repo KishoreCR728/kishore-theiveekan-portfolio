@@ -16,14 +16,14 @@ for (const f of ["robots.txt", "sitemap.xml", "llms.txt", "og.png", "Kishore-The
 const server = await serve(root, port);
 const browser = await chromium.launch({ channel: "chrome", args: ["--use-angle=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist", "--enable-unsafe-swiftshader"] });
 // Every page, at every width: loads, no horizontal overflow, no console errors.
-const routes = ["/", "/journey", "/lab", "/writing", "/404", ...slugs.map((s) => `/work/${s}`), ...posts.map((s) => `/writing/${s}`)];
+const routes = ["/", "/lab", "/writing", "/404", ...slugs.map((s) => `/work/${s}`), ...posts.map((s) => `/writing/${s}`)];
 for (const width of [320, 390, 768, 1024, 1440, 1920]) {
   const ctx = await browser.newContext({ viewport: { width, height: 800 } });
   for (const route of routes) {
     const page = await ctx.newPage(); const errs = [];
     page.on("pageerror", (e) => errs.push(e.message)); page.on("console", (m) => { if (m.type() === "error" && !(route === "/404" && /404/.test(m.text()))) errs.push(m.text()); });
     const r = await page.goto(base + route); if (route !== "/404" && !r.ok()) fail(`${route} returned ${r.status()}`);
-    await page.waitForTimeout(route === "/journey" ? 4000 : route === "/" ? 1500 : 500);
+    await page.waitForTimeout(route === "/" ? 4000 : 500);
     const over = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); if (over > 0) fail(`${route} overflows ${over}px at ${width}`);
     errs.forEach((e) => fail(`${route} @${width}: ${e.slice(0, 140)}`)); await page.close();
   }

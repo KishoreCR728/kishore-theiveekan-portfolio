@@ -1,16 +1,28 @@
 "use client";
-/* Scroll, 3D and interaction logic for the portfolio. Ported from the Claude Design prototype. */
+/*
+ * The home page: scroll, 3D and interaction logic, ported from the Claude Design prototype ("Lusion").
+ * Props: `flagships` (the four full case studies, shown first with their checked one-liners)
+ * and `slots` (server-rendered sections placed after Work and after the Journey).
+ */
 import { Component, createRef } from "react";
 import * as portfolio from "../content/portfolio";
 import "@fontsource-variable/dm-sans/opsz.css";
 import "@fontsource/instrument-serif/400.css";
 import "@fontsource/instrument-serif/400-italic.css";
-import "./journey.css";
+import "./lusion.css";
 import "./hover.css";
 import { PageMarkup } from "./Markup";
 
+/** WebGL2 on real hardware. Software renderers draw each frame in hundreds of ms, so they get the static page. */
 function hasWebGL() {
-  try { return !!document.createElement("canvas").getContext("webgl2"); } catch { return false; }
+  try {
+    const gl = document.createElement("canvas").getContext("webgl2");
+    if (!gl) return false;
+    const info = gl.getExtension("WEBGL_debug_renderer_info");
+    const name = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "";
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    return !/swiftshader|llvmpipe|software|basic render/i.test(name);
+  } catch { return false; }
 }
 
 export default class Experience extends Component {
@@ -22,10 +34,10 @@ export default class Experience extends Component {
 
   async componentDidMount() {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce || !hasWebGL()) { this.enableStatic(); }
+    if (document.documentElement.classList.contains('static-mode') || reduce || !hasWebGL()) { this.enableStatic(); }
     this._onKey = e => { if (e.key !== 'Escape') return; if (this.state.caseIdx >= 0) this.closeCase(); else if (this.state.menuOpen) this.setState({ menuOpen: false }); };
     window.addEventListener('keydown', this._onKey);
-    this._onPop = () => { const i = this.state.d.projects.findIndex(p => location.pathname === '/work/' + p.slug); if (i >= 0) this.openCase(i, false); else this.setState({ caseIdx: -1 }); };
+    this._onPop = () => this.setState({ caseIdx: -1 });
     window.addEventListener('popstate', this._onPop);
     const words = ['Curious.', 'Persistent.', 'Practical.', 'Careful.', 'Investigative.'];
     let c = 0;
@@ -398,8 +410,14 @@ export default class Experience extends Component {
 
   renderVals() {
     const s = this.state, d = s.d, W = str => str.split(' ').map(t => ({ t }));
-    const P = d ? d.projects : [], cs0 = P[s.caseIdx >= 0 ? s.caseIdx : 0];
-    const cs = cs0 ? { ...cs0, built: cs0.built.map((t, i) => ({ n: i + 1, t })), results: cs0.results.map(([v, l]) => ({ v, l })), nextName: P[(s.caseIdx + 1) % P.length].name } : {};
+    const F = this.props.flagships || [];
+    const all = d ? d.projects : [];
+    const P = [
+      ...F.map((f) => { const p = all.find((x) => x.slug === f.slug) || {}; return { ...p, slug: f.slug, name: f.status ? `${f.title} (unreleased)` : f.title, short: f.oneLiner, tags: f.tags.join(' • ').toLowerCase(), flagship: true }; }),
+      ...all.filter((p) => !F.some((f) => f.slug === p.slug)),
+    ];
+    const cs0 = P[s.caseIdx >= 0 ? s.caseIdx : 0];
+    const cs = cs0 && cs0.built ? { ...cs0, built: cs0.built.map((t, i) => ({ n: i + 1, t })), results: cs0.results.map(([v, l]) => ({ v, l })), nextName: P[(s.caseIdx + 1) % P.length].name } : {};
     const spans = ['7', '5', '5', '7', '6', '6', '5', '7', '7', '5'], ratios = ['3/2', '4/3', '4/3', '3/2', '4/3', '4/3', '4/3', '3/2', '3/2', '4/3'];
     return {
       loaderOn: s.phase !== 'ready', topT: s.phase === 'exit' ? 'translateY(-101%)' : 'translateY(0)', botT: s.phase === 'exit' ? 'translateY(101%)' : 'translateY(0)', loaderTextO: s.phase === 'exit' ? '0' : '1',
@@ -410,7 +428,9 @@ export default class Experience extends Component {
       glRef: this.R('gl'), trailRef: this.R('trail'), heroSecRef: this.R('heroSec'), heroCapRef: this.R('heroCap'), gridRef: this.R('grid'), caseRef: this.R('case'), caseImgRef: this.R('caseImg'), barRef: this.R('bar'),
       diveSecRef: this.R('diveSec'), diveGlRef: this.R('diveGl'), diveDotsRef: this.R('diveDots'), diveHintRef: this.R('diveHint'), railRef: this.R('rail'), counterRef: this.R('counter'), goOpen: () => this._goCh && this._goCh(0), prevChapter: () => this._goCh && this._goCh((this.J ? this.J.ch : 0) - 1), nextChapter: () => this._goCh && this._goCh((this.J ? this.J.ch : 0) + 1), methSecRef: this.R('methSec'), trackRef: this.R('track'), tiltRef: this.R('tilt'), hazeARef: this.R('hazeA'), hazeBRef: this.R('hazeB'),
       wIntro: W('Frontend engineer. Angular, TypeScript, secure delivery.'), wStatement: W('Built to ship, index and pass review.'), wWork: W('Selected work.'), wStack: W('Tools in production use.'), wLikes: W('Off the clock.'), wContact: W('Start a conversation.'),
-      projects: P.map((p, i) => ({ ...p, href: '/work/' + p.slug, open: e => { if (e && (e.metaKey || e.ctrlKey)) return; if (e) e.preventDefault(); this.openCase(i); }, span: spans[i], ratio: ratios[i], offset: i % 2 ? '10vh' : '0' })),
+      // Cards are plain links to the case-study pages (no in-page takeover).
+      projects: P.map((p, i) => ({ ...p, href: '/work/' + p.slug, num: String(i + 1).padStart(2, '0'), open: undefined, span: spans[i], ratio: ratios[i], offset: i % 2 ? '10vh' : '0' })),
+      slots: this.props.slots,
       contributed: d ? d.contributed.map(([name, share, desc]) => ({ name, share, desc })) : [],
       timeline: d ? d.timeline.map((y, i) => ({ ...y, chips: (y.tags || []).map(t => ({ t })), go: () => this._goCh && this._goCh(i + 1), short: (y.k || '').split('·').pop().trim() })) : [],
       stacks: d ? d.stacks.map(([name, items]) => ({ name, items: items.map(t => ({ t })) })) : [],

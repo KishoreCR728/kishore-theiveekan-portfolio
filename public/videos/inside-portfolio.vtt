@@ -29,30 +29,30 @@ The writing is five real production problems,
 and each one says plainly what was mine and what an AI agent did.
 
 8
-00:00:25.833 --> 00:00:29.386
-The Lab runs live three.js code, not video.
+00:00:25.833 --> 00:00:29.158
+The Lab runs live three.js code, not video,
 
 9
-00:00:29.386 --> 00:00:35.169
-On the home page, phones and reduced motion get a still image instead.
+00:00:29.158 --> 00:00:35.265
+and the 3D on the home page switches off for anyone who prefers reduced motion.
 
 10
-00:00:36.067 --> 00:00:39.557
+00:00:36.167 --> 00:00:39.657
 Every release runs checks in real Chrome:
 
 11
-00:00:39.557 --> 00:00:45.177
+00:00:39.657 --> 00:00:45.277
 every page, six screen widths, no console errors, no broken links.
 
 12
-00:00:45.177 --> 00:00:47.731
+00:00:45.277 --> 00:00:47.831
 Lighthouse runs on every push.
 
 13
-00:00:48.633 --> 00:00:52.546
+00:00:48.733 --> 00:00:52.646
 No cookies, no trackers, six security headers,
 
 14
-00:00:52.546 --> 00:00:55.353
+00:00:52.646 --> 00:00:55.453
 and the code is public on GitHub.
 
