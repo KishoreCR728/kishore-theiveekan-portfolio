@@ -108,7 +108,7 @@ export default class Experience extends Component {
     const canvas = this.R('gl').current, trail = this.R('trail').current, dcv = this.R('diveGl').current; if (!canvas || !dcv) return;
     this._alive = true;
     const rnd = (a, b) => a + Math.random() * (b - a);
-    const palette = [0xf0efe9, 0xf0efe9, 0xf0efe9, 0x1a1816, 0x1a1816, 0x8c8880, 0xe8d5b0, 0xe0562a];
+    const palette = [0xf0efe9, 0xf0efe9, 0xf0efe9, 0x1a1816, 0x1a1816, 0x8c8880, 0xe8d5b0]; // orange is reserved for the four project shapes
     const mat = hex => new THREE.MeshPhysicalMaterial({ color: hex, roughness: .22, metalness: 0, clearcoat: .8, clearcoatRoughness: .15, envMapIntensity: .9 });
     const glass = () => new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .1, transmission: 1, thickness: 1.4, ior: 1.4, envMapIntensity: 1 });
 
@@ -129,6 +129,24 @@ export default class Experience extends Component {
       items.push({ mesh, base, spin: new THREE.Vector3(rnd(-.4, .4), rnd(-.4, .4), rnd(-.2, .2)), ph: rnd(0, 6.283) });
     }
     const tctx = trail.getContext('2d');
+
+    // The four flagship projects as larger shapes. They are placed relative to the camera, so they hold
+    // their places while the other shapes fly past during the push-in. Hover shows the project, click opens it.
+    const F = (this.props.flagships || []).slice(0, 4);
+    const pGeo = [new RoundedBoxGeometry(1.3, 1.3, 1.3, 6, .28), new THREE.SphereGeometry(.85, 48, 48), new THREE.TorusGeometry(.7, .3, 32, 80), new THREE.CapsuleGeometry(.45, 1.15, 10, 28)];
+    const pCol = [0xe0562a, 0xf26b3a, 0xc9461f, 0xff8452];
+    const projects = F.map((f, i) => {
+      const material = new THREE.MeshPhysicalMaterial({ color: pCol[i], roughness: .16, clearcoat: 1, clearcoatRoughness: .06, envMapIntensity: 1.1, emissive: 0xe0562a, emissiveIntensity: 0, fog: false });
+      const mesh = new THREE.Mesh(pGeo[i], material); mesh.userData.i = i; mesh.rotation.set(rnd(0, 6), rnd(0, 6), 0); scene.add(mesh);
+      return { mesh, material, f, hover: 0, ph: i * 1.7 };
+    });
+    const slots = [[-1, .9], [1, .95], [-.92, -.95], [.95, -.9]];
+    const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), pv = new THREE.Vector3(), fwd = new THREE.Vector3();
+    const panel = canvas.parentElement, label = panel.querySelector('[data-hero-label]');
+    this._hoverP = -1; this._linkP = -1;
+    panel.addEventListener('click', e => { if (this._hoverP >= 0 && !e.target.closest('a')) window.location.assign('/work/' + projects[this._hoverP].f.slug); });
+    panel.addEventListener('mouseover', e => { const a = e.target.closest('[data-hero-link]'); this._linkP = a ? projects.findIndex(p => p.f.slug === a.getAttribute('data-hero-link')) : -1; });
+    panel.addEventListener('mouseleave', () => { this._linkP = -1; });
 
     // JOURNEY — Skyline: pastel low-poly city along a winding avenue; districts grow as the camera approaches
     const drend = new THREE.WebGLRenderer({ canvas: dcv, antialias: true, alpha: true, powerPreference: 'high-performance' });
@@ -321,7 +339,13 @@ export default class Experience extends Component {
       if (this._pars) for (const el of this._pars) { const r = el.parentElement.getBoundingClientRect(); if (r.bottom > 0 && r.top < H) el.style.transform = `translateY(${((r.top + r.height / 2 - H / 2) / H) * -9}%)`; }
       if (this._floats) for (const el of this._floats) { const r = el.getBoundingClientRect(); if (r.bottom < -200 || r.top > H + 200) continue; const c = (r.top + r.height / 2 - H / 2) / (H / 2); const a = clamp01(1 - Math.max(0, Math.abs(c) - .35) / .7); el.style.opacity = String(.08 + a * .92); el.style.transform = `translateY(${c * 40}px) scale(${.96 + a * .04})`; }
       if (this._tilts) for (const el of this._tilts) { const r = el.getBoundingClientRect(); if (r.bottom < 0 || r.top > H || r.right < 0 || r.left > innerWidth) continue; const inside = this.m.tx > r.left && this.m.tx < r.right && this.m.ty > r.top && this.m.ty < r.bottom; const dx = inside ? (this.m.tx - (r.left + r.width / 2)) / r.width : 0, dy = inside ? (this.m.ty - (r.top + r.height / 2)) / r.height : 0; el.style.transform = `perspective(1200px) rotateY(${dx * 8}deg) rotateX(${-dy * 8}deg) translateY(${inside ? -6 : 0}px)`; this.animCard(el, inside, t, dt); }
-      const tilt = this.R('tilt').current; if (tilt) { const r = tilt.getBoundingClientRect(); if (r.bottom > 0 && r.top < H) { const dx = (this.m.tx - (r.left + r.width / 2)) / r.width, dy = (this.m.ty - (r.top + r.height / 2)) / r.height; tilt.style.transform = `perspective(1200px) rotateY(${dx * 10}deg) rotateX(${-dy * 10}deg)`; } }
+      // Profile card: tilts gently only while the pointer is over it, and eases back to flat otherwise.
+      const tilt = this.R('tilt').current; if (tilt) { const r = tilt.getBoundingClientRect(); if (r.bottom > 0 && r.top < H) {
+        const inside = this.m.tx >= r.left && this.m.tx <= r.right && this.m.ty >= r.top && this.m.ty <= r.bottom;
+        const tx = inside ? ((this.m.tx - r.left) / r.width - .5) * 12 : 0, ty = inside ? ((this.m.ty - r.top) / r.height - .5) * -12 : 0;
+        this._tilt = this._tilt || { x: 0, y: 0 }; this._tilt.x += (tx - this._tilt.x) * .12; this._tilt.y += (ty - this._tilt.y) * .12;
+        tilt.style.transform = `perspective(1200px) rotateY(${this._tilt.x.toFixed(2)}deg) rotateX(${this._tilt.y.toFixed(2)}deg)`;
+      } }
 
       const m = this.m; m.px = m.x; m.py = m.y; m.x += (m.tx - m.x) * .22; m.y += (m.ty - m.y) * .22;
 
@@ -333,6 +357,38 @@ export default class Experience extends Component {
         group.rotation.y += ((m.nx * .3 + e * 1.6) - group.rotation.y) * .06; group.rotation.x += ((m.ny * .2 - vn * .15) - group.rotation.x) * .06; group.rotation.z += (vn * .12 - group.rotation.z) * .08;
         camera.position.x += (m.nx * .7 - camera.position.x) * .05; camera.position.y += (-m.ny * .5 - camera.position.y) * .05;
         for (const it of items) { it.mesh.position.set(it.base.x * spread + Math.cos(t * .35 + it.ph) * .18, it.base.y * spread + Math.sin(t * .5 + it.ph) * .25 - vn * .6, it.base.z * spread); it.mesh.rotation.x += it.spin.x * dt; it.mesh.rotation.y += (it.spin.y + vn * 1.5) * dt; it.mesh.rotation.z += it.spin.z * dt; }
+        if (projects.length) {
+          const k = camera.position.z / 18, halfH = Math.tan(Math.PI / 12) * 18, halfW = halfH * camera.aspect;
+          const sx = Math.min(halfW * .6, 6.4), sy = halfH * (camera.aspect < 1 ? .5 : .46), size = camera.aspect < 1 ? .62 : 1;
+          const cr = canvas.getBoundingClientRect();
+          const inside = m.tx >= cr.left && m.tx <= cr.right && m.ty >= cr.top && m.ty <= cr.bottom;
+          let hov = -1;
+          if (inside) {
+            ndc.set(((m.tx - cr.left) / cr.width) * 2 - 1, -((m.ty - cr.top) / cr.height) * 2 + 1); ray.setFromCamera(ndc, camera);
+            const hit = ray.intersectObjects(projects.map(p => p.mesh))[0]; if (hit) hov = hit.object.userData.i;
+          }
+          this._hoverP = hov; const show = hov >= 0 ? hov : this._linkP;
+          canvas.style.cursor = hov >= 0 ? 'pointer' : '';
+          camera.getWorldDirection(fwd);
+          projects.forEach((pr, i) => {
+            const [ux, uy] = slots[i];
+            pr.mesh.position.set(camera.position.x + (ux * sx + m.nx * .35 + Math.cos(t * .4 + pr.ph) * .12) * k, camera.position.y + (uy * sy - m.ny * .25 + Math.sin(t * .55 + pr.ph) * .16) * k, camera.position.z - 18 * k);
+            pr.hover += ((i === show ? 1 : 0) - pr.hover) * .15;
+            pr.mesh.scale.setScalar(k * size * (1 + pr.hover * .2));
+            pr.material.emissiveIntensity = pr.hover * .22;
+            pr.mesh.rotation.x += (.18 + pr.hover * .8) * dt; pr.mesh.rotation.y += (.24 + pr.hover * 1.2) * dt;
+          });
+          if (label) {
+            if (show >= 0) {
+              const pr = projects[show]; pv.copy(pr.mesh.position).project(camera);
+              const x = (pv.x * .5 + .5) * cr.width, y = (-pv.y * .5 + .5) * cr.height, left = x > cr.width * .55;
+              label.querySelector('[data-hero-label-name]').textContent = pr.f.title;
+              label.querySelector('[data-hero-label-line]').textContent = pr.f.oneLiner;
+              label.style.transform = `translate(${left ? x - 110 : x + 110}px, ${y}px) translate(${left ? '-100%' : '0'}, -50%)`;
+              label.style.textAlign = left ? 'right' : 'left'; label.style.opacity = '1';
+            } else label.style.opacity = '0';
+          }
+        }
         renderer.render(scene, camera);
         const cap = this.R('heroCap').current; if (cap) { const o = p > .7 ? Math.min(1, (p - .7) / .18) : 0; cap.style.opacity = String(o); cap.style.transform = `scale(${.92 + o * .08})`; }
         tctx.globalCompositeOperation = 'destination-out'; tctx.fillStyle = 'rgba(0,0,0,.08)'; tctx.fillRect(0, 0, trail.width, trail.height); tctx.globalCompositeOperation = 'lighter';
@@ -427,16 +483,14 @@ export default class Experience extends Component {
       caseOpen: s.caseIdx >= 0 && !!d, cs, closeCase: () => this.closeCase(), nextCase: () => this.openCase((s.caseIdx + 1) % P.length),
       glRef: this.R('gl'), trailRef: this.R('trail'), heroSecRef: this.R('heroSec'), heroCapRef: this.R('heroCap'), gridRef: this.R('grid'), caseRef: this.R('case'), caseImgRef: this.R('caseImg'), barRef: this.R('bar'),
       diveSecRef: this.R('diveSec'), diveGlRef: this.R('diveGl'), diveDotsRef: this.R('diveDots'), diveHintRef: this.R('diveHint'), railRef: this.R('rail'), counterRef: this.R('counter'), goOpen: () => this._goCh && this._goCh(0), prevChapter: () => this._goCh && this._goCh((this.J ? this.J.ch : 0) - 1), nextChapter: () => this._goCh && this._goCh((this.J ? this.J.ch : 0) + 1), methSecRef: this.R('methSec'), trackRef: this.R('track'), tiltRef: this.R('tilt'), hazeARef: this.R('hazeA'), hazeBRef: this.R('hazeB'),
-      wIntro: W('Frontend engineer. Angular, TypeScript, secure delivery.'), wStatement: W('Built to ship, index and pass review.'), wWork: W('Selected work.'), wStack: W('Tools in production use.'), wLikes: W('Off the clock.'), wContact: W('Start a conversation.'),
+      wIntro: W('Frontend engineer. Angular, TypeScript, secure delivery.'), wStatement: W('Built to ship, index and pass review.'), wWork: W('Selected work.'), wStack: W('Tools in production use.'), wContact: W('Start a conversation.'),
       // Cards are plain links to the case-study pages (no in-page takeover).
       projects: P.map((p, i) => ({ ...p, href: '/work/' + p.slug, num: String(i + 1).padStart(2, '0'), open: undefined, span: spans[i], ratio: ratios[i], offset: i % 2 ? '10vh' : '0' })),
       slots: this.props.slots,
+      heroProjects: (this.props.flagships || []).map(({ slug, title }) => ({ slug, title })),
       contributed: d ? d.contributed.map(([name, share, desc]) => ({ name, share, desc })) : [],
       timeline: d ? d.timeline.map((y, i) => ({ ...y, chips: (y.tags || []).map(t => ({ t })), go: () => this._goCh && this._goCh(i + 1), short: (y.k || '').split('·').pop().trim() })) : [],
       stacks: d ? d.stacks.map(([name, items]) => ({ name, items: items.map(t => ({ t })) })) : [],
-      method: d ? d.method.map(([name, desc], i) => ({ n: i + 1, name, desc })) : [],
-      traits: d ? d.traits.map(([name, desc]) => ({ name, desc })) : [],
-      interestGroups: d ? [['do', 'What I do'], ['dream', 'What I dream of']].map(([id, label]) => ({ label, items: d.interests.filter(k => k.group === id) })) : [],
     };
   }
 

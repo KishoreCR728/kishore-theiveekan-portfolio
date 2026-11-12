@@ -47,7 +47,7 @@ export const projects = [
     code: 'brain = pick_backend(env)  # anthropic → gemini → ollama\nctx   = vault.search(query) + memory.recent()\nif cmd.is_destructive():\n    confirm_or_abort(cmd)',
     results: [['3', 'model backends'], ['103', 'tools'], ['1,500+', 'automated tests']],
     how: 'The most AI-collaborative project here, by nature. The memory model, safety gates and packaging were the core design decisions.' },
-  { slug: 'finstein-corporate-site', num: '07', name: 'Finstein.ai Corporate Site', short: 'A corporate site kept fast and secure without a framework.', tags: 'html • css • javascript • playwright • gitlab ci', img: '/images/1497366216548-37526070297c.webp', alt: 'Bright modern office interior', size: 's',
+  { slug: 'consulting-corporate-site', num: '07', name: 'Consulting Firm Corporate Site', short: 'A corporate site kept fast and secure without a framework.', tags: 'html • css • javascript • playwright • gitlab ci', img: '/images/1497366216548-37526070297c.webp', alt: 'Bright modern office interior', size: 's',
     role: 'Lead developer since July 2025', own: 'Lead developer', when: 'Jul 2025 – present', stack: 'HTML, CSS, JavaScript, Playwright, GitLab CI, Apache',
     overview: 'Hand-authored pages for a consulting firm: services, cyber advisory, an ERPNext cost calculator, blog and guides, maintained continuously since July 2025.',
     problem: 'Longevity. Frameworks came and went; the site needed to stay fast, secure and editable by whoever was on the team that year.',
@@ -55,7 +55,7 @@ export const projects = [
     code: '# no client build step: commit the minified output\ncat css/*.css | cleancss -o dist/site.min.css\nterser js/app.js -c -m -o dist/site.min.js',
     results: [['100', 'Lighthouse accessibility and SEO'], ['23', 'pages'], ['2025', 'owned continuously since']],
     how: 'Mostly hand work across years; recent SEO and consent iterations used AI tooling for drafts.' },
-  { slug: 'finstein-cyber-website', num: '08', name: 'Finstein Cyber Website', short: '20 pages assembled by a bespoke component build.', tags: 'html • node tooling • nginx • aeo • gitlab ci', img: '/images/1550751827-4bd374c3f58b.webp', alt: 'Padlock over a circuit board', size: 'l',
+  { slug: 'cyber-services-site', num: '08', name: 'Cybersecurity Services Site', short: '20 pages assembled by a bespoke component build.', tags: 'html • node tooling • nginx • aeo • gitlab ci', img: '/images/1550751827-4bd374c3f58b.webp', alt: 'Padlock over a circuit board', size: 'l',
     role: 'Lead author', own: 'Lead author', when: 'Jun 2025 – Oct 2026', stack: 'HTML, CSS, JavaScript, Node build tooling, Nginx, Apache, GitLab CI',
     overview: 'A cybersecurity marketing site built from reusable components by a custom Node build, with generated sitemaps, llms.txt for answer engines and its own committed server configuration.',
     problem: 'Static sites drift when every page is copy-pasted. Components had to be real components, without adopting a framework.',
@@ -104,30 +104,4 @@ export const stacks = [
   ['Delivery', ['GitLab CI', 'GitHub Actions', 'Docker', 'Nginx', 'Apache', 'Vercel', 'Railway', 'AWS Amplify', 'Linux']],
   ['Security', ['VAPT remediation', 'CSP', 'HSTS', 'COOP/COEP', 'CASL RBAC', 'JWT', 'reCAPTCHA v3', 'Gitleaks']],
   ['AI', ['Claude Code', 'Agent skills', 'Anthropic API', 'Gemini', 'Ollama', 'FastAPI', 'Remotion']],
-];
-
-export const method = [
-  ['Observe', 'What is happening, not what the ticket says.'],
-  ['Reproduce', 'A problem that cannot be reproduced twice is not yet understood.'],
-  ['Investigate', 'Logs, headers, network, the diff between UAT and production.'],
-  ['Hypothesise', 'One cause, stated plainly, that would explain everything seen.'],
-  ['Test', 'The smallest change that proves or kills the hypothesis.'],
-  ['Change', 'Carefully. What else could this touch?'],
-  ['Verify', 'In the real environment, then again after retest.'],
-];
-
-export const traits = [
-  ['Curious', 'Understands why something happens, not only that it does.'],
-  ['Persistent', 'Problems that matter to the project get solved, not parked.'],
-  ['Practical', 'The solution has to work in the actual environment.'],
-  ['Careful', 'Production, auth, security, deploys: what could break is considered first.'],
-  ['Investigative', 'Evidence narrows the search. Guessing widens it.'],
-];
-
-export const interests = [
-  { group: 'do', t: 'City Nights', d: 'Most nights after the office, I take my Royal Enfield Electra 350 out into the city with music on. It\'s how I clear my head.', span: '3', ratio: '3/2', images: [{ src: '/images/city-nights.webp', alt: 'Motorcycle rider moving through a city at night' }] },
-  { group: 'do', t: 'Stories and Soundtracks', d: 'Tamil film songs, energetic international tracks, films and anime. Good stories and good music keep me going.', span: '3', ratio: '3/2', images: [{ src: '/images/stories-soundtracks.webp', alt: 'Person in headphones with music flowing through a sunset sky' }] },
-  { group: 'do', t: 'Building With Agents', d: 'After hours, I experiment with AI agents: new features, faster ways of working, stronger foundations. Jarvis, my own assistant, started this way.', span: '6', ratio: '21/9', images: [{ src: '/images/building-with-agents.webp', alt: 'Developer at a desk working with several AI agents' }] },
-  { group: 'dream', t: 'Dream Machines', d: 'A black 1969 Mustang and a silver Continental GT 650. Two designs I want in my garage one day.', span: '6', ratio: '3/2', images: [{ src: '/images/mustang-1969.webp', alt: 'Black 1969 Ford Mustang at sunset' }, { src: '/images/continental-gt.webp', alt: 'Silver Royal Enfield Continental GT 650' }] },
-  { group: 'dream', t: 'The World I Want to See', d: 'I haven\'t seen the mountains or the great lakes yet. Riding through them and exploring the world\'s most beautiful places is what I\'m working toward.', span: '6', ratio: '21/9', images: [{ src: '/images/world-to-see.webp', alt: 'Road curving beside a turquoise lake below snow-capped mountains' }] },
 ];

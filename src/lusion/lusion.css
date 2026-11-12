@@ -58,3 +58,11 @@ html.static-mode div:has(> [data-card]) { flex-wrap: wrap !important; transform:
   [data-yr] > a { display: none !important; }
 }
 html.static-mode [data-screen-label="3D panel"] > div { background: #131211 url(/images/hero-still.webp) center / cover no-repeat !important; }
+@media (max-width: 820px) {
+  [data-hero-hint] { display: none; }
+  [data-hero-foot] { left: 14px !important; right: 14px !important; bottom: 14px !important; }
+  [data-hero-foot] nav a { font-size: 11px !important; padding: 7px 10px !important; }
+}
+[data-hero-foot] nav a:hover { background: #f0efe9 !important; color: #0f0e0c !important; }
+[data-profile-card] { min-height: 640px; width: 100%; box-sizing: border-box; }
+@media (max-width: 820px) { [data-profile-card] { min-height: 0; } [data-profile-card] > div:last-child > div:nth-child(2) { margin-top: 40px !important; } }

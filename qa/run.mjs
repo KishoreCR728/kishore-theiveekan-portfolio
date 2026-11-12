@@ -16,7 +16,7 @@ for (const f of ["robots.txt", "sitemap.xml", "llms.txt", "og.png", "Kishore-The
 const server = await serve(root, port);
 const browser = await chromium.launch({ channel: "chrome", args: ["--use-angle=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist", "--enable-unsafe-swiftshader"] });
 // Every page, at every width: loads, no horizontal overflow, no console errors.
-const routes = ["/", "/lab", "/writing", "/404", ...slugs.map((s) => `/work/${s}`), ...posts.map((s) => `/writing/${s}`)];
+const routes = ["/", "/writing", "/404", ...slugs.map((s) => `/work/${s}`), ...posts.map((s) => `/writing/${s}`)];
 for (const width of [320, 390, 768, 1024, 1440, 1920]) {
   const ctx = await browser.newContext({ viewport: { width, height: 800 } });
   for (const route of routes) {
@@ -31,7 +31,7 @@ for (const width of [320, 390, 768, 1024, 1440, 1920]) {
 }
 // Every link and anchor on every page resolves to a file in out/ (internal) or is a known external scheme.
 const exists = (u) => { let p = decodeURIComponent(u.split(/[?#]/)[0]); if (p.endsWith("/")) p += "index.html"; const f = path.join(root, p); return fs.existsSync(f) && !fs.statSync(f).isDirectory() || fs.existsSync(f + ".html"); };
-for (const f of walk(root).filter((f) => f.endsWith(".html") && !f.includes(`${path.sep}lab${path.sep}demos${path.sep}`))) {
+for (const f of walk(root).filter((f) => f.endsWith(".html"))) {
   const t = fs.readFileSync(f, "utf8"); const ids = new Set([...t.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
   for (const [, href] of t.matchAll(/<a[^>]*\shref="([^"]*)"/g)) {
     if (href === "" || href === "#") fail(`dead link in ${f}`);

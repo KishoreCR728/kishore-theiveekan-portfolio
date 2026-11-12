@@ -508,15 +508,7 @@ export function PageMarkup({ v }) {
                   {"Writing"}
                   <span>{"→"}</span>
                 </a>{" "}
-                <a
-                  href={"#likes"}
-                  className="hc311122"
-                  style={{ display: "flex", justifyContent: "space-between", padding: "12px 16px", borderRadius: "12px", fontSize: "24px" }}
-                  onClick={v.toggleMenu}
-                >
-                  {"Off the clock"}
-                  <span>{"→"}</span>
-                </a>{" "}
+                
                 <a
                   href={"#contact"}
                   className="hc311122"
@@ -751,36 +743,38 @@ export function PageMarkup({ v }) {
                     textWrap: "balance",
                   }}
                 >
-                  {"Every piece "}
-                  <i className="ac">{"finds"}</i>
-                  {" its place."}
+                  {"Four projects. "}
+                  <i className="ac">{"Pick one."}</i>
                 </div>
               </div>
               <div
-                style={{
-                  position: "absolute",
-                  left: "26px",
-                  bottom: "24px",
-                  fontSize: "12px",
-                  letterSpacing: ".08em",
-                  textTransform: "uppercase",
-                  color: "rgba(240,239,233,.7)",
-                }}
+                data-hero-label={"1"}
+                aria-hidden={"true"}
+                style={{ position: "absolute", left: "0", top: "0", pointerEvents: "none", opacity: "0", transition: "opacity .2s", color: "#f0efe9", maxWidth: "300px" }}
               >
-                {"Move · scroll to push in"}
+                <div data-hero-label-name={"1"} style={{ fontSize: "22px", letterSpacing: "-.02em", lineHeight: "1.1" }}></div>
+                <div data-hero-label-line={"1"} style={{ marginTop: "6px", fontSize: "14px", lineHeight: "1.4", color: "#d8d2c6" }}></div>
+                <div style={{ marginTop: "8px", fontSize: "11px", letterSpacing: ".08em", textTransform: "uppercase", color: "#e0562a" }}>{"Click to open →"}</div>
               </div>
               <div
-                style={{
-                  position: "absolute",
-                  right: "26px",
-                  bottom: "24px",
-                  fontSize: "12px",
-                  letterSpacing: ".08em",
-                  textTransform: "uppercase",
-                  color: "rgba(240,239,233,.7)",
-                }}
+                data-hero-foot={"1"}
+                style={{ position: "absolute", left: "26px", right: "26px", bottom: "22px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px", flexWrap: "wrap" }}
               >
-                {"Frontend engineer"}
+                <div data-hero-hint={"1"} style={{ fontSize: "12px", letterSpacing: ".08em", textTransform: "uppercase", color: "rgba(240,239,233,.7)" }}>
+                  {"Move to explore · click an orange shape to open a project"}
+                </div>
+                <nav aria-label={"Case studies"} style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  {(v.heroProjects || []).map((p) => (
+                    <a
+                      key={p.slug}
+                      href={"/work/" + p.slug}
+                      data-hero-link={p.slug}
+                      style={{ fontSize: "12px", letterSpacing: ".06em", textTransform: "uppercase", color: "#f0efe9", border: "1px solid rgba(240,239,233,.3)", borderRadius: "999px", padding: "8px 12px", background: "rgba(19,18,17,.55)" }}
+                    >
+                      {p.title}
+                    </a>
+                  ))}
+                </nav>
               </div>
               <div style={{ position: "absolute", left: "14px", top: "14px", color: "#f0efe9", fontSize: "18px", lineHeight: "1" }}>
                 {"+"}
@@ -885,9 +879,9 @@ export function PageMarkup({ v }) {
             </div>
             <div
               ref={v.tiltRef}
+              data-profile-card={"1"}
               style={{
                 borderRadius: "22px",
-                aspectRatio: "4/5",
                 overflow: "hidden",
                 position: "relative",
                 background: "#131211",
@@ -896,30 +890,41 @@ export function PageMarkup({ v }) {
                 boxShadow: "0 60px 120px -40px rgba(15,14,12,.45)",
               }}
             >
-              <div data-par={"1"} style={{ position: "absolute", inset: "-10% 0" }}>
-                <img
-                  src={"/images/hero-ridge.webp"}
-                  alt={"Mountain ridge at first light"}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
+              <div data-par={"1"} aria-hidden={"true"} style={{ position: "absolute", inset: "-10% -10%", pointerEvents: "none" }}>
+                <div style={{ position: "absolute", width: "70%", height: "55%", right: "-10%", top: "8%", borderRadius: "50%", background: "radial-gradient(circle, rgba(224,86,42,.55), rgba(224,86,42,0) 70%)", filter: "blur(10px)" }}></div>
+                <div style={{ position: "absolute", width: "60%", height: "45%", left: "-8%", bottom: "6%", borderRadius: "50%", background: "radial-gradient(circle, rgba(232,213,176,.28), rgba(232,213,176,0) 70%)", filter: "blur(10px)" }}></div>
               </div>
-              <div
-                style={{
-                  position: "absolute",
-                  left: "22px",
-                  right: "22px",
-                  bottom: "20px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: "12px",
-                  letterSpacing: ".08em",
-                  textTransform: "uppercase",
-                  color: "#f0efe9",
-                  opacity: ".9",
-                }}
-              >
-                <span>{"Based in India"}</span>
-                <span>{"Chennai, IN"}</span>
+              <div style={{ position: "relative", height: "100%", boxSizing: "border-box", padding: "clamp(22px, 2.4vw, 34px)", display: "flex", flexDirection: "column", color: "#f0efe9" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px", letterSpacing: ".08em", textTransform: "uppercase", color: "#b9b4aa" }}>
+                  <span>{"Profile"}</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "#f0efe9" }}>
+                    <i style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#7fd39f", boxShadow: "0 0 0 4px rgba(127,211,159,.18)" }}></i>
+                    {"Open to relocation"}
+                  </span>
+                </div>
+                <div style={{ marginTop: "auto" }}>
+                  <div style={{ fontSize: "clamp(30px, 3vw, 46px)", letterSpacing: "-.035em", lineHeight: "1" }}>{"Kishore Theiveekan"}</div>
+                  <div style={{ fontFamily: "var(--font-serif), Georgia, serif", fontStyle: "italic", fontSize: "clamp(24px, 2.2vw, 34px)", color: "#d8d2c6", marginTop: "6px" }}>{"Frontend Engineer"}</div>
+                </div>
+                <dl style={{ margin: "26px 0 0", display: "grid", gap: "0", fontSize: "15px", lineHeight: "1.4" }}>
+                  {[
+                    ["Experience", "3.5+ years shipping production web apps"],
+                    ["Focus", "Angular · React · TypeScript · three.js"],
+                    ["Also", "Node and NestJS, build pipelines, security headers"],
+                    ["Based in", "Chennai, India (IST, UTC+5:30)"],
+                    ["Open to", "Relocation and remote work worldwide"],
+                    ["Languages", "English, Tamil"],
+                  ].map(([k, val]) => (
+                    <div key={k} style={{ display: "grid", gridTemplateColumns: "96px minmax(0,1fr)", gap: "12px", padding: "10px 0", borderTop: "1px solid rgba(240,239,233,.12)" }}>
+                      <dt style={{ fontSize: "11px", letterSpacing: ".08em", textTransform: "uppercase", color: "#9c978d", paddingTop: "3px" }}>{k}</dt>
+                      <dd style={{ margin: "0" }}>{val}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <div style={{ display: "flex", gap: "8px", marginTop: "18px", flexWrap: "wrap" }}>
+                  <a href={"/Kishore-Theiveekan-CV.pdf"} style={{ background: "#f0efe9", color: "#0f0e0c", borderRadius: "999px", padding: "11px 18px", fontSize: "13px", letterSpacing: ".04em", textTransform: "uppercase" }}>{"Download CV"}</a>
+                  <a href={"mailto:kishore.theiveekan@gmail.com"} style={{ border: "1px solid rgba(240,239,233,.35)", color: "#f0efe9", borderRadius: "999px", padding: "10px 18px", fontSize: "13px", letterSpacing: ".04em", textTransform: "uppercase" }}>{"Email"}</a>
+                </div>
               </div>
             </div>
           </section>
@@ -1653,125 +1658,6 @@ export function PageMarkup({ v }) {
               </div>
             </div>
           </section>
-          <section id={"likes"} data-screen-label={"Off the clock"} style={{ position: "relative", zIndex: "2", padding: "0 4.5vw 20vh" }}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-end",
-                gap: "32px",
-                flexWrap: "wrap",
-                marginBottom: "64px",
-              }}
-            >
-              <h2
-                data-reveal={"1"}
-                style={{
-                  margin: "0",
-                  fontSize: "clamp(44px,6.4vw,96px)",
-                  lineHeight: "1",
-                  letterSpacing: "-.035em",
-                  fontWeight: "400",
-                  maxWidth: "14ch",
-                }}
-              >
-                {v.wLikes.map((w, $index) => (
-                  <Fragment key={$index}>
-                    <span
-                      style={{
-                        display: "inline-block",
-                        overflow: "hidden",
-                        verticalAlign: "bottom",
-                        padding: ".14em .12em .2em",
-                        margin: "-.14em -.12em -.2em .1em",
-                      }}
-                    >
-                      <span
-                        data-w={"1"}
-                        style={{
-                          display: "inline-block",
-                          transform: "translateY(112%)",
-                          transition: "transform 1.2s cubic-bezier(.2,.8,.2,1)",
-                        }}
-                      >
-                        {w.t}
-                      </span>
-                    </span>
-                  </Fragment>
-                ))}
-              </h2>
-              <div style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>
-                {"Outside of work"}
-              </div>
-            </div>
-            <p
-              data-fade={"1"}
-              style={{
-                margin: "0 0 56px",
-                fontSize: "clamp(19px,1.7vw,24px)",
-                lineHeight: "1.45",
-                color: "#4a4740",
-                maxWidth: "62ch",
-                textWrap: "pretty",
-                opacity: "0",
-                transform: "translateY(30px)",
-                transition: "opacity 1s .2s,transform 1.1s .2s cubic-bezier(.2,.8,.2,1)",
-              }}
-            >
-              {
-                "Away from the screen, you'll usually find me riding through the city at night or lost in music. And there is a longer list of machines and places I am still working toward."
-              }
-            </p>
-            {v.interestGroups.map((group) => (
-              <div key={group.label} data-interest-group={"1"} style={{ marginBottom: "96px" }}>
-                <div
-                  style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62", marginBottom: "28px" }}
-                >
-                  {group.label}
-                </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(6,minmax(0,1fr))", gap: "56px 28px", alignItems: "start" }}>
-                  {group.items.map((k) => (
-                    <div key={k.t} data-float={"1"} style={{ gridColumn: `span ${k.span}`, willChange: "transform,opacity" }}>
-                      <div
-                        data-card-images={"1"}
-                        style={{ display: "grid", gridTemplateColumns: `repeat(${k.images.length},minmax(0,1fr))`, gap: "28px" }}
-                      >
-                        {k.images.map((image) => (
-                          <div
-                            key={image.src}
-                            style={{
-                              borderRadius: "18px",
-                              overflow: "hidden",
-                              aspectRatio: k.ratio,
-                              position: "relative",
-                              background: "#131211",
-                            }}
-                          >
-                            <div data-par={"1"} style={{ position: "absolute", inset: "-12% 0" }}>
-                              <img
-                                src={image.src}
-                                alt={image.alt}
-                                loading={"lazy"}
-                                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      <div style={{ padding: "20px 4px 0" }}>
-                        <div
-                          style={{ fontSize: "clamp(24px,2.4vw,36px)", letterSpacing: "-.025em", lineHeight: "1.05", marginBottom: "10px" }}
-                        >
-                          {k.t}
-                        </div>
-                        <div style={{ fontSize: "17px", lineHeight: "1.55", color: "#4a4740", maxWidth: "72ch" }}>{k.d}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </section>
           <section
             id={"contact"}
             data-screen-label={"Contact"}
@@ -1909,8 +1795,6 @@ export function PageMarkup({ v }) {
             <br />
             <span style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>
               {"Work photos: Unsplash license"}
-              <br />
-              {"Off the clock images created with AI"}
             </span>
           </div>
         </footer>

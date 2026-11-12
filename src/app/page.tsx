@@ -3,7 +3,6 @@ import "./home.css";
 import Experience from "@/lusion/Experience";
 import Career from "@/components/home/Career";
 import Writing from "@/components/home/Writing";
-import LabTeaser from "@/components/home/LabTeaser";
 import VideoBlock from "@/components/site/VideoBlock";
 import { allCases } from "@/lib/cases";
 import { articles } from "@/lib/content";
@@ -44,7 +43,6 @@ export default function Home() {
           afterJourney: (
             <div className="lusion-insert wrap home">
               <Writing posts={articles()} />
-              <LabTeaser />
               <section className="block" aria-labelledby="inside-title">
                 <div className="block-head">
                   <p className="label">How this site is built</p>
