@@ -635,7 +635,7 @@ export function PageMarkup({ v }) {
           <section data-screen-label={"Hero"} style={{ position: "relative", zIndex: "2", padding: "150px 4.5vw 0" }}>
             <p style={{ margin: "0 0 22px", fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62", animation: "rise-t 1s both" }}>
               <b style={{ color: "#0f0e0c", fontWeight: "500" }}>{"Kishore Theiveekan"}</b>
-              {" · Frontend Engineer · Chennai, India · open to relocation and remote work"}
+              {" · Frontend Engineer · Angular · React · TypeScript · Chennai, India · open to relocation"}
             </p>
             <div
               style={{
@@ -658,11 +658,11 @@ export function PageMarkup({ v }) {
                   animation: "rise-t 1s .1s both",
                 }}
               >
-                {"Frontend engineering for products that need to be "}
+                {"Frontend engineering for "}
                 <i className="ac">{"fast, secure"}</i>
                 {" and "}
-                <i className="ac">{"well made"}</i>
-                {"."}
+                <i className="ac">{"multilingual"}</i>
+                {" web platforms."}
               </h1>
               <div
                 style={{
@@ -1410,6 +1410,1031 @@ export function PageMarkup({ v }) {
             </div>
           </section>
           {v.slots && v.slots.afterJourney}
+          <section
+            id={"method"}
+            ref={v.methSecRef}
+            data-screen-label={"How I work"}
+            style={{ position: "relative", zIndex: "2", height: "260vh" }}
+          >
+            <div
+              style={{
+                position: "sticky",
+                top: "0",
+                height: "100vh",
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{
+                  padding: "0 4.5vw",
+                  marginBottom: "min(6vh,32px)",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-end",
+                  gap: "32px",
+                  flexWrap: "wrap",
+                }}
+              >
+                <h2
+                  style={{
+                    margin: "0",
+                    fontSize: "clamp(28px,min(5.6vw,7vh),84px)",
+                    lineHeight: "1",
+                    letterSpacing: "-.035em",
+                    fontWeight: "400",
+                    maxWidth: "16ch",
+                  }}
+                >
+                  {"How I work: "}
+                  <i className="ac">{"observe,"}</i>
+                  {" then change carefully."}
+                </h2>
+                <div style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>
+                  {"Scroll · the loop moves sideways"}
+                </div>
+              </div>
+              <div
+                ref={v.trackRef}
+                style={{ display: "flex", gap: "28px", padding: "0 4.5vw", willChange: "transform", width: "max-content" }}
+              >
+                <div
+                  data-tilt={"1"}
+                  data-card={"observe"}
+                  style={{
+                    width: "min(520px,72vw)",
+                    flex: "none",
+                    borderRadius: "22px",
+                    background: "#fff",
+                    padding: "32px 32px 36px",
+                    boxSizing: "border-box",
+                    minHeight: "min(56vh,calc(100vh - 230px))",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    boxShadow: "0 40px 80px -50px rgba(15,14,12,.35)",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "transform .25s",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "13px",
+                      letterSpacing: ".08em",
+                      textTransform: "uppercase",
+                      color: "#6e6a62",
+                    }}
+                  >
+                    <span>{"Step 01"}</span>
+                    <span>{"observe"}</span>
+                  </div>
+                  <div
+                    style={{
+                      position: "relative",
+                      height: "min(200px,24vh)",
+                      margin: "18px 0 8px",
+                      borderRadius: "16px",
+                      background: "#f0efe9",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      data-v={"eye"}
+                      style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        width: "190px",
+                        height: "104px",
+                        margin: "-52px 0 0 -95px",
+                        border: "2px solid #0f0e0c",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <div
+                        data-v={"pupil"}
+                        style={{ width: "46px", height: "46px", borderRadius: "50%", background: "#0f0e0c", position: "relative" }}
+                      >
+                        <i
+                          style={{
+                            position: "absolute",
+                            left: "10px",
+                            top: "9px",
+                            width: "12px",
+                            height: "12px",
+                            borderRadius: "50%",
+                            background: "#f0efe9",
+                          }}
+                        ></i>
+                      </div>
+                    </div>
+                    <div
+                      data-v={"lid"}
+                      style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        width: "196px",
+                        height: "110px",
+                        margin: "-55px 0 0 -98px",
+                        borderRadius: "50%",
+                        background: "#f0efe9",
+                        transform: "scaleY(0)",
+                        transformOrigin: "50% 0",
+                      }}
+                    ></div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "clamp(40px,4.6vw,68px)", lineHeight: ".95", letterSpacing: "-.04em", marginBottom: "16px" }}>
+                      {"Observe"}
+                    </div>
+                    <div style={{ fontSize: "18px", lineHeight: "1.45", color: "#4a4740", maxWidth: "34ch" }}>
+                      {"What is actually happening, not what the ticket says."}
+                    </div>
+                    <p style={{ margin: "12px 0 0", fontSize: "14px", lineHeight: "1.45", color: "#b8431c" }}>
+                      <b style={{ fontWeight: "500" }}>{"Real example: "}</b>
+                      {"Trackers still loaded after “Reject All”, seen in the live site’s requests, not in the ticket."}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  data-tilt={"1"}
+                  data-card={"reproduce"}
+                  style={{
+                    width: "min(520px,72vw)",
+                    flex: "none",
+                    borderRadius: "22px",
+                    background: "#fff",
+                    padding: "32px 32px 36px",
+                    boxSizing: "border-box",
+                    minHeight: "min(56vh,calc(100vh - 230px))",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    boxShadow: "0 40px 80px -50px rgba(15,14,12,.35)",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "transform .25s",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "13px",
+                      letterSpacing: ".08em",
+                      textTransform: "uppercase",
+                      color: "#6e6a62",
+                    }}
+                  >
+                    <span>{"Step 02"}</span>
+                    <span>{"reproduce"}</span>
+                  </div>
+                  <div
+                    style={{
+                      position: "relative",
+                      height: "min(200px,24vh)",
+                      margin: "18px 0 8px",
+                      borderRadius: "16px",
+                      background: "#f0efe9",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      data-v={"a"}
+                      style={{
+                        position: "absolute",
+                        left: "28%",
+                        top: "50%",
+                        width: "70px",
+                        height: "70px",
+                        margin: "-35px",
+                        borderRadius: "18px",
+                        background: "#0f0e0c",
+                      }}
+                    ></div>
+                    <div
+                      data-v={"b"}
+                      style={{
+                        position: "absolute",
+                        left: "72%",
+                        top: "50%",
+                        width: "70px",
+                        height: "70px",
+                        margin: "-35px",
+                        borderRadius: "18px",
+                        border: "2px solid #0f0e0c",
+                      }}
+                    ></div>
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        width: "1px",
+                        height: "120px",
+                        margin: "-60px 0 0",
+                        background: "#d8d5cc",
+                      }}
+                    ></div>
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "16px",
+                        transform: "translateX(-50%)",
+                        fontSize: "11px",
+                        letterSpacing: ".1em",
+                        color: "#6e6a62",
+                      }}
+                    >
+                      {"ONCE · TWICE"}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "clamp(40px,4.6vw,68px)", lineHeight: ".95", letterSpacing: "-.04em", marginBottom: "16px" }}>
+                      {"Reproduce"}
+                    </div>
+                    <div style={{ fontSize: "18px", lineHeight: "1.45", color: "#4a4740", maxWidth: "34ch" }}>
+                      {"If I cannot make it happen twice, I do not understand it yet."}
+                    </div>
+                    <p style={{ margin: "12px 0 0", fontSize: "14px", lineHeight: "1.45", color: "#b8431c" }}>
+                      <b style={{ fontWeight: "500" }}>{"Real example: "}</b>
+                      {"The same 16-row file, uploaded three times, failed 9, then 8, then 9 rows."}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  data-tilt={"1"}
+                  data-card={"investigate"}
+                  style={{
+                    width: "min(520px,72vw)",
+                    flex: "none",
+                    borderRadius: "22px",
+                    background: "#fff",
+                    padding: "32px 32px 36px",
+                    boxSizing: "border-box",
+                    minHeight: "min(56vh,calc(100vh - 230px))",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    boxShadow: "0 40px 80px -50px rgba(15,14,12,.35)",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "transform .25s",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "13px",
+                      letterSpacing: ".08em",
+                      textTransform: "uppercase",
+                      color: "#6e6a62",
+                    }}
+                  >
+                    <span>{"Step 03"}</span>
+                    <span>{"investigate"}</span>
+                  </div>
+                  <div
+                    style={{
+                      position: "relative",
+                      height: "min(200px,24vh)",
+                      margin: "18px 0 8px",
+                      borderRadius: "16px",
+                      background: "#f0efe9",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: "24px",
+                        right: "24px",
+                        bottom: "34px",
+                        height: "110px",
+                        display: "flex",
+                        alignItems: "flex-end",
+                        gap: "10px",
+                      }}
+                    >
+                      <i
+                        data-v={"bar"}
+                        style={{
+                          flex: "1",
+                          height: "40%",
+                          background: "#c9c5ba",
+                          borderRadius: "6px 6px 0 0",
+                          transition: "background .3s,height .3s",
+                        }}
+                      ></i>
+                      <i
+                        data-v={"bar"}
+                        style={{
+                          flex: "1",
+                          height: "70%",
+                          background: "#c9c5ba",
+                          borderRadius: "6px 6px 0 0",
+                          transition: "background .3s,height .3s",
+                        }}
+                      ></i>
+                      <i
+                        data-v={"bar"}
+                        style={{
+                          flex: "1",
+                          height: "55%",
+                          background: "#c9c5ba",
+                          borderRadius: "6px 6px 0 0",
+                          transition: "background .3s,height .3s",
+                        }}
+                      ></i>
+                      <i
+                        data-v={"bar"}
+                        style={{
+                          flex: "1",
+                          height: "90%",
+                          background: "#c9c5ba",
+                          borderRadius: "6px 6px 0 0",
+                          transition: "background .3s,height .3s",
+                        }}
+                      ></i>
+                      <i
+                        data-v={"bar"}
+                        style={{
+                          flex: "1",
+                          height: "48%",
+                          background: "#c9c5ba",
+                          borderRadius: "6px 6px 0 0",
+                          transition: "background .3s,height .3s",
+                        }}
+                      ></i>
+                      <i
+                        data-v={"bar"}
+                        style={{
+                          flex: "1",
+                          height: "78%",
+                          background: "#c9c5ba",
+                          borderRadius: "6px 6px 0 0",
+                          transition: "background .3s,height .3s",
+                        }}
+                      ></i>
+                      <i
+                        data-v={"bar"}
+                        style={{
+                          flex: "1",
+                          height: "62%",
+                          background: "#c9c5ba",
+                          borderRadius: "6px 6px 0 0",
+                          transition: "background .3s,height .3s",
+                        }}
+                      ></i>
+                      <i
+                        data-v={"bar"}
+                        style={{
+                          flex: "1",
+                          height: "84%",
+                          background: "#c9c5ba",
+                          borderRadius: "6px 6px 0 0",
+                          transition: "background .3s,height .3s",
+                        }}
+                      ></i>
+                      <i
+                        data-v={"bar"}
+                        style={{
+                          flex: "1",
+                          height: "50%",
+                          background: "#c9c5ba",
+                          borderRadius: "6px 6px 0 0",
+                          transition: "background .3s,height .3s",
+                        }}
+                      ></i>
+                    </div>
+                    <div
+                      data-v={"lens"}
+                      style={{
+                        position: "absolute",
+                        left: "24px",
+                        top: "22px",
+                        width: "92px",
+                        height: "92px",
+                        border: "2.5px solid #0f0e0c",
+                        borderRadius: "50%",
+                        background: "rgba(255,255,255,.35)",
+                        backdropFilter: "blur(1px)",
+                      }}
+                    >
+                      <i
+                        style={{
+                          position: "absolute",
+                          right: "-26px",
+                          bottom: "-14px",
+                          width: "40px",
+                          height: "6px",
+                          background: "#0f0e0c",
+                          borderRadius: "3px",
+                          transform: "rotate(45deg)",
+                        }}
+                      ></i>
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "clamp(40px,4.6vw,68px)", lineHeight: ".95", letterSpacing: "-.04em", marginBottom: "16px" }}>
+                      {"Investigate"}
+                    </div>
+                    <div style={{ fontSize: "18px", lineHeight: "1.45", color: "#4a4740", maxWidth: "34ch" }}>
+                      {"Logs, headers, network, the diff between UAT and production."}
+                    </div>
+                    <p style={{ margin: "12px 0 0", fontSize: "14px", lineHeight: "1.45", color: "#b8431c" }}>
+                      <b style={{ fontWeight: "500" }}>{"Real example: "}</b>
+                      {"Production served an old build with no security headers; UAT did not."}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  data-tilt={"1"}
+                  data-card={"hypothesise"}
+                  style={{
+                    width: "min(520px,72vw)",
+                    flex: "none",
+                    borderRadius: "22px",
+                    background: "#fff",
+                    padding: "32px 32px 36px",
+                    boxSizing: "border-box",
+                    minHeight: "min(56vh,calc(100vh - 230px))",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    boxShadow: "0 40px 80px -50px rgba(15,14,12,.35)",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "transform .25s",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "13px",
+                      letterSpacing: ".08em",
+                      textTransform: "uppercase",
+                      color: "#6e6a62",
+                    }}
+                  >
+                    <span>{"Step 04"}</span>
+                    <span>{"hypothesise"}</span>
+                  </div>
+                  <div
+                    style={{
+                      position: "relative",
+                      height: "min(200px,24vh)",
+                      margin: "18px 0 8px",
+                      borderRadius: "16px",
+                      background: "#f0efe9",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <i
+                      data-v={"dot"}
+                      style={{
+                        position: "absolute",
+                        width: "16px",
+                        height: "16px",
+                        borderRadius: "50%",
+                        background: "#0f0e0c",
+                        left: "0",
+                        top: "0",
+                      }}
+                    ></i>
+                    <i
+                      data-v={"dot"}
+                      style={{
+                        position: "absolute",
+                        width: "16px",
+                        height: "16px",
+                        borderRadius: "50%",
+                        background: "#0f0e0c",
+                        left: "0",
+                        top: "0",
+                      }}
+                    ></i>
+                    <i
+                      data-v={"dot"}
+                      style={{
+                        position: "absolute",
+                        width: "16px",
+                        height: "16px",
+                        borderRadius: "50%",
+                        background: "#0f0e0c",
+                        left: "0",
+                        top: "0",
+                      }}
+                    ></i>
+                    <i
+                      data-v={"dot"}
+                      style={{
+                        position: "absolute",
+                        width: "16px",
+                        height: "16px",
+                        borderRadius: "50%",
+                        background: "#e0562a",
+                        left: "0",
+                        top: "0",
+                      }}
+                    ></i>
+                    <i
+                      data-v={"dot"}
+                      style={{
+                        position: "absolute",
+                        width: "16px",
+                        height: "16px",
+                        borderRadius: "50%",
+                        background: "#0f0e0c",
+                        left: "0",
+                        top: "0",
+                      }}
+                    ></i>
+                    <i
+                      data-v={"dot"}
+                      style={{
+                        position: "absolute",
+                        width: "16px",
+                        height: "16px",
+                        borderRadius: "50%",
+                        background: "#0f0e0c",
+                        left: "0",
+                        top: "0",
+                      }}
+                    ></i>
+                    <i
+                      data-v={"dot"}
+                      style={{
+                        position: "absolute",
+                        width: "16px",
+                        height: "16px",
+                        borderRadius: "50%",
+                        background: "#0f0e0c",
+                        left: "0",
+                        top: "0",
+                      }}
+                    ></i>
+                    <div
+                      data-v={"line"}
+                      style={{
+                        position: "absolute",
+                        left: "36px",
+                        right: "36px",
+                        top: "50%",
+                        height: "2px",
+                        background: "#0f0e0c",
+                        transform: "scaleX(0)",
+                        transformOrigin: "0 50%",
+                      }}
+                    ></div>
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: "24px",
+                        bottom: "16px",
+                        fontSize: "11px",
+                        letterSpacing: ".1em",
+                        color: "#6e6a62",
+                      }}
+                    >
+                      {"NOISE → ONE LINE"}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "clamp(40px,4.6vw,68px)", lineHeight: ".95", letterSpacing: "-.04em", marginBottom: "16px" }}>
+                      {"Hypothesise"}
+                    </div>
+                    <div style={{ fontSize: "18px", lineHeight: "1.45", color: "#4a4740", maxWidth: "34ch" }}>
+                      {"One cause, stated plainly, that would explain everything seen."}
+                    </div>
+                    <p style={{ margin: "12px 0 0", fontSize: "14px", lineHeight: "1.45", color: "#b8431c" }}>
+                      <b style={{ fontWeight: "500" }}>{"Real example: "}</b>
+                      {"A result that changes on every run is a race, not a missing table."}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  data-tilt={"1"}
+                  data-card={"test"}
+                  style={{
+                    width: "min(520px,72vw)",
+                    flex: "none",
+                    borderRadius: "22px",
+                    background: "#fff",
+                    padding: "32px 32px 36px",
+                    boxSizing: "border-box",
+                    minHeight: "min(56vh,calc(100vh - 230px))",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    boxShadow: "0 40px 80px -50px rgba(15,14,12,.35)",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "transform .25s",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "13px",
+                      letterSpacing: ".08em",
+                      textTransform: "uppercase",
+                      color: "#6e6a62",
+                    }}
+                  >
+                    <span>{"Step 05"}</span>
+                    <span>{"test"}</span>
+                  </div>
+                  <div
+                    style={{
+                      position: "relative",
+                      height: "min(200px,24vh)",
+                      margin: "18px 0 8px",
+                      borderRadius: "16px",
+                      background: "#f0efe9",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      data-v={"track"}
+                      style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        width: "190px",
+                        height: "84px",
+                        margin: "-42px 0 0 -95px",
+                        borderRadius: "42px",
+                        background: "#0f0e0c",
+                        transition: "background .4s",
+                      }}
+                    >
+                      <div
+                        data-v={"knob"}
+                        style={{
+                          position: "absolute",
+                          left: "8px",
+                          top: "8px",
+                          width: "68px",
+                          height: "68px",
+                          borderRadius: "50%",
+                          background: "#f0efe9",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "30px",
+                          transition: "transform .6s cubic-bezier(.2,.8,.2,1)",
+                        }}
+                      >
+                        {"✕"}
+                      </div>
+                    </div>
+                    <div
+                      data-v={"label"}
+                      style={{
+                        position: "absolute",
+                        left: "0",
+                        right: "0",
+                        bottom: "16px",
+                        textAlign: "center",
+                        fontSize: "11px",
+                        letterSpacing: ".1em",
+                        color: "#6e6a62",
+                      }}
+                    >
+                      {"HYPOTHESIS · KILLED"}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "clamp(40px,4.6vw,68px)", lineHeight: ".95", letterSpacing: "-.04em", marginBottom: "16px" }}>
+                      {"Test"}
+                    </div>
+                    <div style={{ fontSize: "18px", lineHeight: "1.45", color: "#4a4740", maxWidth: "34ch" }}>
+                      {"The smallest change that proves or kills the hypothesis."}
+                    </div>
+                    <p style={{ margin: "12px 0 0", fontSize: "14px", lineHeight: "1.45", color: "#b8431c" }}>
+                      <b style={{ fontWeight: "500" }}>{"Real example: "}</b>
+                      {"Clock, key and stored secret checked one at a time: all fine, so the fault was in enrolment."}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  data-tilt={"1"}
+                  data-card={"change"}
+                  style={{
+                    width: "min(520px,72vw)",
+                    flex: "none",
+                    borderRadius: "22px",
+                    background: "#fff",
+                    padding: "32px 32px 36px",
+                    boxSizing: "border-box",
+                    minHeight: "min(56vh,calc(100vh - 230px))",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    boxShadow: "0 40px 80px -50px rgba(15,14,12,.35)",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "transform .25s",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "13px",
+                      letterSpacing: ".08em",
+                      textTransform: "uppercase",
+                      color: "#6e6a62",
+                    }}
+                  >
+                    <span>{"Step 06"}</span>
+                    <span>{"change"}</span>
+                  </div>
+                  <div
+                    style={{
+                      position: "relative",
+                      height: "min(200px,24vh)",
+                      margin: "18px 0 8px",
+                      borderRadius: "16px",
+                      background: "#f0efe9",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: "24px",
+                        right: "24px",
+                        top: "50%",
+                        height: "64px",
+                        marginTop: "-32px",
+                        display: "flex",
+                        gap: "10px",
+                      }}
+                    >
+                      <div style={{ flex: "1", position: "relative", overflow: "hidden", borderRadius: "12px" }}>
+                        <i data-v={"old"} style={{ position: "absolute", inset: "0", background: "#0f0e0c" }}></i>
+                      </div>
+                      <div style={{ flex: "1", position: "relative", overflow: "hidden", borderRadius: "12px" }}>
+                        <i data-v={"old"} style={{ position: "absolute", inset: "0", background: "#0f0e0c" }}></i>
+                      </div>
+                      <div style={{ flex: "1", position: "relative", overflow: "hidden", borderRadius: "12px" }}>
+                        <i data-v={"old"} style={{ position: "absolute", inset: "0", background: "#c9c5ba" }}></i>
+                        <i
+                          data-v={"new"}
+                          style={{ position: "absolute", inset: "0", background: "#e0562a", transform: "translateY(110%)" }}
+                        ></i>
+                      </div>
+                      <div style={{ flex: "1", position: "relative", overflow: "hidden", borderRadius: "12px" }}>
+                        <i data-v={"old"} style={{ position: "absolute", inset: "0", background: "#0f0e0c" }}></i>
+                      </div>
+                      <div style={{ flex: "1", position: "relative", overflow: "hidden", borderRadius: "12px" }}>
+                        <i data-v={"old"} style={{ position: "absolute", inset: "0", background: "#0f0e0c" }}></i>
+                      </div>
+                      <div style={{ flex: "1", position: "relative", overflow: "hidden", borderRadius: "12px" }}>
+                        <i data-v={"old"} style={{ position: "absolute", inset: "0", background: "#0f0e0c" }}></i>
+                      </div>
+                    </div>
+                    <div
+                      data-v={"ripple"}
+                      style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        width: "64px",
+                        height: "64px",
+                        margin: "-32px",
+                        borderRadius: "50%",
+                        border: "1.5px solid #e0562a",
+                        opacity: "0",
+                      }}
+                    ></div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "clamp(40px,4.6vw,68px)", lineHeight: ".95", letterSpacing: "-.04em", marginBottom: "16px" }}>
+                      {"Change"}
+                    </div>
+                    <div style={{ fontSize: "18px", lineHeight: "1.45", color: "#4a4740", maxWidth: "34ch" }}>
+                      {"Carefully. What else could this touch?"}
+                    </div>
+                    <p style={{ margin: "12px 0 0", fontSize: "14px", lineHeight: "1.45", color: "#b8431c" }}>
+                      <b style={{ fontWeight: "500" }}>{"Real example: "}</b>
+                      {"One rule, and nothing else: a failed two-factor check writes nothing."}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  data-tilt={"1"}
+                  data-card={"verify"}
+                  style={{
+                    width: "min(520px,72vw)",
+                    flex: "none",
+                    borderRadius: "22px",
+                    background: "#fff",
+                    padding: "32px 32px 36px",
+                    boxSizing: "border-box",
+                    minHeight: "min(56vh,calc(100vh - 230px))",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    boxShadow: "0 40px 80px -50px rgba(15,14,12,.35)",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "transform .25s",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "13px",
+                      letterSpacing: ".08em",
+                      textTransform: "uppercase",
+                      color: "#6e6a62",
+                    }}
+                  >
+                    <span>{"Step 07"}</span>
+                    <span>{"verify"}</span>
+                  </div>
+                  <div
+                    style={{
+                      position: "relative",
+                      height: "min(200px,24vh)",
+                      margin: "18px 0 8px",
+                      borderRadius: "16px",
+                      background: "#f0efe9",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      data-v={"ring"}
+                      style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        width: "132px",
+                        height: "132px",
+                        margin: "-66px",
+                        borderRadius: "50%",
+                        background: "conic-gradient(#0f0e0c 0%,#dedbd2 0)",
+                      }}
+                    >
+                      <div
+                        data-v={"check"}
+                        style={{
+                          position: "absolute",
+                          inset: "12px",
+                          borderRadius: "50%",
+                          background: "#f0efe9",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "40px",
+                        }}
+                      >
+                        {"✓"}
+                      </div>
+                    </div>
+                    <div
+                      data-v={"pct"}
+                      style={{
+                        position: "absolute",
+                        left: "0",
+                        right: "0",
+                        bottom: "16px",
+                        textAlign: "center",
+                        fontSize: "11px",
+                        letterSpacing: ".1em",
+                        color: "#6e6a62",
+                      }}
+                    >
+                      {"0%"}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "clamp(40px,4.6vw,68px)", lineHeight: ".95", letterSpacing: "-.04em", marginBottom: "16px" }}>
+                      {"Verify"}
+                    </div>
+                    <div style={{ fontSize: "18px", lineHeight: "1.45", color: "#4a4740", maxWidth: "34ch" }}>
+                      {"In the real environment, then again after retest."}
+                    </div>
+                    <p style={{ margin: "12px 0 0", fontSize: "14px", lineHeight: "1.45", color: "#b8431c" }}>
+                      <b style={{ fontWeight: "500" }}>{"Real example: "}</b>
+                      {"Searching the built file proved production was running the old build."}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  data-tilt={"1"}
+                  data-card={"ai"}
+                  style={{
+                    width: "min(520px,72vw)",
+                    flex: "none",
+                    borderRadius: "22px",
+                    background: "#0f0e0c",
+                    color: "#f0efe9",
+                    padding: "32px 32px 36px",
+                    boxSizing: "border-box",
+                    minHeight: "min(56vh,calc(100vh - 230px))",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "transform .25s",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontSize: "13px",
+                      letterSpacing: ".08em",
+                      textTransform: "uppercase",
+                      color: "#9a958b",
+                    }}
+                  >
+                    <span>{"With AI in the loop"}</span>
+                    <span>{"claude code"}</span>
+                  </div>
+                  <div
+                    style={{
+                      position: "relative",
+                      height: "min(200px,24vh)",
+                      margin: "18px 0 8px",
+                      borderRadius: "16px",
+                      background: "#1a1816",
+                      padding: "22px",
+                      font: "13px/1.9 ui-monospace,Menlo,monospace",
+                      color: "#d9d5cc",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div style={{ display: "flex", gap: "6px", marginBottom: "10px" }}>
+                      <i style={{ width: "9px", height: "9px", borderRadius: "50%", background: "#e0562a" }}></i>
+                      <i style={{ width: "9px", height: "9px", borderRadius: "50%", background: "#e8d5b0" }}></i>
+                      <i style={{ width: "9px", height: "9px", borderRadius: "50%", background: "#8c8880" }}></i>
+                    </div>
+                    <div style={{ whiteSpace: "nowrap", overflow: "hidden" }}>
+                      <span style={{ color: "#9a958b" }}>{"$"}</span>
+                      {' claude "scaffold ContactForm + spec"'}
+                      <span
+                        data-v={"l1"}
+                        style={{ display: "inline-block", overflow: "hidden", verticalAlign: "bottom", whiteSpace: "nowrap", width: "0" }}
+                      ></span>
+                    </div>
+                    <div data-v={"l2"} style={{ whiteSpace: "nowrap", overflow: "hidden", width: "0", color: "#e8d5b0" }}>
+                      {"✓ contact-form.component.ts · 142 lines"}
+                    </div>
+                    <div data-v={"l3"} style={{ whiteSpace: "nowrap", overflow: "hidden", width: "0", color: "#e8d5b0" }}>
+                      {"✓ contact-form.component.spec.ts · 6 cases"}
+                    </div>
+                    <div data-v={"l4"} style={{ whiteSpace: "nowrap", overflow: "hidden", width: "0" }}>
+                      <span style={{ color: "#e0562a" }}>{"review:"}</span>
+                      {" rate limit? CSP nonce? "}
+                      <span style={{ color: "#9a958b" }}>{"← me"}</span>
+                      <i
+                        data-v={"cur"}
+                        style={{
+                          display: "inline-block",
+                          width: "8px",
+                          height: "14px",
+                          background: "#f0efe9",
+                          verticalAlign: "-2px",
+                          marginLeft: "2px",
+                        }}
+                      ></i>
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "clamp(28px,3vw,44px)", lineHeight: "1.05", letterSpacing: "-.03em", marginBottom: "16px" }}>
+                      {"Claude Code scaffolds. "}
+                      <i className="ac">{"I decide."}</i>
+                    </div>
+                    <div style={{ fontSize: "17px", lineHeight: "1.5", color: "#b8b3a8" }}>
+                      {
+                        "Components, API wiring and test scaffolds arrive fast. Architecture, security headers, performance budgets and what could break in production stay with me."
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
           <section data-screen-label={"Contributed"} style={{ position: "relative", zIndex: "2", padding: "12vh 4.5vw 18vh" }}>
             <div style={{ display: "grid", gridTemplateColumns: "minmax(0,300px) minmax(0,1fr)", gap: "32px" }}>
               <div>
@@ -1658,6 +2683,7 @@ export function PageMarkup({ v }) {
               </div>
             </div>
           </section>
+          {v.slots && v.slots.beforeContact}
           <section
             id={"contact"}
             data-screen-label={"Contact"}

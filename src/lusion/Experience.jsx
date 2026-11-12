@@ -483,7 +483,7 @@ export default class Experience extends Component {
       caseOpen: s.caseIdx >= 0 && !!d, cs, closeCase: () => this.closeCase(), nextCase: () => this.openCase((s.caseIdx + 1) % P.length),
       glRef: this.R('gl'), trailRef: this.R('trail'), heroSecRef: this.R('heroSec'), heroCapRef: this.R('heroCap'), gridRef: this.R('grid'), caseRef: this.R('case'), caseImgRef: this.R('caseImg'), barRef: this.R('bar'),
       diveSecRef: this.R('diveSec'), diveGlRef: this.R('diveGl'), diveDotsRef: this.R('diveDots'), diveHintRef: this.R('diveHint'), railRef: this.R('rail'), counterRef: this.R('counter'), goOpen: () => this._goCh && this._goCh(0), prevChapter: () => this._goCh && this._goCh((this.J ? this.J.ch : 0) - 1), nextChapter: () => this._goCh && this._goCh((this.J ? this.J.ch : 0) + 1), methSecRef: this.R('methSec'), trackRef: this.R('track'), tiltRef: this.R('tilt'), hazeARef: this.R('hazeA'), hazeBRef: this.R('hazeB'),
-      wIntro: W('Frontend engineer. Angular, TypeScript, secure delivery.'), wStatement: W('Built to ship, index and pass review.'), wWork: W('Selected work.'), wStack: W('Tools in production use.'), wContact: W('Start a conversation.'),
+      wIntro: W('Frontend engineer. Angular, React, TypeScript, secure delivery.'), wStatement: W('Built to ship, index and pass review.'), wWork: W('Selected work.'), wStack: W('Tools in production use.'), wContact: W('Start a conversation.'),
       // Cards are plain links to the case-study pages (no in-page takeover).
       projects: P.map((p, i) => ({ ...p, href: '/work/' + p.slug, num: String(i + 1).padStart(2, '0'), open: undefined, span: spans[i], ratio: ratios[i], offset: i % 2 ? '10vh' : '0' })),
       slots: this.props.slots,

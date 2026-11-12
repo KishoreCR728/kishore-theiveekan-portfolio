@@ -4,6 +4,10 @@ order: 4
 topic: Web security
 date: 2026-11-11
 description: A correct Content-Security-Policy in the repo is not a protected site. Stale hand copies, nginx header inheritance, strict-dynamic, removing unsafe-inline, and a server that bypassed it all.
+problem: A correct security policy in the repo did not protect the live pages.
+found: Checked headers on every response type, not just the home page: scripts and fonts had none.
+fix: Headers generated at build and re-included per nginx block, inline scripts removed, a proxy bypass closed.
+result: All eight headers on every response; the security retest passed.
 ---
 Every guide to security headers ends the same way: add a Content-Security-Policy, HSTS and `X-Content-Type-Options`, check them with a scanner, done.
 

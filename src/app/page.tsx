@@ -3,7 +3,7 @@ import "./home.css";
 import Experience from "@/lusion/Experience";
 import Career from "@/components/home/Career";
 import Writing from "@/components/home/Writing";
-import VideoBlock from "@/components/site/VideoBlock";
+import WorkingWithMe from "@/components/home/WorkingWithMe";
 import { allCases } from "@/lib/cases";
 import { articles } from "@/lib/content";
 import { site } from "@/content/site";
@@ -43,14 +43,11 @@ export default function Home() {
           afterJourney: (
             <div className="lusion-insert wrap home">
               <Writing posts={articles()} />
-              <section className="block" aria-labelledby="inside-title">
-                <div className="block-head">
-                  <p className="label">How this site is built</p>
-                  <h2 id="inside-title">Inside <i className="ac">this portfolio.</i></h2>
-                  <p className="block-lede">A Next.js static export with custom React components, built with Claude Code as a pair. Self-hosted fonts and images, no cookies or trackers, six security headers, and release checks in real Chrome on every page at six widths. <a href={`${site.github}/kishore-theiveekan-portfolio`} target="_blank" rel="noopener noreferrer">Source on GitHub</a>.</p>
-                </div>
-                <div className="inside-video"><VideoBlock id="inside-portfolio" /></div>
-              </section>
+            </div>
+          ),
+          beforeContact: (
+            <div className="lusion-insert wrap home">
+              <WorkingWithMe />
             </div>
           ),
         }}

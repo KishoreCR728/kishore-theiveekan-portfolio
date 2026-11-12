@@ -27,6 +27,7 @@ export type Case = {
   metrics: [string, string][];
   code?: string;
   video?: string;
+  impact: string[];
   body: string;
 };
 
@@ -54,6 +55,7 @@ const fromMarkdown = (): Case[] =>
     }),
     code: meta.code,
     video: meta.video,
+    impact: ["impact1", "impact2", "impact3"].map((k) => meta[k]).filter(Boolean),
     body,
   }));
 
@@ -69,6 +71,7 @@ const fromLegacy = (skip: Set<string>): Case[] =>
       flagship: false,
       facts: [["Role", p.own], ["When", p.when], ["Stack", p.stack]],
       metrics: p.results.map(([v, l]) => [v, l] as [string, string]),
+      impact: [],
       body: [
         "## Overview", p.overview,
         "## The problem", p.problem,

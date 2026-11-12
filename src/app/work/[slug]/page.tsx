@@ -61,6 +61,13 @@ export default async function CasePage({ params }: Props) {
           </ul>
         </header>
 
+        {c.impact.length > 0 && (
+          <section className="impact" aria-label="My impact">
+            <p className="label">My impact</p>
+            <ul>{c.impact.map((t) => <li key={t}>{t}</li>)}</ul>
+          </section>
+        )}
+
         {c.metrics.length > 0 && (
           <section className="metrics" aria-label="Key numbers">
             {c.metrics.map(([v, l]) => (

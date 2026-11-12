@@ -4,6 +4,10 @@ order: 3
 topic: Authentication
 date: 2026-11-11
 description: Every two-factor code came back invalid in production. The server was sound; a failed check still saved a new secret. Then the fix 'deployed' without being in the build.
+problem: A production user got “Invalid” for every two-factor code.
+found: Measured the clock, the key and the stored secret one by one; all were fine, so the fault was in enrolment.
+fix: A failed check now writes nothing; then proved production was running an old build and had it rebuilt.
+result: The user signed in; a test harness with a negative control guards the rule.
 ---
 A user of a finance reporting app couldn't sign in to production. Correct password, then the two-factor screen: every six-digit code from their authenticator app came back **"Invalid Code"**. Every code, every time, with no way out of the screen.
 

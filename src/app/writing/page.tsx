@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import "../pages.css";
+import "../home.css";
+import { CaseFile } from "@/components/home/Writing";
 import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
 import { articles, readingMinutes } from "@/lib/content";
 import { site } from "@/content/site";
 
-const description = "Write-ups of real production problems: what broke, how it was found, and what changed. Client names are hidden.";
+const description = "Production bugs from my work: what broke, how I found the cause, what I changed and what it achieved. Client names are hidden.";
 
 export const metadata: Metadata = {
   title: "Writing",
@@ -22,16 +24,17 @@ export default function WritingIndex() {
       <main id="main" className="wrap">
         <header className="hero-block">
           <div className="label">Writing</div>
-          <h1>Real problems, <i className="ac">solved in production.</i></h1>
-          <p className="lede">{description} Each one was solved with an AI coding agent as a pair, and each says what was mine.</p>
+          <h1>Real bugs, <i className="ac">and how I handled them.</i></h1>
+          <p className="lede">{description} Each was solved with an AI coding agent as a pair, and each says what was mine.</p>
         </header>
-        <ul className="post-list">
+        <ul className="bug-grid writing-index">
           {posts.map((p) => (
             <li key={p.slug}>
-              <a href={`/writing/${p.slug}`}>
+              <a href={`/writing/${p.slug}`} className="bug-card">
+                <span className="bug-topic">{p.meta.topic} · {readingMinutes(p.body)} min read</span>
                 <h2>{p.meta.title}</h2>
-                <p>{p.meta.description}</p>
-                <span className="meta">{p.meta.topic} · {readingMinutes(p.body)} min read</span>
+                <CaseFile meta={p.meta} compact />
+                <span className="bug-more">Read the full story <span aria-hidden="true">→</span></span>
               </a>
             </li>
           ))}

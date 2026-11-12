@@ -16,6 +16,9 @@ video: jarvis
 metric1: 103|tools
 metric2: 1,500+|automated tests
 metric3: 3|model backends, one offline
+impact1: Designed and built it alone, with Claude Code as a pair.
+impact2: Safety as code: blocked commands, confirm-first actions and Trash-only deletes.
+impact3: 1,500+ automated tests; keeps working offline with a local model.
 ---
 
 ## The problem

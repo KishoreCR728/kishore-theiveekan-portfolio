@@ -15,6 +15,9 @@ ai: Built with AI coding tools; I directed the scene design, robot rig and perfo
 metric1: 59|Angular components
 metric2: 1,024|steps in the camera's arc-length table
 metric3: 5|weeks, first commit to last
+impact1: Built it alone in about five weeks: 158 of 162 commits.
+impact2: Kept three.js outside Angular’s change detection and freed GPU memory when you leave.
+impact3: A walking robot and a constant-speed camera, all in code, no downloaded models.
 ---
 
 ## The problem

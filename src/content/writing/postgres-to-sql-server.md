@@ -4,6 +4,10 @@ order: 2
 topic: Data and performance
 date: 2026-11-11
 description: A finance app moved from PostgreSQL to SQL Server, and real client files broke it: a 2,100-parameter ceiling, a race on one connection, a ten-second browser freeze and 33 blank export columns.
+problem: After a move from PostgreSQL to SQL Server, real client files failed to upload and Download froze the browser.
+found: Reproduced each report on a restored copy and measured: a 2,100-parameter limit, a race on one connection, a 10-second freeze.
+fix: Batches sized from the driver’s limit, writes one after another, the export built on the server, column names fixed.
+result: Files are saved whole or not at all; Download sends a 3.9 MB file instead of 43 MB of JSON.
 ---
 A finance reporting app (Angular front end, NestJS and TypeORM back end) had been moved from PostgreSQL to SQL Server. The code compiled and the screens opened, but no transaction file had ever loaded successfully. When the client started uploading their real Excel files, the app failed in ways no test had shown.
 

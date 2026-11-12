@@ -4,6 +4,10 @@ order: 1
 topic: Privacy and consent
 date: 2026-11-11
 description: A cookie banner's own start-up order let analytics and sales trackers run before consent and after Reject All. Finding the real cause, a fix that fails closed, and the black videos that followed.
+problem: Analytics and sales trackers ran before consent, and again after “Reject All”.
+found: Tested the client’s load-order theory first: our script already loaded first, so the gap had to be timing.
+fix: Hold known trackers and tell Google “denied” the moment the script runs, configure afterwards, and fail closed.
+result: Trackers wait for a choice; a slow-network test with 24 checks guards it.
 ---
 A visitor opened a client's website, clicked **Reject All** on the cookie banner, and the analytics and sales-tracking scripts loaded anyway. The banner was ours. In Europe that is not a cosmetic bug: under EU privacy law (the ePrivacy rules, with GDPR-standard consent), a tracker that runs before consent, or after a refusal, is the exact thing a consent banner exists to prevent.
 

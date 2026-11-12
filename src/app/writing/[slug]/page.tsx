@@ -6,6 +6,8 @@ import { articles, formatMonth, readingMinutes } from "@/lib/content";
 import { renderMarkdown } from "@/lib/markdown";
 import { site } from "@/content/site";
 import VideoBlock from "@/components/site/VideoBlock";
+import { CaseFile } from "@/components/home/Writing";
+import "../../home.css";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -57,6 +59,10 @@ export default async function ArticlePage({ params }: Props) {
             <p className="lede">{a.meta.description}</p>
             <p className="byline">{site.name} · {formatMonth(a.meta.date)} · {readingMinutes(a.body)} min read</p>
           </header>
+          <section className="at-a-glance" aria-label="At a glance">
+            <p className="label">At a glance</p>
+            <CaseFile meta={a.meta} />
+          </section>
           <article className="prose">{a.meta.video && <VideoBlock id={a.meta.video} />}{nodes}</article>
           <aside className="author-card" aria-label="About the author">
             <p><b>{site.name}</b> · Frontend engineer in Chennai, open to relocation and remote work.</p>

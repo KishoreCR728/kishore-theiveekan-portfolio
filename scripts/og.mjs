@@ -16,7 +16,7 @@ const cards = [
   ...read("work").map(({ slug, meta }) => ({ file: `work-${slug}.png`, label: "Case study", title: meta.title, sub: meta.oneLiner })),
   ...read("writing").map(({ slug, meta }) => ({ file: `writing-${slug}.png`, label: meta.topic ? `Writing · ${meta.topic}` : "Writing", title: meta.title, sub: "" })),
   { file: "../og.png", label: "Chennai, India · open to relocation", title: "Kishore Theiveekan", sub: "Frontend engineer. I build web products that have to be fast, secure and well made, and I stay with them all the way to production." },
-  { file: "writing.png", label: "Writing", title: "Real problems, solved in production.", sub: "Write-ups of production bugs: what broke, how it was found, and what changed." },
+  { file: "writing.png", label: "Field notes", title: "Real bugs, and how I handled them.", sub: "What broke, how I found the cause, what I changed and what it achieved." },
 ];
 
 const html = (c) => `<!doctype html><html><head><style>
