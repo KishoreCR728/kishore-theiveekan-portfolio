@@ -1,0 +1,46 @@
+WEBVTT
+
+1
+00:00:00.367 --> 00:00:02.841
+The cookie banner said Reject All.
+
+2
+00:00:02.841 --> 00:00:04.807
+The trackers loaded anyway.
+
+3
+00:00:05.867 --> 00:00:10.045
+Analytics and sales trackers ran before consent,
+
+4
+00:00:10.045 --> 00:00:12.395
+and again after Reject All.
+
+5
+00:00:13.300 --> 00:00:15.508
+The client blamed load order.
+
+6
+00:00:15.508 --> 00:00:17.031
+I tested that first:
+
+7
+00:00:17.031 --> 00:00:21.676
+our script already loaded first, so the gap had to be timing.
+
+8
+00:00:22.567 --> 00:00:27.743
+Now the script holds known trackers and tells Google denied the moment it runs,
+
+9
+00:00:27.743 --> 00:00:30.823
+and it fails closed if its settings can't load.
+
+10
+00:00:31.733 --> 00:00:33.555
+Trackers wait for a choice,
+
+11
+00:00:33.555 --> 00:00:37.469
+and a slow-network test with twenty-four checks guards it.
+

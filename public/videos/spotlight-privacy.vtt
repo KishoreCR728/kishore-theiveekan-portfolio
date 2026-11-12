@@ -1,0 +1,50 @@
+WEBVTT
+
+1
+00:00:00.367 --> 00:00:04.746
+A privacy advisory site in eighteen languages and Hinglish,
+
+2
+00:00:04.746 --> 00:00:09.943
+about five hundred and sixteen pages, that I have led since July 2026.
+
+3
+00:00:10.833 --> 00:00:14.488
+Every page is prerendered in a real browser,
+
+4
+00:00:14.488 --> 00:00:19.305
+so crawlers and AI tools read real text, not an empty app.
+
+5
+00:00:20.200 --> 00:00:22.562
+The build is a chain of gates:
+
+6
+00:00:22.562 --> 00:00:27.757
+locale parity, lint, types, build, prerender and an SEO validator.
+
+7
+00:00:27.757 --> 00:00:30.040
+Any failure stops the deploy.
+
+8
+00:00:30.933 --> 00:00:33.846
+When my own fallback once shipped empty pages,
+
+9
+00:00:33.846 --> 00:00:36.885
+I owned it and made the build strict by default.
+
+10
+00:00:37.800 --> 00:00:45.611
+On mobile, the largest content now appears in under four hundred milliseconds instead of about eight hundred and fifty,
+
+11
+00:00:45.611 --> 00:00:47.712
+with ninety-seven on Lighthouse.
+
+12
+00:00:48.600 --> 00:00:50.808
+The full case study is on my site.
+

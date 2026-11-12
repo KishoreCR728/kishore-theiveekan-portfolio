@@ -8,6 +8,7 @@ problem: After a move from PostgreSQL to SQL Server, real client files failed to
 found: Reproduced each report on a restored copy and measured: a 2,100-parameter limit, a race on one connection, a 10-second freeze.
 fix: Batches sized from the driver’s limit, writes one after another, the export built on the server, column names fixed.
 result: Files are saved whole or not at all; Download sends a 3.9 MB file instead of 43 MB of JSON.
+video: short-sql-server
 ---
 A finance reporting app (Angular front end, NestJS and TypeORM back end) had been moved from PostgreSQL to SQL Server. The code compiled and the screens opened, but no transaction file had ever loaded successfully. When the client started uploading their real Excel files, the app failed in ways no test had shown.
 

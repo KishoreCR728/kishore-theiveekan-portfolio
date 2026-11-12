@@ -1,0 +1,42 @@
+WEBVTT
+
+1
+00:00:00.367 --> 00:00:04.447
+Same app, new database, and real files broke it.
+
+2
+00:00:05.867 --> 00:00:09.360
+After a move from PostgreSQL to SQL Server,
+
+3
+00:00:09.360 --> 00:00:13.667
+client uploads failed and Download froze the browser.
+
+4
+00:00:14.567 --> 00:00:18.846
+I reproduced each report on a restored copy and measured:
+
+5
+00:00:18.846 --> 00:00:21.925
+a limit of twenty-one hundred parameters,
+
+6
+00:00:21.925 --> 00:00:25.679
+a race on one connection, and a ten-second freeze.
+
+7
+00:00:26.567 --> 00:00:29.174
+Batches sized from the driver's limit,
+
+8
+00:00:29.174 --> 00:00:33.359
+writes one after another, and the export built on the server.
+
+9
+00:00:34.267 --> 00:00:36.899
+Files are saved whole or not at all,
+
+10
+00:00:36.899 --> 00:00:43.555
+and Download sends a file of under four megabytes instead of forty-three megabytes of data.
+

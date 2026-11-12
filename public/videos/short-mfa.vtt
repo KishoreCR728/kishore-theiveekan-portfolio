@@ -1,0 +1,46 @@
+WEBVTT
+
+1
+00:00:00.367 --> 00:00:03.463
+Every two-factor code came back invalid.
+
+2
+00:00:05.867 --> 00:00:08.567
+A user was locked out of production:
+
+3
+00:00:08.567 --> 00:00:11.867
+the right password, and every code rejected.
+
+4
+00:00:12.767 --> 00:00:17.250
+We checked the clock, the key and the stored secret one by one.
+
+5
+00:00:17.250 --> 00:00:20.096
+All fine, so the fault was in enrolment:
+
+6
+00:00:20.096 --> 00:00:22.943
+a failed check still saved a new secret.
+
+7
+00:00:23.833 --> 00:00:25.807
+Now a failed check writes nothing.
+
+8
+00:00:25.807 --> 00:00:30.276
+Then a search of the built file showed production was still on the old build,
+
+9
+00:00:30.276 --> 00:00:31.321
+so it was rebuilt.
+
+10
+00:00:32.233 --> 00:00:33.438
+The user signed in,
+
+11
+00:00:33.438 --> 00:00:37.177
+and a test harness with a negative control guards the rule.
+

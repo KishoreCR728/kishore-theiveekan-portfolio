@@ -1,0 +1,34 @@
+WEBVTT
+
+1
+00:00:00.367 --> 00:00:03.178
+The security policy was right in the repo,
+
+2
+00:00:03.178 --> 00:00:05.119
+and missing on the live site.
+
+3
+00:00:06.033 --> 00:00:11.169
+A correct Content Security Policy did not protect the live pages.
+
+4
+00:00:12.067 --> 00:00:16.448
+I checked the headers on every response type, not just the home page.
+
+5
+00:00:16.448 --> 00:00:18.163
+Scripts and fonts had none.
+
+6
+00:00:19.067 --> 00:00:23.756
+Headers generated at build time and included in every server block,
+
+7
+00:00:23.756 --> 00:00:28.235
+inline scripts removed, and a proxy that bypassed it all closed.
+
+8
+00:00:29.133 --> 00:00:34.149
+All eight headers on every response, and the security retest passed.
+

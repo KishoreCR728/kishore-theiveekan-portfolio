@@ -18,6 +18,7 @@ metric3: 5|weeks, first commit to last
 impact1: Built it alone in about five weeks: 158 of 162 commits.
 impact2: Kept three.js outside Angular’s change detection and freed GPU memory when you leave.
 impact3: A walking robot and a constant-speed camera, all in code, no downloaded models.
+video: spotlight-mes
 ---
 
 ## The problem

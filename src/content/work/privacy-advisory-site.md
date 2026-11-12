@@ -15,7 +15,7 @@ metric1: 97|mobile Lighthouse, live
 metric2: 851 → 387 ms|mobile LCP
 metric3: 6|blocking build steps
 article: blank-page-build-gate
-video: build-gate
+video: spotlight-privacy
 impact1: Led it from July 2026: 330 of 388 commits.
 impact2: My own fallback once shipped blank pages; I owned it and built the strict gate that stops it.
 impact3: Mobile LCP from about 850 ms to under 390 ms; 97 mobile Lighthouse.

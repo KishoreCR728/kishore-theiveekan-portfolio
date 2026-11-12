@@ -1,0 +1,62 @@
+WEBVTT
+
+1
+00:00:00.367 --> 00:00:01.801
+ERP Product Platform:
+
+2
+00:00:01.801 --> 00:00:04.055
+a marketing site of a hundred and
+
+3
+00:00:04.055 --> 00:00:06.719
+twenty-one pages for a product company.
+
+4
+00:00:06.719 --> 00:00:09.247
+I led it from architecture to deploy.
+
+5
+00:00:10.133 --> 00:00:13.854
+Content lives in a hundred and thirty-eight JSON files,
+
+6
+00:00:13.854 --> 00:00:17.237
+so adding a page never means changing a component.
+
+7
+00:00:18.133 --> 00:00:21.157
+Every build runs a chain of checks,
+
+8
+00:00:21.157 --> 00:00:25.477
+and an SEO lint stops any weak page from shipping.
+
+9
+00:00:26.367 --> 00:00:29.485
+In production the security headers were missing,
+
+10
+00:00:29.485 --> 00:00:33.124
+because the server that served the pages never ran Node.
+
+11
+00:00:33.124 --> 00:00:36.177
+I moved them into the Apache and Nginx configs,
+
+12
+00:00:36.177 --> 00:00:38.127
+and proved each one with curl.
+
+13
+00:00:39.033 --> 00:00:42.545
+Production security findings went from ten to zero,
+
+14
+00:00:42.545 --> 00:00:47.985
+and the SVG assets shrank from a hundred and forty-six megabytes to under nine.
+
+15
+00:00:48.900 --> 00:00:51.108
+The full case study is on my site.
+

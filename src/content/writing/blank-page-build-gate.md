@@ -3,7 +3,7 @@ title: Our build said success. The crawlers saw a blank page.
 order: 5
 topic: Build and release
 date: 2026-11-11
-video: build-gate
+video: short-blank-page
 description: A prerender fallback I designed shipped hundreds of empty pages to crawlers for up to two weeks while the build stayed green. How it was found, and the build gate that replaced it.
 problem: Hundreds of pages were empty to crawlers while the build stayed green.
 found: An outside audit flagged it; a 30-second curl check showed 0 characters in production and 15,147 locally.

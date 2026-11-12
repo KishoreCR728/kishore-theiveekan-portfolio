@@ -17,6 +17,7 @@ metric3: 146 → 8.8 MB|SVG assets
 impact1: Led it end to end: 430 of 462 commits, from architecture to deploy.
 impact2: Made the build refuse weak pages: an SEO lint gates every release.
 impact3: Took production security findings from 10 to 0, and proved the headers with curl.
+video: spotlight-erp
 ---
 
 ## The problem

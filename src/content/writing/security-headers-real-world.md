@@ -8,6 +8,7 @@ problem: A correct security policy in the repo did not protect the live pages.
 found: Checked headers on every response type, not just the home page: scripts and fonts had none.
 fix: Headers generated at build and re-included per nginx block, inline scripts removed, a proxy bypass closed.
 result: All eight headers on every response; the security retest passed.
+video: short-headers
 ---
 Every guide to security headers ends the same way: add a Content-Security-Policy, HSTS and `X-Content-Type-Options`, check them with a scanner, done.
 

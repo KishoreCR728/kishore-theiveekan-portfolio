@@ -1,0 +1,62 @@
+WEBVTT
+
+1
+00:00:00.367 --> 00:00:04.317
+An unreleased concept site for manufacturing software:
+
+2
+00:00:04.317 --> 00:00:08.268
+scroll through a 3D factory and watch it come to life.
+
+3
+00:00:08.268 --> 00:00:10.975
+I built it alone in about five weeks.
+
+4
+00:00:11.867 --> 00:00:14.587
+The 3D world is a plain TypeScript class.
+
+5
+00:00:14.587 --> 00:00:17.109
+Angular only starts it in the browser,
+
+6
+00:00:17.109 --> 00:00:19.763
+and cleans everything up when you leave.
+
+7
+00:00:20.667 --> 00:00:24.125
+The camera follows a curved path at a steady speed,
+
+8
+00:00:24.125 --> 00:00:27.651
+using a table of one thousand and twenty-four steps.
+
+9
+00:00:28.567 --> 00:00:31.398
+The robot is built entirely in code:
+
+10
+00:00:31.398 --> 00:00:33.521
+named joints, a walk cycle,
+
+11
+00:00:33.521 --> 00:00:37.375
+and poses like pulling a lever or carrying boxes.
+
+12
+00:00:38.267 --> 00:00:43.173
+Switching lights on and off caused stalls of up to two hundred milliseconds,
+
+13
+00:00:43.173 --> 00:00:46.595
+so the lights now stay in the scene and fade instead.
+
+14
+00:00:47.500 --> 00:00:51.100
+It was never released, and the case study says so.
+
+15
+00:00:51.100 --> 00:00:53.044
+The details are on my site.
+
