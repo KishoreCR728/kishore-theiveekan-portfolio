@@ -761,7 +761,7 @@ export function PageMarkup({ v }) {
                 style={{ position: "absolute", left: "26px", right: "26px", bottom: "22px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px", flexWrap: "wrap" }}
               >
                 <div data-hero-hint={"1"} style={{ fontSize: "12px", letterSpacing: ".08em", textTransform: "uppercase", color: "rgba(240,239,233,.7)" }}>
-                  {"Move to explore · click an orange shape to open a project"}
+                  {"Move to explore · click a project to open it"}
                 </div>
                 <nav aria-label={"Case studies"} style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                   {(v.heroProjects || []).map((p) => (
