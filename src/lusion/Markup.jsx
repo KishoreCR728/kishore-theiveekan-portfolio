@@ -861,7 +861,7 @@ export function PageMarkup({ v }) {
                 }}
               >
                 {
-                  "Kishore Theiveekan is a frontend engineer based in Chennai, open to relocation and remote work worldwide, with more than three and a half years at Finstein building corporate sites, product platforms, a manufacturing execution console and automated testing for banking applications."
+                  "Kishore Theiveekan is a frontend engineer based in Chennai, open to relocation worldwide, with more than three and a half years at Finstein building corporate sites, product platforms, a manufacturing execution console and automated testing for banking applications."
                 }
               </p>
               <p
@@ -916,7 +916,7 @@ export function PageMarkup({ v }) {
                     ["Focus", "Angular · React · TypeScript · three.js"],
                     ["Also", "Node and NestJS, build pipelines, security headers"],
                     ["Based in", "Chennai, India (IST, UTC+5:30)"],
-                    ["Open to", "Relocation and remote work worldwide"],
+                    ["Open to", "Relocation worldwide"],
                     ["Languages", "English, Tamil"],
                   ].map(([k, val]) => (
                     <div key={k} style={{ display: "grid", gridTemplateColumns: "96px minmax(0,1fr)", gap: "12px", padding: "10px 0", borderTop: "1px solid rgba(240,239,233,.12)" }}>
@@ -2803,7 +2803,7 @@ export function PageMarkup({ v }) {
             <div style={{ fontWeight: "500", color: "#0f0e0c", marginBottom: "6px" }}>{"Kishore Theiveekan"}</div>
             {"Based in Chennai, India"}
             <br />
-            {"Open to relocation and remote work worldwide"}
+            {"Open to relocation worldwide"}
           </div>
           <div>
             <div style={{ fontWeight: "500", color: "#0f0e0c", marginBottom: "6px" }}>{"Elsewhere"}</div>

@@ -36,7 +36,7 @@ const promises: { title: string; text: string; proof: string; href: string }[] =
 
 const facts: [string, string][] = [
   ["Based in", "Chennai, India · IST (UTC+5:30)"],
-  ["Open to", "Relocation or remote work"],
+  ["Open to", "Relocation worldwide"],
   ["Works in", "English, written and spoken"],
   ["Stack", "Angular, React, Next.js, TypeScript"],
 ];
