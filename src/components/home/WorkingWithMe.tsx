@@ -35,8 +35,11 @@ const promises: { title: string; text: string; proof: string; href: string }[] =
 ];
 
 const facts: [string, string][] = [
+  ["Role", "Frontend engineer · 3.5+ years"],
   ["Based in", "Chennai, India · IST (UTC+5:30)"],
-  ["Open to", "Relocation worldwide"],
+  ["Open to", "Relocation"],
+  ["Visa", "Needs a work visa"],
+  ["Notice", "1 month (flexible)"],
   ["Works in", "English, written and spoken"],
   ["Stack", "Angular, React, Next.js, TypeScript"],
 ];

@@ -6,9 +6,7 @@
  */
 import { Component, createRef } from "react";
 import * as portfolio from "../content/portfolio";
-import "@fontsource-variable/dm-sans/opsz.css";
-import "@fontsource/instrument-serif/400.css";
-import "@fontsource/instrument-serif/400-italic.css";
+import "@fontsource/instrument-serif/400.css"; // only for the city chapter signs drawn on canvas
 import "./lusion.css";
 import "./hover.css";
 import { PageMarkup } from "./Markup";
@@ -122,8 +120,9 @@ export default class Experience extends Component {
     const canvas = this.R('gl').current, trail = this.R('trail').current, dcv = this.R('diveGl').current; if (!canvas || !dcv) return;
     this._alive = true;
     const rnd = (a, b) => a + Math.random() * (b - a);
-    const palette = [0xf0efe9, 0xf0efe9, 0xf0efe9, 0x1a1816, 0x1a1816, 0x8c8880, 0xe8d5b0]; // orange is reserved for the four project shapes
-    const mat = hex => new THREE.MeshPhysicalMaterial({ color: hex, roughness: .22, metalness: 0, clearcoat: .8, clearcoatRoughness: .15, envMapIntensity: .9 });
+    const FF = getComputedStyle(document.body).fontFamily; // the self-hosted DM Sans from next/font
+    const palette = [0xf0efe9, 0xf0efe9, 0xf0efe9, 0x1a1816, 0x1a1816, 0x8c8880, 0xe8d5b0, 0xe0562a]; // a few orange shapes; all of them glow orange when a project card is hovered
+    const mat = hex => new THREE.MeshPhysicalMaterial({ color: hex, roughness: .22, metalness: 0, clearcoat: .8, clearcoatRoughness: .15, envMapIntensity: .9, emissive: 0xe0562a, emissiveIntensity: 0 });
     const glass = () => new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .1, transmission: 1, thickness: 1.4, ior: 1.4, envMapIntensity: 1 });
 
     // HERO
@@ -144,23 +143,13 @@ export default class Experience extends Component {
     }
     const tctx = trail.getContext('2d');
 
-    // The four flagship projects as larger shapes. They are placed relative to the camera, so they hold
-    // their places while the other shapes fly past during the push-in. Hover shows the project, click opens it.
-    const F = (this.props.flagships || []).slice(0, 4);
-    const pGeo = [new RoundedBoxGeometry(1.3, 1.3, 1.3, 6, .28), new THREE.SphereGeometry(.85, 48, 48), new THREE.TorusGeometry(.7, .3, 32, 80), new THREE.CapsuleGeometry(.45, 1.15, 10, 28)];
-    const pCol = [0xe0562a, 0xf26b3a, 0xc9461f, 0xff8452];
-    const projects = F.map((f, i) => {
-      const material = new THREE.MeshPhysicalMaterial({ color: pCol[i], roughness: .16, clearcoat: 1, clearcoatRoughness: .06, envMapIntensity: 1.1, emissive: 0xe0562a, emissiveIntensity: 0, fog: false });
-      const mesh = new THREE.Mesh(pGeo[i], material); mesh.userData.i = i; mesh.rotation.set(rnd(0, 6), rnd(0, 6), 0); scene.add(mesh);
-      return { mesh, material, f, hover: 0, ph: i * 1.7 };
-    });
-    const slots = [[-1, .9], [1, .95], [-.92, -.95], [.95, -.9]];
-    const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), pv = new THREE.Vector3(), fwd = new THREE.Vector3();
-    const panel = canvas.parentElement, label = panel.querySelector('[data-hero-label]');
-    this._hoverP = -1; this._linkP = -1;
-    panel.addEventListener('click', e => { if (this._hoverP >= 0 && !e.target.closest('a')) window.location.assign('/work/' + projects[this._hoverP].f.slug); });
-    panel.addEventListener('mouseover', e => { const a = e.target.closest('[data-hero-link]'); this._linkP = a ? projects.findIndex(p => p.f.slug === a.getAttribute('data-hero-link')) : -1; });
-    panel.addEventListener('mouseleave', () => { this._linkP = -1; });
+    // The four flagship projects are HTML cards over the canvas (readable, crawlable, keyboard reachable).
+    // Hovering or focusing a card pulls the shapes toward it and makes them glow orange.
+    const panel = canvas.parentElement, cards = [...panel.querySelectorAll('[data-hero-card]')];
+    const pull = { i: -1, amt: 0, world: new THREE.Vector3(), local: new THREE.Vector3() }, ndc = new THREE.Vector2(), ray = new THREE.Raycaster(), zPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    const setPull = i => { pull.i = i; };
+    { const strip = panel.querySelector('[data-hero-cards]'); let st = 0; if (strip) strip.addEventListener('scroll', () => { if (!cards[1]) return; const step = cards[1].offsetLeft - cards[0].offsetLeft; setPull(Math.max(0, Math.min(cards.length - 1, Math.round(strip.scrollLeft / step)))); clearTimeout(st); st = setTimeout(() => setPull(-1), 1600); }, { passive: true }); }
+    cards.forEach((c, i) => { c.addEventListener('mouseenter', () => setPull(i)); c.addEventListener('focus', () => setPull(i)); c.addEventListener('mouseleave', () => setPull(-1)); c.addEventListener('blur', () => setPull(-1)); });
 
     // JOURNEY — Skyline: pastel low-poly city along a winding avenue; districts grow as the camera approaches
     const drend = new THREE.WebGLRenderer({ canvas: dcv, antialias: true, alpha: true, powerPreference: 'high-performance' });
@@ -303,8 +292,8 @@ export default class Experience extends Component {
     // ---- signage: LED display per plaza, banners on avenue lamp posts
     const mkCanvasTex = (w, hgt, draw) => { const c = document.createElement('canvas'); c.width = w; c.height = hgt; const x = c.getContext('2d'); draw(x, w, hgt); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; };
     const DISPLAYS = []; const chapterTitles = (this.state.d ? this.state.d.timeline : []).map(t => [t.y, t.t]);
-    PLAZA.forEach((l, k) => { const g = new THREE.Group(); g.position.set(l.x, 0, l.z - 6.5); const [yr, title] = chapterTitles[l.i] || ['', '']; const tex = mkCanvasTex(1024, 512, (x, w, hh) => { x.fillStyle = '#0f0e0c'; x.fillRect(0, 0, w, hh); x.fillStyle = '#e0562a'; x.font = '600 60px DM Sans Variable, sans-serif'; x.fillText(yr, 60, 130); x.fillStyle = '#f0efe9'; x.font = '400 88px Instrument Serif, Georgia, serif'; const words = String(title).split(' '); let line = '', yy = 260; for (const w0 of words) { const test = line + w0 + ' '; if (x.measureText(test).width > w - 120) { x.fillText(line, 60, yy); line = w0 + ' '; yy += 96; } else line = test; } x.fillText(line, 60, yy); }); const scr = new THREE.Mesh(new THREE.PlaneGeometry(16, 8), new THREE.MeshBasicMaterial({ map: tex })); scr.position.y = 12; const frame = new THREE.Mesh(new THREE.BoxGeometry(17, 9, .6), std(0x2a2622, .6, .2)); frame.position.set(0, 12, -.35); for (const s of [-6, 6]) { const leg = new THREE.Mesh(new THREE.BoxGeometry(.5, 7.6, .5), std(0x2a2622)); leg.position.set(s, 3.8, -.35); g.add(leg); } g.add(frame); g.add(scr); dscene.add(g); DISPLAYS.push({ g, i: l.i }); });
-    { const banTex = mkCanvasTex(256, 768, (x, w, hh) => { x.fillStyle = '#e0562a'; x.fillRect(0, 0, w, hh); x.fillStyle = '#ffffff'; x.font = '600 54px DM Sans Variable, sans-serif'; x.save(); x.translate(w / 2 + 20, hh - 40); x.rotate(-Math.PI / 2); x.fillText('KISHORE.DEV', 0, 0); x.restore(); }); const banM = new THREE.MeshBasicMaterial({ map: banTex, side: THREE.DoubleSide }); const BANS = []; for (const c of AVE_C) for (let z = Z0; z > Z0 - ZLEN; z -= 36) for (const o of [-(AVE_W / 2 + 1.3), AVE_W / 2 + 1.3]) BANS.push([sx(c) + o + (o > 0 ? .6 : -.6), z, 0]); const banI = new THREE.InstancedMesh(new THREE.PlaneGeometry(1.1, 3.3), banM, BANS.length); BANS.forEach(([x, z, yaw], k) => { dm.position.set(x, 5.4, z); dm.rotation.set(0, yaw, 0); dm.scale.set(1, 1, 1); dm.updateMatrix(); banI.setMatrixAt(k, dm.matrix); }); dscene.add(banI); }
+    PLAZA.forEach((l, k) => { const g = new THREE.Group(); g.position.set(l.x, 0, l.z - 6.5); const [yr, title] = chapterTitles[l.i] || ['', '']; const tex = mkCanvasTex(1024, 512, (x, w, hh) => { x.fillStyle = '#0f0e0c'; x.fillRect(0, 0, w, hh); x.fillStyle = '#e0562a'; x.font = '600 60px ' + FF; x.fillText(yr, 60, 130); x.fillStyle = '#f0efe9'; x.font = '400 88px Instrument Serif, Georgia, serif'; const words = String(title).split(' '); let line = '', yy = 260; for (const w0 of words) { const test = line + w0 + ' '; if (x.measureText(test).width > w - 120) { x.fillText(line, 60, yy); line = w0 + ' '; yy += 96; } else line = test; } x.fillText(line, 60, yy); }); const scr = new THREE.Mesh(new THREE.PlaneGeometry(16, 8), new THREE.MeshBasicMaterial({ map: tex })); scr.position.y = 12; const frame = new THREE.Mesh(new THREE.BoxGeometry(17, 9, .6), std(0x2a2622, .6, .2)); frame.position.set(0, 12, -.35); for (const s of [-6, 6]) { const leg = new THREE.Mesh(new THREE.BoxGeometry(.5, 7.6, .5), std(0x2a2622)); leg.position.set(s, 3.8, -.35); g.add(leg); } g.add(frame); g.add(scr); dscene.add(g); DISPLAYS.push({ g, i: l.i }); });
+    { const banTex = mkCanvasTex(256, 768, (x, w, hh) => { x.fillStyle = '#e0562a'; x.fillRect(0, 0, w, hh); x.fillStyle = '#ffffff'; x.font = '600 54px ' + FF; x.save(); x.translate(w / 2 + 20, hh - 40); x.rotate(-Math.PI / 2); x.fillText('KISHORE.DEV', 0, 0); x.restore(); }); const banM = new THREE.MeshBasicMaterial({ map: banTex, side: THREE.DoubleSide }); const BANS = []; for (const c of AVE_C) for (let z = Z0; z > Z0 - ZLEN; z -= 36) for (const o of [-(AVE_W / 2 + 1.3), AVE_W / 2 + 1.3]) BANS.push([sx(c) + o + (o > 0 ? .6 : -.6), z, 0]); const banI = new THREE.InstancedMesh(new THREE.PlaneGeometry(1.1, 3.3), banM, BANS.length); BANS.forEach(([x, z, yaw], k) => { dm.position.set(x, 5.4, z); dm.rotation.set(0, yaw, 0); dm.scale.set(1, 1, 1); dm.updateMatrix(); banI.setMatrixAt(k, dm.matrix); }); dscene.add(banI); }
     for (const [m, gs] of MERGE) { const merged = mergeGeometries(gs, false); gs.forEach(g => g.dispose()); const mesh = new THREE.Mesh(merged, m); mesh.receiveShadow = true; dscene.add(mesh); }
     const sunDisc = new THREE.Mesh(new THREE.CircleGeometry(48, 48), new THREE.MeshBasicMaterial({ color: 0xfff1e4, transparent: true, opacity: .5, fog: false })); dscene.add(sunDisc);
     // ---- drone route: straight legs along avenues with 90° turns; waypoints per chapter. Route line drawn along it.
@@ -370,38 +359,17 @@ export default class Experience extends Component {
         camera.position.z = 18 - e * 14;
         group.rotation.y += ((m.nx * .3 + e * 1.6) - group.rotation.y) * .06; group.rotation.x += ((m.ny * .2 - vn * .15) - group.rotation.x) * .06; group.rotation.z += (vn * .12 - group.rotation.z) * .08;
         camera.position.x += (m.nx * .7 - camera.position.x) * .05; camera.position.y += (-m.ny * .5 - camera.position.y) * .05;
-        for (const it of items) { it.mesh.position.set(it.base.x * spread + Math.cos(t * .35 + it.ph) * .18, it.base.y * spread + Math.sin(t * .5 + it.ph) * .25 - vn * .6, it.base.z * spread); it.mesh.rotation.x += it.spin.x * dt; it.mesh.rotation.y += (it.spin.y + vn * 1.5) * dt; it.mesh.rotation.z += it.spin.z * dt; }
-        if (projects.length) {
-          const k = camera.position.z / 18, halfH = Math.tan(Math.PI / 12) * 18, halfW = halfH * camera.aspect;
-          const sx = Math.min(halfW * .6, 6.4), sy = halfH * (camera.aspect < 1 ? .5 : .46), size = camera.aspect < 1 ? .62 : 1;
-          const cr = canvas.getBoundingClientRect();
-          const inside = m.tx >= cr.left && m.tx <= cr.right && m.ty >= cr.top && m.ty <= cr.bottom;
-          let hov = -1;
-          if (inside) {
-            ndc.set(((m.tx - cr.left) / cr.width) * 2 - 1, -((m.ty - cr.top) / cr.height) * 2 + 1); ray.setFromCamera(ndc, camera);
-            const hit = ray.intersectObjects(projects.map(p => p.mesh))[0]; if (hit) hov = hit.object.userData.i;
-          }
-          this._hoverP = hov; const show = hov >= 0 ? hov : this._linkP;
-          canvas.style.cursor = hov >= 0 ? 'pointer' : '';
-          camera.getWorldDirection(fwd);
-          projects.forEach((pr, i) => {
-            const [ux, uy] = slots[i];
-            pr.mesh.position.set(camera.position.x + (ux * sx + m.nx * .35 + Math.cos(t * .4 + pr.ph) * .12) * k, camera.position.y + (uy * sy - m.ny * .25 + Math.sin(t * .55 + pr.ph) * .16) * k, camera.position.z - 18 * k);
-            pr.hover += ((i === show ? 1 : 0) - pr.hover) * .15;
-            pr.mesh.scale.setScalar(k * size * (1 + pr.hover * .2));
-            pr.material.emissiveIntensity = pr.hover * .22;
-            pr.mesh.rotation.x += (.18 + pr.hover * .8) * dt; pr.mesh.rotation.y += (.24 + pr.hover * 1.2) * dt;
-          });
-          if (label) {
-            if (show >= 0) {
-              const pr = projects[show]; pv.copy(pr.mesh.position).project(camera);
-              const x = (pv.x * .5 + .5) * cr.width, y = (-pv.y * .5 + .5) * cr.height, left = x > cr.width * .55;
-              label.querySelector('[data-hero-label-name]').textContent = pr.f.title;
-              label.querySelector('[data-hero-label-line]').textContent = pr.f.oneLiner;
-              label.style.transform = `translate(${left ? x - 110 : x + 110}px, ${y}px) translate(${left ? '-100%' : '0'}, -50%)`;
-              label.style.textAlign = left ? 'right' : 'left'; label.style.opacity = '1';
-            } else label.style.opacity = '0';
-          }
+        pull.amt += ((pull.i >= 0 ? 1 : 0) - pull.amt) * .06;
+        if (pull.i >= 0 && cards[pull.i]) {
+          const cr = canvas.getBoundingClientRect(), kr = cards[pull.i].getBoundingClientRect();
+          ndc.set(((kr.left + kr.width / 2 - cr.left) / cr.width) * 2 - 1, -(((kr.top - cr.top) - cr.height * .12) / cr.height) * 2 + 1); ray.setFromCamera(ndc, camera);
+          zPlane.constant = -(camera.position.z - 10); if (ray.ray.intersectPlane(zPlane, pull.world)) { group.updateMatrixWorld(); pull.local.copy(pull.world); group.worldToLocal(pull.local); }
+        }
+        for (const it of items) {
+          const px = it.base.x * spread + Math.cos(t * .35 + it.ph) * .18, py = it.base.y * spread + Math.sin(t * .5 + it.ph) * .25 - vn * .6, pz = it.base.z * spread, a = pull.amt * (.35 + .25 * Math.sin(it.ph));
+          it.mesh.position.set(px + (pull.local.x - px) * a, py + (pull.local.y - py) * a, pz + (pull.local.z - pz) * a);
+          it.mesh.rotation.x += it.spin.x * dt; it.mesh.rotation.y += (it.spin.y + vn * 1.5 + pull.amt * .6) * dt; it.mesh.rotation.z += it.spin.z * dt;
+          if (it.mesh.material.emissiveIntensity !== undefined) it.mesh.material.emissiveIntensity = pull.amt * .55;
         }
         renderer.render(scene, camera);
         const cap = this.R('heroCap').current; if (cap) { const o = p > .7 ? Math.min(1, (p - .7) / .18) : 0; cap.style.opacity = String(o); cap.style.transform = `scale(${.92 + o * .08})`; }
@@ -501,7 +469,7 @@ export default class Experience extends Component {
       // Cards are plain links to the case-study pages (no in-page takeover).
       projects: P.map((p, i) => ({ ...p, href: '/work/' + p.slug, num: String(i + 1).padStart(2, '0'), open: undefined, span: spans[i], ratio: ratios[i], offset: i % 2 ? '10vh' : '0' })),
       slots: this.props.slots,
-      heroProjects: (this.props.flagships || []).map(({ slug, title }) => ({ slug, title })),
+      heroProjects: (this.props.flagships || []).map(({ slug, title, oneLiner, status }) => ({ slug, title, oneLiner, status: status ? status.split(' ')[0] : null })),
       contributed: d ? d.contributed.map(([name, share, desc]) => ({ name, share, desc })) : [],
       timeline: d ? d.timeline.map((y, i) => ({ ...y, chips: (y.tags || []).map(t => ({ t })), go: () => this._goCh && this._goCh(i + 1), short: (y.k || '').split('·').pop().trim() })) : [],
       stacks: d ? d.stacks.map(([name, items]) => ({ name, items: items.map(t => ({ t })) })) : [],

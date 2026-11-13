@@ -750,45 +750,28 @@ export function PageMarkup({ v }) {
                   <i className="ac">{"Pick one."}</i>
                 </div>
               </div>
-              <div
-                data-hero-label={"1"}
-                aria-hidden={"true"}
-                style={{ position: "absolute", left: "0", top: "0", pointerEvents: "none", opacity: "0", transition: "opacity .2s", color: "#f0efe9", maxWidth: "300px" }}
-              >
-                <div data-hero-label-name={"1"} style={{ fontSize: "22px", letterSpacing: "-.02em", lineHeight: "1.1" }}></div>
-                <div data-hero-label-line={"1"} style={{ marginTop: "6px", fontSize: "14px", lineHeight: "1.4", color: "#d8d2c6" }}></div>
-                <div style={{ marginTop: "8px", fontSize: "11px", letterSpacing: ".08em", textTransform: "uppercase", color: "#e0562a" }}>{"Click to open →"}</div>
-              </div>
-              <div
-                data-hero-foot={"1"}
-                style={{ position: "absolute", left: "26px", right: "26px", bottom: "22px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px", flexWrap: "wrap" }}
-              >
-                <div data-hero-hint={"1"} style={{ fontSize: "12px", letterSpacing: ".08em", textTransform: "uppercase", color: "rgba(240,239,233,.7)" }}>
-                  {"Move to explore · click an orange shape to open a project"}
-                </div>
-                <nav aria-label={"Case studies"} style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                  {(v.heroProjects || []).map((p) => (
-                    <a
-                      key={p.slug}
-                      href={"/work/" + p.slug}
-                      data-hero-link={p.slug}
-                      style={{ fontSize: "12px", letterSpacing: ".06em", textTransform: "uppercase", color: "#f0efe9", border: "1px solid rgba(240,239,233,.3)", borderRadius: "999px", padding: "8px 12px", background: "rgba(19,18,17,.55)" }}
-                    >
-                      {p.title}
-                    </a>
-                  ))}
-                </nav>
-              </div>
+              <nav data-hero-cards={"1"} aria-label={"Featured projects"}>
+                {(v.heroProjects || []).map((p, i) => (
+                  <a key={p.slug} href={"/work/" + p.slug} data-hero-card={String(i)} data-hero-link={p.slug}>
+                    <span className="hc-img">
+                      <img src={"/images/card-" + p.slug + ".webp"} alt={""} width={840} height={420} loading={"lazy"} decoding={"async"} />
+                    </span>
+                    <span className="hc-body">
+                      <span className="hc-top">
+                        <span className="hc-num">{"0" + (i + 1)}</span>
+                        {p.status ? <span className="hc-status">{p.status}</span> : null}
+                      </span>
+                      <span className="hc-title">{p.title}</span>
+                      <span className="hc-line">{p.oneLiner}</span>
+                      <span className="hc-open">{"Read the case study →"}</span>
+                    </span>
+                  </a>
+                ))}
+              </nav>
               <div style={{ position: "absolute", left: "14px", top: "14px", color: "#f0efe9", fontSize: "18px", lineHeight: "1" }}>
                 {"+"}
               </div>
               <div style={{ position: "absolute", right: "14px", top: "14px", color: "#f0efe9", fontSize: "18px", lineHeight: "1" }}>
-                {"+"}
-              </div>
-              <div style={{ position: "absolute", left: "14px", bottom: "60px", color: "#f0efe9", fontSize: "18px", lineHeight: "1" }}>
-                {"+"}
-              </div>
-              <div style={{ position: "absolute", right: "14px", bottom: "60px", color: "#f0efe9", fontSize: "18px", lineHeight: "1" }}>
                 {"+"}
               </div>
             </div>
@@ -861,7 +844,7 @@ export function PageMarkup({ v }) {
                 }}
               >
                 {
-                  "Kishore Theiveekan is a frontend engineer based in Chennai, open to relocation worldwide, with more than three and a half years at Finstein building corporate sites, product platforms, a manufacturing execution console and automated testing for banking applications."
+                  "Kishore Theiveekan is a frontend engineer based in Chennai, open to relocation, with more than three and a half years at Finstein building corporate sites, product platforms, a manufacturing execution console and automated testing for banking applications."
                 }
               </p>
               <p
@@ -916,7 +899,9 @@ export function PageMarkup({ v }) {
                     ["Focus", "Angular · React · TypeScript · three.js"],
                     ["Also", "Node and NestJS, build pipelines, security headers"],
                     ["Based in", "Chennai, India (IST, UTC+5:30)"],
-                    ["Open to", "Relocation worldwide"],
+                    ["Open to", "Relocation"],
+                    ["Visa", "Needs a work visa"],
+                    ["Notice", "1 month (flexible)"],
                     ["Languages", "English, Tamil"],
                   ].map(([k, val]) => (
                     <div key={k} style={{ display: "grid", gridTemplateColumns: "96px minmax(0,1fr)", gap: "12px", padding: "10px 0", borderTop: "1px solid rgba(240,239,233,.12)" }}>
@@ -2803,7 +2788,7 @@ export function PageMarkup({ v }) {
             <div style={{ fontWeight: "500", color: "#0f0e0c", marginBottom: "6px" }}>{"Kishore Theiveekan"}</div>
             {"Based in Chennai, India"}
             <br />
-            {"Open to relocation worldwide"}
+            {"Open to relocation"}
           </div>
           <div>
             <div style={{ fontWeight: "500", color: "#0f0e0c", marginBottom: "6px" }}>{"Elsewhere"}</div>
