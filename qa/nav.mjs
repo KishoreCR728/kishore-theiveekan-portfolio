@@ -62,20 +62,20 @@ for (const width of [1440, 390]) {
   await page.goto(base + "/"); await settle(page, base + "/");
   await page.evaluate(() => document.querySelector("[data-hero-link]").click()); await page.waitForLoadState("load"); await settle(page, page.url());
   const first = pathOf(page.url()); if (!first.startsWith("/work/")) fail(`hero link went to ${first}`);
-  await page.click('nav[aria-label="Next case study"] a'); await page.waitForLoadState("load");
+  await Promise.all([page.waitForURL((u) => pathOf(u.href) !== first), page.click('.pager a[rel=next]')]); await page.waitForLoadState("load"); await page.waitForTimeout(500);
   const second = pathOf(page.url());
   await page.goto(base + `/writing/${posts[0]}`); await page.waitForTimeout(500);
-  await page.goBack(); if (pathOf(page.url()) !== second) fail(`Back 1 went to ${pathOf(page.url())}, expected ${second}`);
-  await page.goBack(); if (pathOf(page.url()) !== first) fail(`Back 2 went to ${pathOf(page.url())}, expected ${first}`);
+  await page.goBack(); await page.waitForTimeout(400); if (pathOf(page.url()) !== second) fail(`Back 1 went to ${pathOf(page.url())}, expected ${second}`);
+  await page.goBack(); await page.waitForTimeout(400); if (pathOf(page.url()) !== first) fail(`Back 2 went to ${pathOf(page.url())}, expected ${first}`);
   await page.goBack(); await settle(page, base + "/"); if (pathOf(page.url()) !== "/") fail(`Back 3 went to ${pathOf(page.url())}`);
   await page.goForward(); if (pathOf(page.url()) !== first) fail(`Forward went to ${pathOf(page.url())}`);
   await ctx.close();
 }
 
 // 3. "Next" links walk every case study and every article and come back to the start.
-for (const [start, sel, count] of [[`/work/${slugs[0]}`, 'nav[aria-label="Next case study"] a', slugs.length], [`/writing/${posts[0]}`, 'nav[aria-label="Next article"] a', posts.length]]) {
+for (const [start, sel, count] of [[`/work/${slugs[0]}`, '.pager a[rel=next]', slugs.length], [`/writing/${posts[0]}`, '.pager a[rel=next]', posts.length]]) {
   const { ctx, page } = await newPage(); await page.goto(base + start); const seen = new Set([pathOf(page.url())]);
-  for (let i = 0; i < count; i++) { await page.click(sel); await page.waitForLoadState("load"); seen.add(pathOf(page.url())); }
+  for (let i = 0; i < count; i++) { const from = pathOf(page.url()); await Promise.all([page.waitForURL((u) => pathOf(u.href) !== from), page.click(sel)]); await page.waitForLoadState("load"); seen.add(pathOf(page.url())); }
   if (pathOf(page.url()) !== start || seen.size !== count) fail(`next-link loop from ${start}: visited ${seen.size} of ${count}, ended on ${pathOf(page.url())}`);
   await ctx.close();
 }
@@ -111,6 +111,36 @@ for (const width of [1440, 390]) {
 for (const id of ["work", "experience", "journey", "writing", "contact"]) {
   const { ctx, page } = await newPage(); await page.goto(`${base}/#${id}`); await settle(page, base + "/");
   const s = await onScreen(page, id); if (s !== "ok") fail(`/#${id} opened directly: section not on screen (${s})`);
+  await ctx.close();
+}
+
+// 6. Selected work → a case study → "Back to selected work" (and the browser Back button)
+//    return to the same place on the home page, at desktop and phone widths.
+for (const width of [1440, 390]) {
+  for (const how of ["link", "browser"]) {
+    const { ctx, page } = await newPage(width);
+    await page.goto(base + "/"); await settle(page, base + "/");
+    const card = page.locator('#work a[href^="/work/"]').nth(2);
+    await card.scrollIntoViewIfNeeded(); await page.waitForTimeout(900);
+    const y0 = await page.evaluate(() => Math.round(scrollY));
+    await card.evaluate((a) => a.click()); await page.waitForLoadState("load"); await page.waitForTimeout(500);
+    if (!pathOf(page.url()).startsWith("/work/")) { fail(`back test @${width}: card went to ${pathOf(page.url())}`); await ctx.close(); continue; }
+    if (how === "link") await page.click("a.back-link"); else await page.goBack();
+    await page.waitForLoadState("load"); await page.waitForTimeout(1500);
+    const y1 = await page.evaluate(() => Math.round(scrollY));
+    if (pathOf(page.url()) !== "/") fail(`back test @${width} (${how}): landed on ${pathOf(page.url())}`);
+    else if (Math.abs(y1 - y0) > 60) fail(`back test @${width} (${how}): left at y=${y0}, came back to y=${y1}`);
+    await ctx.close();
+  }
+}
+
+// 7. Previous and next walk the case studies in opposite directions.
+{
+  const { ctx, page } = await newPage(); await page.goto(`${base}/work/${slugs[1]}`);
+  await page.click(".pager a[rel=prev]"); await page.waitForLoadState("load");
+  if (pathOf(page.url()) !== `/work/${slugs[0]}` && !pathOf(page.url()).startsWith("/work/")) fail(`prev from ${slugs[1]} went to ${pathOf(page.url())}`);
+  const p1 = pathOf(page.url()); await page.click(".pager a[rel=next]"); await page.waitForLoadState("load");
+  if (pathOf(page.url()) !== `/work/${slugs[1]}`) fail(`prev then next did not return to ${slugs[1]} (from ${p1} to ${pathOf(page.url())})`);
   await ctx.close();
 }
 

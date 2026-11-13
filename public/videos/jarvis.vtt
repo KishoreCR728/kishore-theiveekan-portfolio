@@ -1,70 +1,130 @@
 WEBVTT
 
 1
-00:00:00.367 --> 00:00:05.071
-This is Jarvis, an assistant I built that runs on my own computer.
+00:00:00.367 --> 00:00:05.624
+This is Jarvis, an AI assistant I built that runs on my own computer.
 
 2
-00:00:05.967 --> 00:00:07.417
-It runs on localhost.
+00:00:05.624 --> 00:00:09.053
+It opens apps, manages files, sets reminders,
 
 3
-00:00:07.417 --> 00:00:11.079
-You bring your own key, and it stays on your machine.
+00:00:09.053 --> 00:00:11.263
+and remembers what I tell it.
 
 4
-00:00:11.967 --> 00:00:15.065
-Simple commands never wait for a model.
+00:00:12.167 --> 00:00:15.291
+This is the real console, running on localhost.
 
 5
-00:00:15.065 --> 00:00:19.911
-Jarvis matches them directly, in English, Tanglish and Tamil.
+00:00:15.291 --> 00:00:18.815
+You bring your own key, and it stays on your machine.
 
 6
-00:00:20.800 --> 00:00:23.203
-Everything else goes to a model:
+00:00:19.700 --> 00:00:22.606
+Simple commands never wait for a model.
 
 7
-00:00:23.203 --> 00:00:27.482
-Claude, Gemini, or a local model when the internet drops.
+00:00:22.606 --> 00:00:27.225
+The time, the date, or a change of screen is matched directly,
 
 8
-00:00:27.482 --> 00:00:31.386
-It picks from a hundred and three tools, for memory,
+00:00:27.225 --> 00:00:29.684
+so the answer comes back at once.
 
 9
-00:00:31.386 --> 00:00:34.840
-reminders, routines, files and a second brain.
+00:00:30.600 --> 00:00:34.492
+Here I type plain English to move between screens:
 
 10
-00:00:35.733 --> 00:00:38.118
-And it can't do damage by accident.
+00:00:34.492 --> 00:00:37.683
+the universe view, home, and my routines.
 
 11
-00:00:38.118 --> 00:00:40.844
-Dangerous commands are blocked outright.
+00:00:37.683 --> 00:00:41.808
+Or I can just speak, after the wake word, hey Jarvis.
 
 12
-00:00:40.844 --> 00:00:43.160
-Risky ones stop and ask, by click,
+00:00:42.700 --> 00:00:50.063
+Under the hood, a Python FastAPI core streams events over WebSockets to an Electron desktop app,
 
 13
-00:00:43.160 --> 00:00:45.954
-by voice, or a thumbs down to the camera.
+00:00:50.063 --> 00:00:52.364
+which starts the core for you.
 
 14
-00:00:45.954 --> 00:00:47.589
-Deletes go to the Trash.
+00:00:52.364 --> 00:00:57.426
+Voice uses Whisper, with voice activity detection and a wake word.
 
 15
-00:00:48.500 --> 00:00:51.851
-It has more than fifteen hundred automated tests,
+00:00:57.426 --> 00:01:00.724
+It understands English, Tamil and Tanglish.
 
 16
-00:00:51.851 --> 00:00:53.287
-and it's open source.
+00:01:01.633 --> 00:01:04.036
+Everything else goes to a model:
 
 17
-00:00:53.287 --> 00:00:54.860
+00:01:04.036 --> 00:01:08.315
+Claude, Gemini, or a local model when the internet drops.
+
+18
+00:01:08.315 --> 00:01:12.220
+It picks from a hundred and three tools, for memory,
+
+19
+00:01:12.220 --> 00:01:15.673
+reminders, routines, files and a second brain.
+
+20
+00:01:16.567 --> 00:01:18.951
+And it can't do damage by accident.
+
+21
+00:01:18.951 --> 00:01:21.677
+Dangerous commands are blocked outright.
+
+22
+00:01:21.677 --> 00:01:23.994
+Risky ones stop and ask, by click,
+
+23
+00:01:23.994 --> 00:01:26.787
+by voice, or a thumbs down to the camera.
+
+24
+00:01:26.787 --> 00:01:28.423
+Deletes go to the Trash.
+
+25
+00:01:29.333 --> 00:01:30.204
+One real bug:
+
+26
+00:01:30.204 --> 00:01:33.353
+the new desktop app connected to an old version
+
+27
+00:01:33.353 --> 00:01:36.032
+that was still running on the same port.
+
+28
+00:01:36.032 --> 00:01:38.176
+Now the core reports a build id,
+
+29
+00:01:38.176 --> 00:01:41.525
+and the app only adopts a core from its own build.
+
+30
+00:01:42.433 --> 00:01:45.972
+It has more than fifteen hundred automated tests,
+
+31
+00:01:45.972 --> 00:01:48.716
+and the code is open source on GitHub.
+
+32
+00:01:48.716 --> 00:01:50.377
 The link is on my site.
 

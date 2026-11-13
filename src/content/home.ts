@@ -9,7 +9,7 @@ export const career = {
   dates: "Mar 2023 – present",
   title: "Associate Trainee (Full Stack Developer)",
   summary:
-    "Frontend-focused full stack engineering on corporate websites, product platforms and enterprise applications, from UI architecture through UAT, security review and production.",
+    "Frontend-focused full stack engineering on corporate websites, product platforms and enterprise applications, from UI architecture through UAT, security review and production. The official title is Associate Trainee; in practice I have been the lead developer on two products since late 2025.",
   phases: [
     {
       name: "Platforms and ownership",

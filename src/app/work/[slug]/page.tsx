@@ -4,6 +4,8 @@ import "../../pages.css";
 import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
 import { CaseDiagram } from "@/components/site/Diagrams";
 import VideoBlock from "@/components/site/VideoBlock";
+import BackLink from "@/components/site/BackLink";
+import Pager from "@/components/site/Pager";
 import { allCases } from "@/lib/cases";
 import { renderMarkdown } from "@/lib/markdown";
 import { site } from "@/content/site";
@@ -36,6 +38,7 @@ export default async function CasePage({ params }: Props) {
   if (i < 0) notFound();
   const c = cases[i];
   const next = cases[(i + 1) % cases.length];
+  const prev = cases[(i - 1 + cases.length) % cases.length];
   const { nodes } = renderMarkdown(c.body);
   const ld = {
     "@context": "https://schema.org",
@@ -43,15 +46,28 @@ export default async function CasePage({ params }: Props) {
     name: c.title,
     description: c.description,
     url: `${site.url}/work/${c.slug}`,
-    author: { "@type": "Person", name: site.name, url: site.url },
+    keywords: c.tags.join(", "),
+    inLanguage: "en",
+    author: { "@type": "Person", name: site.name, url: site.url, sameAs: [site.linkedin, site.github] },
+  };
+  const crumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+      { "@type": "ListItem", position: 2, name: "Work", item: `${site.url}/#work` },
+      { "@type": "ListItem", position: 3, name: c.title, item: `${site.url}/work/${c.slug}` },
+    ],
   };
 
   return (
     <div className="page">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs).replace(/</g, "\\u003c") }} />
       <SiteHeader current="work" />
       <main id="main" className="wrap">
         <header className="hero-block">
+          <BackLink fallback="/#work" label="Back to selected work" />
           <div className="label">Case study{c.flagship ? "" : " · short"}</div>
           <h1>{c.title}</h1>
           <p className="lede">{c.oneLiner}</p>
@@ -91,10 +107,7 @@ export default async function CasePage({ params }: Props) {
           <article className="prose">{nodes}</article>
         </div>
 
-        <nav className="next-link" aria-label="Next case study">
-          <span className="label">Next case study</span>
-          <a href={`/work/${next.slug}`}>{next.title} <i>→</i></a>
-        </nav>
+        <Pager kind="case study" prev={{ href: `/work/${prev.slug}`, title: prev.title }} next={{ href: `/work/${next.slug}`, title: next.title }} />
       </main>
       <SiteFooter />
     </div>

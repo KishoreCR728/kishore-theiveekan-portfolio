@@ -35,13 +35,27 @@ export default class Experience extends Component {
   async componentDidMount() {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (document.documentElement.classList.contains('static-mode') || reduce || !hasWebGL()) { this.enableStatic(); }
-    this._onKey = e => { if (e.key !== 'Escape') return; if (this.state.caseIdx >= 0) this.closeCase(); else if (this.state.menuOpen) this.setState({ menuOpen: false }); };
+    this._onKey = e => {
+      // Keep keyboard focus inside the open menu (the Menu/Close button plus the menu links).
+      if (e.key === 'Tab' && this.state.menuOpen) {
+        const items = [document.querySelector('[data-topnav] [aria-label="Menu"]'), ...document.querySelectorAll('[data-overlay] a[href]')].filter(Boolean);
+        if (items.length) { const i = items.indexOf(document.activeElement); const n = e.shiftKey ? (i <= 0 ? items.length - 1 : i - 1) : (i < 0 || i >= items.length - 1 ? 0 : i + 1); e.preventDefault(); items[n].focus(); }
+        return;
+      }
+      if (e.key !== 'Escape') return; if (this.state.caseIdx >= 0) this.closeCase(); else if (this.state.menuOpen) this.setState({ menuOpen: false }); };
     window.addEventListener('keydown', this._onKey);
     this._onPop = () => this.setState({ caseIdx: -1 });
     window.addEventListener('popstate', this._onPop);
     const words = ['Curious.', 'Persistent.', 'Practical.', 'Careful.', 'Investigative.'];
     let c = 0;
     let skip = false; try { skip = sessionStorage.getItem('skipLoader') === '1'; sessionStorage.removeItem('skipLoader'); } catch {}
+    // Coming back (browser Back or the "Back to selected work" link): skip the loader and return to
+    // the exact scroll position the visitor left from. The position is saved whenever they leave.
+    let backY = -1;
+    try { const nav = performance.getEntriesByType('navigation')[0]; if (nav && nav.type === 'back_forward' && !location.hash) { const y = Number(sessionStorage.getItem('homeY')); if (y > 0) { backY = y; skip = true; history.scrollRestoration = 'manual'; } } } catch {}
+    this._onHide = () => { try { sessionStorage.setItem('homeY', String(Math.round(window.scrollY))); } catch {} };
+    window.addEventListener('pagehide', this._onHide);
+    if (backY > 0) { const go = () => { const y = Math.min(backY, document.documentElement.scrollHeight - innerHeight); window.scrollTo(0, y); this.sc.target = this.sc.cur = this.sc.last = y; }; requestAnimationFrame(go); setTimeout(() => { if (Math.abs(window.scrollY - backY) > 4 && window.scrollY < 4) go(); }, 500); }
     if (skip && !this._static) this.setState({ phase: 'ready', count: 100 });
     if (!this._static && !skip) this._pre = setInterval(() => {
       c = Math.min(100, c + 3 + Math.ceil(Math.random() * 5));
@@ -52,7 +66,7 @@ export default class Experience extends Component {
     tick(); this._t = setInterval(tick, 30000);
     this._onMove = e => { this.m.tx = e.clientX; this.m.ty = e.clientY; this.m.nx = (e.clientX / innerWidth) * 2 - 1; this.m.ny = (e.clientY / innerHeight) * 2 - 1; };
     window.addEventListener('mousemove', this._onMove);
-    this.sc.target = this.sc.cur = window.scrollY;
+    if (backY < 0) this.sc.target = this.sc.cur = window.scrollY;
     this._onWheel = e => {
       if (this.state.caseIdx >= 0 || this.state.menuOpen || this.state.phase !== 'ready') { if (this.state.phase !== 'ready') e.preventDefault(); return; }
       e.preventDefault();
@@ -85,7 +99,7 @@ export default class Experience extends Component {
     if (this.state.menuOpen && !prev.menuOpen) { const first = document.querySelector('[data-overlay] a'); if (first) first.focus({ preventScroll: true }); }
     if (was && !is && this._opener && this._opener.isConnected) this._opener.focus({ preventScroll: true });
   }
-  componentWillUnmount() { window.removeEventListener('keydown', this._onKey); window.removeEventListener('popstate', this._onPop); clearInterval(this._pre); clearInterval(this._t); window.removeEventListener('mousemove', this._onMove); window.removeEventListener('wheel', this._onWheel); window.removeEventListener('scroll', this._onScroll); this._io && this._io.disconnect(); this._alive = false; cancelAnimationFrame(this._raf); }
+  componentWillUnmount() { window.removeEventListener('pagehide', this._onHide); window.removeEventListener('keydown', this._onKey); window.removeEventListener('popstate', this._onPop); clearInterval(this._pre); clearInterval(this._t); window.removeEventListener('mousemove', this._onMove); window.removeEventListener('wheel', this._onWheel); window.removeEventListener('scroll', this._onScroll); this._io && this._io.disconnect(); this._alive = false; cancelAnimationFrame(this._raf); }
 
   setupReveals() {
     const io = this._io || (this._io = new IntersectionObserver(es => es.forEach(en => {
@@ -124,8 +138,8 @@ export default class Experience extends Component {
     const group = new THREE.Group(); scene.add(group); const items = [];
     for (let i = 0; i < 40; i++) {
       const mesh = new THREE.Mesh(geos[i % geos.length], i % 6 === 0 ? glass() : mat(palette[Math.floor(Math.random() * palette.length)]));
-      const r = rnd(1, 6), th = rnd(0, 6.283), base = new THREE.Vector3(r * Math.cos(th), r * Math.sin(th) * .7 + rnd(-1, 1) * 1.4, rnd(-9, -1.5));
-      mesh.rotation.set(rnd(0, 6.283), rnd(0, 6.283), rnd(0, 6.283)); mesh.scale.setScalar(rnd(.55, 1.15)); group.add(mesh);
+      const r = rnd(1, 6), th = rnd(0, 6.283), base = new THREE.Vector3(r * Math.cos(th), r * Math.sin(th) * .7 + rnd(-1, 1) * 1.4, rnd(-6, 4));
+      mesh.rotation.set(rnd(0, 6.283), rnd(0, 6.283), rnd(0, 6.283)); mesh.scale.setScalar(rnd(.7, 1.5)); group.add(mesh);
       items.push({ mesh, base, spin: new THREE.Vector3(rnd(-.4, .4), rnd(-.4, .4), rnd(-.2, .2)), ph: rnd(0, 6.283) });
     }
     const tctx = trail.getContext('2d');
@@ -133,43 +147,12 @@ export default class Experience extends Component {
     // The four flagship projects as larger shapes. They are placed relative to the camera, so they hold
     // their places while the other shapes fly past during the push-in. Hover shows the project, click opens it.
     const F = (this.props.flagships || []).slice(0, 4);
-    // Four tiny worlds, one per project, built from primitives.
-    const O = 0xe0562a, O2 = 0xf26b3a, CREAM = 0xf0efe9, INK = 0x2a2724;
-    const pm = (c, o = {}) => new THREE.MeshPhysicalMaterial(Object.assign({ color: c, roughness: .2, clearcoat: 1, clearcoatRoughness: .08, envMapIntensity: 1.1, emissive: O, emissiveIntensity: 0, fog: false }, o));
-    const worlds = [
-      () => { // ERP: a building of stacked pages that fan out
-        const g = new THREE.Group(), pages = [];
-        for (let k = 0; k < 6; k++) { const m = new THREE.Mesh(new RoundedBoxGeometry(1.5, .14, 1.05, 4, .05), pm(k === 5 ? O : k % 2 ? CREAM : O2)); m.position.y = -.5 + k * .2; g.add(m); pages.push(m); }
-        return { g, mats: pages.map(m => m.material), update: (t, h) => pages.forEach((m, k) => { m.position.y = -.5 + k * (.2 + h * .16); m.rotation.y = Math.sin(t * .8 + k * .5) * (.08 + h * .25); }) };
-      },
-      () => { // Privacy: a globe with language rings
-        const g = new THREE.Group(), globe = new THREE.Mesh(new THREE.SphereGeometry(.62, 48, 48), pm(CREAM)); g.add(globe);
-        const rings = [0, 1, 2].map(k => { const r = new THREE.Mesh(new THREE.TorusGeometry(.9 + k * .14, .035, 12, 96), pm(k === 1 ? O2 : O)); r.rotation.set(1.1 + k * .5, k * .7, 0); g.add(r); return r; });
-        const dots = new THREE.Group(); for (let k = 0; k < 18; k++) { const d = new THREE.Mesh(new THREE.SphereGeometry(.05, 10, 10), pm(O)); const a = k / 18 * Math.PI * 2; d.position.set(Math.cos(a) * 1.04, 0, Math.sin(a) * 1.04); dots.add(d); } dots.rotation.x = .5; g.add(dots);
-        return { g, mats: [globe.material, ...rings.map(r => r.material)], update: (t, h) => { rings.forEach((r, k) => { r.rotation.z = t * (.3 + k * .15) * (1 + h * 3); }); dots.rotation.y = t * (.4 + h * 1.6); globe.rotation.y = t * .2; } };
-      },
-      () => { // MES: a small factory with a walking robot
-        const g = new THREE.Group(), base = new THREE.Mesh(new RoundedBoxGeometry(1.9, .12, 1.2, 4, .05), pm(INK)); base.position.y = -.55; g.add(base);
-        const hall = new THREE.Mesh(new RoundedBoxGeometry(.8, .6, .7, 4, .06), pm(O)); hall.position.set(-.45, -.2, -.15); g.add(hall);
-        const chimney = new THREE.Mesh(new THREE.CylinderGeometry(.08, .1, .7, 16), pm(CREAM)); chimney.position.set(-.7, .15, -.3); g.add(chimney);
-        const belt = new THREE.Mesh(new RoundedBoxGeometry(1.5, .06, .22, 3, .03), pm(CREAM)); belt.position.set(.1, -.45, .38); g.add(belt);
-        const robot = new THREE.Group(); const body = new THREE.Mesh(new THREE.CapsuleGeometry(.09, .18, 6, 14), pm(O2)); body.position.y = .2; const head = new THREE.Mesh(new THREE.SphereGeometry(.08, 16, 16), pm(CREAM)); head.position.y = .42;
-        const legs = [-1, 1].map(sd => { const l = new THREE.Mesh(new THREE.CapsuleGeometry(.03, .12, 4, 8), pm(INK)); l.position.set(sd * .05, .05, 0); robot.add(l); return l; });
-        robot.add(body, head); robot.position.set(.1, -.42, .38); g.add(robot);
-        return { g, mats: [hall.material, body.material], update: (t, h) => { const sp = 1 + h * 2.5; robot.position.x = .1 + Math.sin(t * .7 * sp) * .55; robot.rotation.y = Math.cos(t * .7 * sp) > 0 ? Math.PI / 2 : -Math.PI / 2; legs.forEach((l, k) => { l.rotation.x = Math.sin(t * 6 * sp + k * Math.PI) * .6; }); chimney.scale.y = 1 + Math.sin(t * 3) * .04 * (1 + h * 3); } };
-      },
-      () => { // Jarvis: a glowing orb with a voice waveform
-        const g = new THREE.Group(), orb = new THREE.Mesh(new THREE.SphereGeometry(.5, 48, 48), pm(O, { emissive: O, emissiveIntensity: .35 })); g.add(orb);
-        const bars = []; for (let k = 0; k < 20; k++) { const b = new THREE.Mesh(new RoundedBoxGeometry(.07, .4, .07, 2, .03), pm(k % 2 ? CREAM : O2)); const a = k / 20 * Math.PI * 2; b.position.set(Math.cos(a) * .85, 0, Math.sin(a) * .85); b.rotation.y = -a; g.add(b); bars.push(b); }
-        g.rotation.x = .35;
-        return { g, mats: [orb.material], glow: true, update: (t, h) => { bars.forEach((b, k) => { b.scale.y = .5 + Math.abs(Math.sin(t * (2 + h * 4) + k * .7)) * (1 + h * 2.2); }); orb.scale.setScalar(1 + Math.sin(t * 2.4) * .04 * (1 + h * 2)); } };
-      },
-    ];
+    const pGeo = [new RoundedBoxGeometry(1.3, 1.3, 1.3, 6, .28), new THREE.SphereGeometry(.85, 48, 48), new THREE.TorusGeometry(.7, .3, 32, 80), new THREE.CapsuleGeometry(.45, 1.15, 10, 28)];
+    const pCol = [0xe0562a, 0xf26b3a, 0xc9461f, 0xff8452];
     const projects = F.map((f, i) => {
-      const w = worlds[i % worlds.length]();
-      const hit = new THREE.Mesh(new THREE.SphereGeometry(1.15, 16, 16), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }));
-      hit.userData.i = i; w.g.add(hit); w.g.rotation.y = rnd(-.6, .6); scene.add(w.g);
-      return { mesh: w.g, hit, world: w, f, hover: 0, ph: i * 1.7 };
+      const material = new THREE.MeshPhysicalMaterial({ color: pCol[i], roughness: .16, clearcoat: 1, clearcoatRoughness: .06, envMapIntensity: 1.1, emissive: 0xe0562a, emissiveIntensity: 0, fog: false });
+      const mesh = new THREE.Mesh(pGeo[i], material); mesh.userData.i = i; mesh.rotation.set(rnd(0, 6), rnd(0, 6), 0); scene.add(mesh);
+      return { mesh, material, f, hover: 0, ph: i * 1.7 };
     });
     const slots = [[-1, .9], [1, .95], [-.92, -.95], [.95, -.9]];
     const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), pv = new THREE.Vector3(), fwd = new THREE.Vector3();
@@ -396,7 +379,7 @@ export default class Experience extends Component {
           let hov = -1;
           if (inside) {
             ndc.set(((m.tx - cr.left) / cr.width) * 2 - 1, -((m.ty - cr.top) / cr.height) * 2 + 1); ray.setFromCamera(ndc, camera);
-            const hit = ray.intersectObjects(projects.map(p => p.hit))[0]; if (hit) hov = hit.object.userData.i;
+            const hit = ray.intersectObjects(projects.map(p => p.mesh))[0]; if (hit) hov = hit.object.userData.i;
           }
           this._hoverP = hov; const show = hov >= 0 ? hov : this._linkP;
           canvas.style.cursor = hov >= 0 ? 'pointer' : '';
@@ -405,10 +388,9 @@ export default class Experience extends Component {
             const [ux, uy] = slots[i];
             pr.mesh.position.set(camera.position.x + (ux * sx + m.nx * .35 + Math.cos(t * .4 + pr.ph) * .12) * k, camera.position.y + (uy * sy - m.ny * .25 + Math.sin(t * .55 + pr.ph) * .16) * k, camera.position.z - 18 * k);
             pr.hover += ((i === show ? 1 : 0) - pr.hover) * .15;
-            pr.mesh.scale.setScalar(k * size * (i >= 2 ? 1.4 : 1.15) * (1 + pr.hover * .25));
-            pr.world.mats.forEach(mt => { mt.emissiveIntensity = (pr.world.glow && mt === pr.world.mats[0] ? .35 : 0) + pr.hover * .18; });
-            pr.mesh.rotation.y += (.22 + pr.hover * .5) * dt; pr.mesh.rotation.x = Math.sin(t * .5 + pr.ph) * .12;
-            pr.world.update(t, pr.hover);
+            pr.mesh.scale.setScalar(k * size * (1 + pr.hover * .2));
+            pr.material.emissiveIntensity = pr.hover * .22;
+            pr.mesh.rotation.x += (.18 + pr.hover * .8) * dt; pr.mesh.rotation.y += (.24 + pr.hover * 1.2) * dt;
           });
           if (label) {
             if (show >= 0) {

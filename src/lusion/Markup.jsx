@@ -552,7 +552,10 @@ export function PageMarkup({ v }) {
             </div>
           </>
         ) : null}
+        <a className="skip" href="#main">{"Skip to content"}</a>
         <nav
+          data-topnav={"1"}
+          aria-label={"Site"}
           style={{
             position: "fixed",
             top: "0",
@@ -631,7 +634,7 @@ export function PageMarkup({ v }) {
             </div>
           </div>
         </nav>
-        <main>
+        <main id="main" tabIndex={-1}>
           <section data-screen-label={"Hero"} style={{ position: "relative", zIndex: "2", padding: "150px 4.5vw 0" }}>
             <p style={{ margin: "0 0 22px", fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62", animation: "rise-t 1s both" }}>
               <b style={{ color: "#0f0e0c", fontWeight: "500" }}>{"Kishore Theiveekan"}</b>
@@ -761,7 +764,7 @@ export function PageMarkup({ v }) {
                 style={{ position: "absolute", left: "26px", right: "26px", bottom: "22px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px", flexWrap: "wrap" }}
               >
                 <div data-hero-hint={"1"} style={{ fontSize: "12px", letterSpacing: ".08em", textTransform: "uppercase", color: "rgba(240,239,233,.7)" }}>
-                  {"Move to explore · click a project to open it"}
+                  {"Move to explore · click an orange shape to open a project"}
                 </div>
                 <nav aria-label={"Case studies"} style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                   {(v.heroProjects || []).map((p) => (
@@ -819,13 +822,14 @@ export function PageMarkup({ v }) {
               >
                 {v.wIntro.map((w, $index) => (
                   <Fragment key={$index}>
+                      {$index > 0 ? " " : null}
                     <span
                       style={{
                         display: "inline-block",
                         overflow: "hidden",
                         verticalAlign: "bottom",
                         padding: ".14em .12em .2em",
-                        margin: "-.14em -.12em -.2em .1em",
+                        margin: "-.14em -.12em -.2em -.12em",
                       }}
                     >
                       <span
@@ -962,13 +966,14 @@ export function PageMarkup({ v }) {
                 >
                   {v.wWork.map((w, $index) => (
                     <Fragment key={$index}>
+                      {$index > 0 ? " " : null}
                       <span
                         style={{
                           display: "inline-block",
                           overflow: "hidden",
                           verticalAlign: "bottom",
                           padding: ".14em .12em .2em",
-                          margin: "-.14em -.12em -.2em .1em",
+                          margin: "-.14em -.12em -.2em -.12em",
                         }}
                       >
                         <span
@@ -1152,6 +1157,7 @@ export function PageMarkup({ v }) {
                 }}
               ></div>
               <div
+                data-chapter-label={"1"}
                 style={{
                   position: "absolute",
                   left: "4.5vw",
@@ -2290,7 +2296,7 @@ export function PageMarkup({ v }) {
                         height: "132px",
                         margin: "-66px",
                         borderRadius: "50%",
-                        background: "conic-gradient(#0f0e0c 0%,#dedbd2 0)",
+                        background: "conic-gradient(#e0562a 100%,#dedbd2 0)",
                       }}
                     >
                       <div
@@ -2322,7 +2328,7 @@ export function PageMarkup({ v }) {
                         color: "#6e6a62",
                       }}
                     >
-                      {"0%"}
+                      {"VERIFIED · UAT + PROD"}
                     </div>
                   </div>
                   <div>
@@ -2519,13 +2525,14 @@ export function PageMarkup({ v }) {
               >
                 {v.wStack.map((w, $index) => (
                   <Fragment key={$index}>
+                      {$index > 0 ? " " : null}
                     <span
                       style={{
                         display: "inline-block",
                         overflow: "hidden",
                         verticalAlign: "bottom",
                         padding: ".14em .12em .2em",
-                        margin: "-.14em -.12em -.2em .1em",
+                        margin: "-.14em -.12em -.2em -.12em",
                       }}
                     >
                       <span
@@ -2598,13 +2605,14 @@ export function PageMarkup({ v }) {
             >
               {v.wStatement.map((w, $index) => (
                 <Fragment key={$index}>
+                      {$index > 0 ? " " : null}
                   <span
                     style={{
                       display: "inline-block",
                       overflow: "hidden",
                       verticalAlign: "bottom",
                       padding: ".14em .12em .2em",
-                      margin: "-.14em -.12em -.2em .1em",
+                      margin: "-.14em -.12em -.2em -.12em",
                     }}
                   >
                     <span
@@ -2705,6 +2713,7 @@ export function PageMarkup({ v }) {
             >
               {v.wContact.map((w, $index) => (
                 <Fragment key={$index}>
+                      {$index > 0 ? " " : null}
                   <span
                     style={{
                       display: "inline-block",

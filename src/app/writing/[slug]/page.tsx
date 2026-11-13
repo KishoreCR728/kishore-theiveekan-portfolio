@@ -6,6 +6,8 @@ import { articles, formatMonth, readingMinutes } from "@/lib/content";
 import { renderMarkdown } from "@/lib/markdown";
 import { site } from "@/content/site";
 import VideoBlock from "@/components/site/VideoBlock";
+import BackLink from "@/components/site/BackLink";
+import Pager from "@/components/site/Pager";
 import { CaseFile } from "@/components/home/Writing";
 import "../../home.css";
 
@@ -36,6 +38,7 @@ export default async function ArticlePage({ params }: Props) {
   if (i < 0) notFound();
   const a = all[i];
   const next = all[(i + 1) % all.length];
+  const prev = all[(i - 1 + all.length) % all.length];
   const { nodes } = renderMarkdown(a.body);
   const ld = {
     "@context": "https://schema.org",
@@ -43,18 +46,32 @@ export default async function ArticlePage({ params }: Props) {
     headline: a.meta.title,
     description: a.meta.description,
     datePublished: a.meta.date,
+    dateModified: a.meta.date,
     url: `${site.url}/writing/${a.slug}`,
-    author: { "@type": "Person", name: site.name, url: site.url },
+    mainEntityOfPage: `${site.url}/writing/${a.slug}`,
+    image: `${site.url}/og/writing-${a.slug}.png`,
+    inLanguage: "en",
+    author: { "@type": "Person", name: site.name, url: site.url, sameAs: [site.linkedin, site.github] },
+  };
+  const crumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+      { "@type": "ListItem", position: 2, name: "Writing", item: `${site.url}/writing` },
+      { "@type": "ListItem", position: 3, name: a.meta.title, item: `${site.url}/writing/${a.slug}` },
+    ],
   };
 
   return (
     <div className="page">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs).replace(/</g, "\\u003c") }} />
       <SiteHeader current="writing" />
       <main id="main" className="wrap article">
         <div className="narrow">
           <header className="article-head">
-            <a className="label" href="/writing">← Writing</a>
+            <BackLink fallback="/writing" label="Back" />
             <h1>{a.meta.title}</h1>
             <p className="lede">{a.meta.description}</p>
             <p className="byline">{site.name} · {formatMonth(a.meta.date)} · {readingMinutes(a.body)} min read</p>
@@ -72,10 +89,7 @@ export default async function ArticlePage({ params }: Props) {
               <a className="pill" href="/#work">Case studies</a>
             </div>
           </aside>
-          <nav className="next-link" aria-label="Next article">
-            <span className="label">Next article</span>
-            <a href={`/writing/${next.slug}`}>{next.meta.title} <i>→</i></a>
-          </nav>
+          <Pager kind="article" prev={{ href: `/writing/${prev.slug}`, title: prev.meta.title }} next={{ href: `/writing/${next.slug}`, title: next.meta.title }} />
         </div>
       </main>
       <SiteFooter />

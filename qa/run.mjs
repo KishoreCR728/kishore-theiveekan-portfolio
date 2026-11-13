@@ -4,7 +4,7 @@ const root = "out", port = 8750, base = `http://127.0.0.1:${port}`, fails = [];
 const fail = (m) => { fails.push(m); console.log("FAIL", m); };
 const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
 const banned = (process.env.QA_BANNED || "").split(",").filter(Boolean);
-const files = walk(root).filter((f) => /\.(html|txt|xml|js)$/.test(f));
+const files = walk(root).filter((f) => /\.(html|txt|xml|js|vtt)$/.test(f));
 for (const f of files) { const t = fs.readFileSync(f, "utf8"); for (const b of banned) if (new RegExp(b, "i").test(t)) fail(`banned term "${b}" in ${f}`); if (f.endsWith(".html") && t.includes("{{")) fail(`template token in ${f}`); }
 const slugs = fs.readdirSync(path.join(root, "work")).filter((f) => f.endsWith(".html")).map((f) => f.replace(".html", ""));
 if (slugs.length !== 10) fail(`expected 10 case studies, found ${slugs.length}`);

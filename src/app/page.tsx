@@ -18,6 +18,7 @@ const person = {
   sameAs: [site.linkedin, site.github],
   worksFor: { "@type": "Organization", name: "Finstein Advizory LLP" },
   address: { "@type": "PostalAddress", addressLocality: "Chennai", addressCountry: "IN" },
+  alumniOf: { "@type": "CollegeOrUniversity", name: "Park College of Engineering and Technology" },
   knowsAbout: ["Frontend engineering", "Angular", "React", "Next.js", "TypeScript", "three.js", "Web performance", "Web security"],
 };
 
@@ -29,7 +30,7 @@ export default function Home() {
     .map(({ slug, title, oneLiner, tags, status }) => ({ slug, title, oneLiner, tags, status: status ?? null }));
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(person).replace(/</g, "\\u003c") }} />
       {/* Decide before the first paint whether the 3D runs, so switching to the static layout never shifts the page. */}
       <script dangerouslySetInnerHTML={{ __html: staticModeCheck }} />
       <Experience

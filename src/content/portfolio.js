@@ -86,7 +86,7 @@ export const contributed = [
   ['Manufacturing execution system', 'Feature work + technical documentation', 'A manufacturing execution system: 616-endpoint NestJS backend, 148-component Angular 19 SSR console with D3 dashboards, barcode labels and CASL permissions. Authored the system documentation.'],
   ['Banking application testing', 'Test automation contributor', 'Wrote automated tests in an existing WebdriverIO + Appium framework and tested banking applications across Android, iOS, web, macOS and Safari.'],
   ['Learning platform', 'Frontend, learner and admin apps', 'Two Angular applications on a shared 191-endpoint API: the student experience and a separately deployed administration console.'],
-  ['Gold-loan back-office', 'Frontend contributor', 'A 332-component Angular console for an gold-loan lender, organised as 41 lazily-loaded modules.'],
+  ['Gold-loan back-office', 'Frontend contributor', 'A 332-component Angular console for a gold-loan lender, organised as 41 lazily-loaded modules.'],
 ];
 
 export const timeline = [
