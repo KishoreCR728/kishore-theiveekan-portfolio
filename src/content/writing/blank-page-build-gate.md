@@ -4,7 +4,8 @@ order: 1
 topic: Build and release
 date: 2026-11-11
 video: short-blank-page
-description: A prerender fallback I designed shipped hundreds of empty pages to crawlers for up to two weeks while the build stayed green. How it was found, and the build gate that replaced it.
+seoTitle: The build said success. Crawlers saw a blank page.
+description: My prerender fallback shipped empty pages to crawlers for up to two weeks while the build stayed green. How it was found and the gate that replaced it.
 problem: Hundreds of pages were empty to crawlers while the build stayed green.
 found: An outside audit flagged it; a 30-second curl check showed 0 characters in production and 15,147 locally.
 fix: Made the prerender strict by default and added a second check that counts the text on every page.
@@ -37,7 +38,7 @@ The server that builds production didn't have Chromium installed. Every deploy:
 
 1. printed a "head only" warning into a log nobody reads,
 2. exited 0,
-3. produced about 380 HTML files that looked completely normal in a file listing.
+3. produced about 380 HTML files (the site has since grown to about 516 pages) that looked completely normal in a file listing.
 
 Open any of them in a browser and the JavaScript drew the page. Look at the raw HTML and the body was empty.
 
@@ -91,6 +92,6 @@ By 28 August the fix was confirmed on production.
 
 **Two layers beat one clever one.** The prerender stops on known failures; the validator catches the ones I haven't imagined yet.
 
-The best test of a release gate is to break it on purpose. We did: we blocked the port the prerender uses, and the build failed, as it should.
+A release gate is only proven when you break it on purpose. We did: we blocked the port the prerender uses, and the build failed, as it should.
 
 > **How this was solved.** I worked on this site with Claude Code, an AI coding agent, as a pair. My part: the original fallback decision (and owning it), confirming the audit with my own measurements, finding out how production was really built, and deciding that the build must be strict by default with a second, independent check. The agent wrote most of the scripts with me, and I reviewed every change.

@@ -14,18 +14,29 @@ import { allCases } from "@/lib/cases";
 import { articles } from "@/lib/content";
 import { site } from "@/content/site";
 
+// Structured data: a ProfilePage about one Person (stable @id that the articles and case studies point to as author).
 const person = {
-  "@context": "https://schema.org",
   "@type": "Person",
+  "@id": `${site.url}/#person`,
   name: site.name,
   jobTitle: "Frontend Engineer",
+  description: "Frontend engineer in Chennai, India, building fast, secure, multilingual web platforms in Angular, React and TypeScript. Open to relocation.",
   url: site.url,
   email: `mailto:${site.email}`,
   sameAs: [site.linkedin, site.github],
   worksFor: { "@type": "Organization", name: "Finstein Advizory LLP" },
   address: { "@type": "PostalAddress", addressLocality: "Chennai", addressCountry: "IN" },
   alumniOf: { "@type": "CollegeOrUniversity", name: "Park College of Engineering and Technology" },
+  knowsLanguage: ["en", "ta"],
   knowsAbout: ["Frontend engineering", "Angular", "React", "Next.js", "TypeScript", "three.js", "Web performance", "Web security"],
+};
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebSite", "@id": `${site.url}/#website`, url: site.url, name: site.name, inLanguage: "en", publisher: { "@id": `${site.url}/#person` } },
+    { "@type": "ProfilePage", "@id": `${site.url}/#profile`, url: site.url, name: site.title, isPartOf: { "@id": `${site.url}/#website` }, mainEntity: { "@id": `${site.url}/#person` } },
+    person,
+  ],
 };
 
 // Decides before the first paint whether the 3D runs, so switching to the static layout never shifts the page.
@@ -36,10 +47,6 @@ function runtimeEntry(): string {
   const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/home/manifest.json"), "utf8")) as { entry: string };
   return manifest.entry;
 }
-
-/** Loads the browser module after the page's load event, so text and images paint first. */
-const loadRuntime = (src: string) =>
-  `(function(){function go(){import(${JSON.stringify(src)})}if(document.readyState==="complete")setTimeout(go,0);else addEventListener("load",function(){setTimeout(go,0)},{once:true})})();`;
 
 const json = (x: unknown) => JSON.stringify(x).replace(/</g, "\\u003c");
 
@@ -66,11 +73,12 @@ export default function Home() {
   });
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json(person) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json(structuredData) }} />
       <script dangerouslySetInnerHTML={{ __html: staticModeCheck }} />
       <PageMarkup v={view} />
       <script id="home-data" type="application/json" dangerouslySetInnerHTML={{ __html: json(runtimeData(flagships)) }} />
-      <script dangerouslySetInnerHTML={{ __html: loadRuntime(runtimeEntry()) }} />
+      {/* A module script runs after parsing; main.ts itself waits for the load event before doing any work. */}
+      <script type="module" src={runtimeEntry()} />
     </>
   );
 }

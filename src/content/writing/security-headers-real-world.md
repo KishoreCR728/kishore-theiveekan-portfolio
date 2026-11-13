@@ -3,7 +3,8 @@ title: Security headers in the real world: five ways a correct policy still fail
 order: 4
 topic: Web security
 date: 2026-11-11
-description: A correct Content-Security-Policy in the repo is not a protected site. Stale hand copies, nginx header inheritance, strict-dynamic, removing unsafe-inline, and a server that bypassed it all.
+seoTitle: Five ways a correct security policy still fails
+description: A correct Content-Security-Policy in the repo is not a protected site: five ways it fails, from stale copies and nginx inheritance to a bypassing server.
 problem: A correct security policy in the repo did not protect the live pages.
 found: Checked headers on every response type, not just the home page: scripts and fonts had none.
 fix: Headers generated at build and re-included per nginx block, inline scripts removed, a proxy bypass closed.

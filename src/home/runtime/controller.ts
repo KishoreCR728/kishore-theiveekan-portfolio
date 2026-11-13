@@ -37,9 +37,16 @@ export class HomeController {
   m: Pointer = { x: -9999, y: -9999, px: -9999, py: -9999, tx: -9999, ty: -9999, nx: 0, ny: 0 };
   sc: Scroll = { target: 0, cur: 0, last: 0, vel: 0 };
   inJ = false;
-  // Set by the scene module.
+  // Set and used by the scene module (scene.js), declared here so the shape is visible in one place.
   _alive = false; _raf = 0; _hero?: Hero;
   _goCh?: (i: number) => void;
+  _jStep?: (dy: number) => boolean;
+  _jLast = 0;
+  _views?: unknown[];
+  _activeD = -1;
+  _NCH = 0;
+  _crane?: unknown;
+  _tilt?: { x: number; y: number };
   J?: { ch: number };
   _pars: HTMLElement[] = []; _floats: HTMLElement[] = []; _yrs: HTMLElement[] = []; _tilts: HTMLElement[] = [];
   private refs = new Map<string, Ref>();
@@ -188,7 +195,7 @@ export class HomeController {
       const action = el.dataset.action;
       // Menu links carry data-action="menu" too: following one closes the menu.
       if (action === "menu") this.setMenu(el.tagName === "A" ? false : !this.state.menuOpen);
-      else if (action === "top") this.sc.target = 0;
+      else if (action === "top") { if (this.isStatic) scrollTo({ top: 0, behavior: "smooth" }); else this.sc.target = 0; }
       else if (action === "chapter") this._goCh?.(Number(el.dataset.ch || 0));
       else if (action === "chapter-prev") this._goCh?.((this.J?.ch ?? 0) - 1);
       else if (action === "chapter-next") this._goCh?.((this.J?.ch ?? 0) + 1);
@@ -210,6 +217,8 @@ export class HomeController {
   /* ---------- smooth wheel scrolling ---------- */
 
   private onWheel = (e: WheelEvent): void => {
+    // Leave browser zoom (Ctrl/Cmd + wheel, trackpad pinch) and the sideways hero card strip alone.
+    if (e.ctrlKey || e.metaKey || (e.target as Element | null)?.closest?.("[data-hero-cards]")) return;
     if (this.state.menuOpen || this.state.phase !== "ready") { if (this.state.phase !== "ready") e.preventDefault(); return; }
     e.preventDefault();
     const max = document.documentElement.scrollHeight - innerHeight;

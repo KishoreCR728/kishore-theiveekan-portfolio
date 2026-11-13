@@ -3,7 +3,8 @@ title: Same app, new database: the bugs only real files could find
 order: 3
 topic: Data and performance
 date: 2026-11-11
-description: A finance app moved from PostgreSQL to SQL Server, and real client files broke it: a 2,100-parameter ceiling, a race on one connection, a ten-second browser freeze and 33 blank export columns.
+seoTitle: Same app, new database: bugs only real files found
+description: Moving a finance app from PostgreSQL to SQL Server: a 2,100-parameter limit, a connection race, a 10-second browser freeze and 33 blank columns.
 problem: After a move from PostgreSQL to SQL Server, real client files failed to upload and Download froze the browser.
 found: Reproduced each report on a restored copy and measured: a 2,100-parameter limit, a race on one connection, a 10-second freeze.
 fix: Batches sized from the driver’s limit, writes one after another, the export built on the server, column names fixed.

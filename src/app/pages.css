@@ -114,12 +114,12 @@
 }
 .brand-short { display: none; }
 @media (max-width: 600px) {
-  .site-head .hide-sm { display: none; }
   .brand-full { display: none; }
   .brand-short { display: inline; }
 }
 @media (max-width: 400px) {
   .site-head { padding-left: 16px; padding-right: 16px; }
+  .site-head .pill { letter-spacing: 0; }
   .site-head .brand { font-size: 15px; }
   .site-head nav { gap: 6px; }
   .site-head .pill { padding: 9px 12px; }
@@ -187,7 +187,10 @@
 .video-block.vertical { max-width: min(360px, max(220px, calc((100svh - 150px) * 9 / 16))); }
 .video-block.vertical video { aspect-ratio: 9 / 16; }
 .prose .video-block.vertical, .article .video-block.vertical { margin-left: auto; margin-right: auto; }
-.not-found { min-height: 62vh; padding: 14vh 0 10vh; }
+.not-found { min-height: 62vh; padding-block: 14vh 10vh; }
 .not-found h1 { margin: 14px 0 0; font-weight: 400; font-size: clamp(56px, 10vw, 140px); letter-spacing: -0.04em; line-height: 1; }
 .not-found .lede { margin: 22px 0 0; font-size: 19px; color: var(--ink-2); max-width: 52ch; }
 .not-found-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+
+/* Phones narrower than 360 px: drop Writing from the header (it stays in the footer). */
+@media (max-width: 359px) { .site-head .hide-sm { display: none; } }

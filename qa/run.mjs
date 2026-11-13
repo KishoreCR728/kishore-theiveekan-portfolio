@@ -1,5 +1,5 @@
 // Repeatable release checks. Run after `npm run build`: npm test
-import fs from "fs"; import path from "path"; import { chromium } from "playwright-core"; import { serve } from "./serve.mjs";
+import crypto from "crypto"; import fs from "fs"; import path from "path"; import { chromium } from "playwright-core"; import { serve } from "./serve.mjs";
 const root = "out", port = 8750, base = `http://127.0.0.1:${port}`, fails = [];
 const fail = (m) => { fails.push(m); console.log("FAIL", m); };
 const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
@@ -17,6 +17,14 @@ const FONT_CHARS = /[\u0020-\u007E\u00A0\u00A9\u00B0\u00B7\u00E7\u00F7\u2013\u20
 for (const f of walk(root).filter((f) => f.endsWith(".html"))) { const text = fs.readFileSync(f, "utf8").replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, "").replace(/<[^>]+>/g, " ").replace(/&[a-z]+;|&#\d+;/g, " "); const bad = [...new Set([...text].filter((c) => !FONT_CHARS.test(c)))]; if (bad.length) fail(`characters outside the font subset in ${f}: ${bad.join(" ")}`); }
 // Every page is plain HTML (scripts/strip-react.mjs): no React runtime, no embedded React data.
 for (const f of walk(root).filter((f) => f.endsWith(".html"))) { const t = fs.readFileSync(f, "utf8"); if (/\/_next\/static\/chunks\/[^"]+\.js|self\.__next_f/.test(t)) fail(`page still ships the React runtime: ${f}`); }
+// The security policy allows no inline scripts except by exact hash: every executable inline script on every page must be listed.
+{ const csp = JSON.parse(fs.readFileSync(new URL("../vercel.json", import.meta.url), "utf8")).headers.flatMap((h) => h.headers).find((x) => x.key === "Content-Security-Policy").value;
+  if (/script-src[^;]*'unsafe-inline'/.test(csp)) fail("CSP script-src must not allow 'unsafe-inline'");
+  for (const f of walk(root).filter((f) => f.endsWith(".html"))) for (const m of fs.readFileSync(f, "utf8").matchAll(/<script(?![^>]*\bsrc=)([^>]*)>([\s\S]*?)<\/script>/g)) {
+    if (/application\/(ld\+)?json/.test(m[1])) continue;
+    const h = `'sha256-${crypto.createHash("sha256").update(m[2]).digest("base64")}'`;
+    if (!csp.includes(h)) fail(`inline script not allowed by the CSP in ${f}: add ${h} to script-src in vercel.json (or move it to a file)`);
+  } }
 for (const f of ["robots.txt", "sitemap.xml", "llms.txt", "og.png", "Kishore-Theiveekan-CV.pdf", "404.html"]) if (!fs.existsSync(path.join(root, f))) fail(`missing ${f}`);
 const server = await serve(root, port);
 const browser = await chromium.launch({ channel: "chrome", args: ["--use-angle=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist", "--enable-unsafe-swiftshader"] });

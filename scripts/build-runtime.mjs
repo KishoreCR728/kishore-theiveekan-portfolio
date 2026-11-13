@@ -5,7 +5,7 @@ const out = path.resolve("public/home");
 fs.rmSync(out, { recursive: true, force: true });
 const result = await build({
   entryPoints: { main: "src/home/runtime/main.ts" }, bundle: true, splitting: true, format: "esm", minify: true,
-  target: "es2020", outdir: out, entryNames: "[name]-[hash]", chunkNames: "chunk-[hash]", metafile: true, legalComments: "none",
+  target: "es2020", outdir: out, entryNames: "[name]-[hash]", chunkNames: "chunk-[hash]", metafile: true, legalComments: "eof",
   logLevel: "warning",
 });
 const entry = Object.entries(result.metafile.outputs).find(([, o]) => o.entryPoint)?.[0];

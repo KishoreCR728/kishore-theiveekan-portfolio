@@ -23,7 +23,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!a) return {};
   const title = `${a.meta.title} | ${site.name}`;
   return {
-    title: a.meta.title,
+    // Search results show about 60 characters: long titles use a shorter seoTitle and drop the name suffix.
+    title: { absolute: `${a.meta.seoTitle ?? a.meta.title}${(a.meta.seoTitle ?? a.meta.title).length > 45 ? "" : ` | ${site.name}`}` },
     description: a.meta.description,
     alternates: { canonical: `/writing/${a.slug}` },
     openGraph: { type: "article", siteName: site.name, url: `/writing/${a.slug}`, title, description: a.meta.description, publishedTime: a.meta.date, authors: [site.name], images: [`/og/writing-${a.slug}.png`] },
@@ -51,7 +52,7 @@ export default async function ArticlePage({ params }: Props) {
     mainEntityOfPage: `${site.url}/writing/${a.slug}`,
     image: `${site.url}/og/writing-${a.slug}.png`,
     inLanguage: "en",
-    author: { "@type": "Person", name: site.name, url: site.url, sameAs: [site.linkedin, site.github] },
+    author: { "@type": "Person", "@id": `${site.url}/#person`, name: site.name, url: site.url, sameAs: [site.linkedin, site.github] },
   };
   const crumbs = {
     "@context": "https://schema.org",

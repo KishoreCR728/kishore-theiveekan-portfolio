@@ -7,7 +7,7 @@ export const career = {
   company: "Finstein Advizory LLP",
   place: "Chennai",
   dates: "Mar 2023 – present",
-  title: "Associate Trainee (Full Stack Developer)",
+  title: "Associate Trainee (official title) · lead developer on two products since late 2025",
   summary:
     "Frontend-focused full stack engineer for corporate websites, product platforms and enterprise apps, from UI architecture to UAT, security review and production. My official title is Associate Trainee; since late 2025 I have been the lead developer on two products.",
   phases: [

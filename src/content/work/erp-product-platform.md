@@ -64,7 +64,7 @@ Follow-ups in August 2026:
 - The CSP blocked every analytics hit, because `*.analytics.google.com` doesn't match the bare domain. Fixing the server alone did nothing: the browser enforces both the header and the meta CSP, so the page needed a rebuild too.
 - UAT Nginx sent 66 of 121 routes through a trailing-slash redirect and returned soft 404s. Fixed, plus real 404s on Apache.
 - Deploy excludes had left share images and icons missing or stale on both environments. Fixed.
-- The share-image generator clipped 29 of 122 titles and had left 6 of 7 product pages without an image. Fixed.
+- The share-image generator clipped 29 of the 122 share-image titles it generated and had left 6 of 7 product pages without an image. Fixed.
 
 ## Results
 

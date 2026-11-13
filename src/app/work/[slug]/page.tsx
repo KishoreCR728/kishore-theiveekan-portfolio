@@ -48,7 +48,7 @@ export default async function CasePage({ params }: Props) {
     url: `${site.url}/work/${c.slug}`,
     keywords: c.tags.join(", "),
     inLanguage: "en",
-    author: { "@type": "Person", name: site.name, url: site.url, sameAs: [site.linkedin, site.github] },
+    author: { "@type": "Person", "@id": `${site.url}/#person`, name: site.name, url: site.url, sameAs: [site.linkedin, site.github] },
   };
   const crumbs = {
     "@context": "https://schema.org",

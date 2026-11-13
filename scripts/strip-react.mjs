@@ -18,6 +18,12 @@ for (const f of walk(root).filter((f) => f.endsWith(".html"))) {
   const out = PATTERNS.reduce((h, re) => h.replace(re, ""), html);
   if (out !== html) { fs.writeFileSync(f, out); n++; }
 }
-// The React data files for client-side navigation are unused too.
-for (const f of walk(root).filter((f) => f.endsWith(".txt") && /(^|\/)(__next\.|index\.txt$|[^/]+\.txt$)/.test(path.relative(root, f)) && !/robots\.txt$|llms\.txt$/.test(f))) fs.rmSync(f);
-console.log(`plain HTML: ${n} pages`);
+// The React data files for client-side navigation are unused too (only Next.js's own *.txt files, by name).
+const isRscData = (rel) => /(^|\/)__next\.[^/]*\.txt$/.test(rel) || (/\.txt$/.test(rel) && fs.existsSync(path.join(root, rel.replace(/\.txt$/, ".html"))));
+for (const f of walk(root).filter((f) => isRscData(path.relative(root, f).split(path.sep).join("/")))) fs.rmSync(f);
+// The runtime chunks themselves and Next.js's duplicate not-found page are now unused.
+const chunks = path.join(root, "_next/static/chunks");
+let removed = 0;
+if (fs.existsSync(chunks)) for (const f of walk(chunks).filter((f) => f.endsWith(".js"))) { fs.rmSync(f); removed++; }
+for (const f of ["_not-found.html", "_not-found"]) fs.rmSync(path.join(root, f), { recursive: true, force: true });
+console.log(`plain HTML: ${n} pages · ${removed} unused runtime files removed`);

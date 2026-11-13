@@ -1,6 +1,6 @@
 html, body { margin: 0; background: #f0efe9; color: #0f0e0c; font-family: var(--font-sans), "DM Sans Variable", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; font-weight: 400; }
 a { color: #0f0e0c; text-decoration: none; }
-a:hover { color: #e0562a; }
+a:hover { color: #b8431c; } /* darker accent for text: 5.4:1 on white; #e0562a stays for fills */
 i.ac { font-family: var(--font-serif), "Instrument Serif", Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
 :focus-visible { outline: 2px solid #e0562a; outline-offset: 3px; }
 @keyframes drift { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(6%, -8%) scale(1.15); } 100% { transform: translate(0, 0) scale(1); } }

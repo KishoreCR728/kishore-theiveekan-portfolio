@@ -3,7 +3,7 @@ type Item = { href: string; title: string };
 
 export default function Pager({ kind, prev, next }: { kind: string; prev: Item; next: Item }) {
   return (
-    <nav className="pager" aria-label={`More ${kind}s`}>
+    <nav className="pager" aria-label={kind === "case study" ? "More case studies" : `More ${kind}s`}>
       <a className="prev" rel="prev" href={prev.href}>
         <span className="label"><i aria-hidden="true">←</i> Previous {kind}</span>
         <b>{prev.title}</b>

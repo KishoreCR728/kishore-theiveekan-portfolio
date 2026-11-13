@@ -413,7 +413,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                 {" they work in production."}
               </h1>
               <p data-proof={"1"} style={{ margin: "18px 0 0", fontSize: "15px", letterSpacing: ".01em", color: "#6e6a62", animation: "rise 1s .25s both" }}>
-                {"3.5+ years · Lead developer on two products · 10 case studies, each with what broke"}
+                {"3.5+ years · Lead developer on two products · 4 full case studies with what broke · 5 production write-ups"}
               </p>
             </div>
               <div
@@ -446,7 +446,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
           <section
             data-ref="heroSec"
             data-screen-label={"3D panel"}
-            style={{ position: "relative", zIndex: "2", height: "240vh", padding: "0 4.5vw" }}
+            style={{ position: "relative", zIndex: "2", height: "180vh", padding: "0 4.5vw" }}
           >
             <div
               style={{
@@ -642,7 +642,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                     ["Also", "Node and NestJS, build pipelines, security headers"],
                     ["Based in", "Chennai, India (IST, UTC+5:30)"],
                     ["Open to", "Relocation"],
-                    ["Visa", "Needs a work visa"],
+                    ["Visa", "Needs employer visa sponsorship"],
                     ["Notice", "1 month (flexible)"],
                     ["Languages", "English, Tamil"],
                   ].map(([k, val]) => (
@@ -859,7 +859,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
             id={"journey"}
             data-ref="diveSec"
             data-screen-label={"Journey"}
-            style={{ position: "relative", zIndex: "2", height: "900vh", color: "#0f0e0c" }}
+            style={{ position: "relative", zIndex: "2", height: "600vh", color: "#0f0e0c" }}
           >
             <div
               style={{
@@ -891,7 +891,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                   fontSize: "12px",
                   letterSpacing: ".12em",
                   textTransform: "uppercase",
-                  color: "#8a857c",
+                  color: "#6e6a62",
                   pointerEvents: "none",
                 }}
               >
@@ -911,7 +911,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                 }}
               >
                 <div
-                  style={{ fontSize: "12px", letterSpacing: ".12em", textTransform: "uppercase", color: "#8a857c", marginBottom: "26px" }}
+                  style={{ fontSize: "12px", letterSpacing: ".12em", textTransform: "uppercase", color: "#6e6a62", marginBottom: "26px" }}
                 >
                   {"Welcome"}
                 </div>
@@ -949,7 +949,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                         fontSize: "12px",
                         letterSpacing: ".12em",
                         textTransform: "uppercase",
-                        color: "#8a857c",
+                        color: "#6e6a62",
                         marginBottom: "26px",
                       }}
                     >
@@ -986,6 +986,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                     </div>
                     <a
                       href={"#work"}
+                      aria-label={`See the work: ${y.short}, ${y.y}`}
                       className="h1f9319a"
                       style={{
                         pointerEvents: "auto",
@@ -1015,6 +1016,11 @@ export function PageMarkup({ v }: { v: HomeView }) {
                   flexDirection: "column",
                   gap: "14px",
                   alignItems: "flex-end",
+                  background: "rgba(240,239,233,.86)",
+                  padding: "12px 16px",
+                  borderRadius: "14px",
+                  WebkitBackdropFilter: "blur(8px)",
+                  backdropFilter: "blur(8px)",
                 }}
               >
                 <div
@@ -1026,7 +1032,8 @@ export function PageMarkup({ v }: { v: HomeView }) {
                     cursor: "pointer",
                     fontSize: "13px",
                     letterSpacing: ".06em",
-                    color: "#b3aea5",
+                    color: "#6e6a62",
+                    padding: "5px 0",
                     transition: "color .4s",
                   }}
                   data-action="chapter" data-ch="0"
@@ -1051,7 +1058,8 @@ export function PageMarkup({ v }: { v: HomeView }) {
                         cursor: "pointer",
                         fontSize: "13px",
                         letterSpacing: ".06em",
-                        color: "#b3aea5",
+                        color: "#6e6a62",
+                        padding: "5px 0",
                         transition: "color .4s",
                       }}
                       data-action="chapter" data-ch={String($index + 1)}
@@ -1070,7 +1078,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
               <div style={{ position: "absolute", right: "4.5vw", bottom: "28px", display: "flex", alignItems: "center", gap: "10px" }}>
                 <span
                   data-ref="counter"
-                  style={{ font: "500 12px/1 ui-monospace,Menlo,monospace", letterSpacing: ".1em", color: "#8a857c", marginRight: "10px" }}
+                  style={{ font: "500 12px/1 ui-monospace,Menlo,monospace", letterSpacing: ".1em", color: "#6e6a62", marginRight: "10px" }}
                 >
                   {"01 / 06"}
                 </span>
@@ -1129,7 +1137,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                   fontSize: "12px",
                   letterSpacing: ".12em",
                   textTransform: "uppercase",
-                  color: "#8a857c",
+                  color: "#6e6a62",
                   pointerEvents: "none",
                 }}
               >
@@ -1142,7 +1150,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
             id={"method"}
             data-ref="methSec"
             data-screen-label={"How I work"}
-            style={{ position: "relative", zIndex: "2", height: "260vh" }}
+            style={{ position: "relative", zIndex: "2", height: "200vh" }}
           >
             <div
               style={{
@@ -2550,7 +2558,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
             {"No cookies, no trackers"}
             <br />
             <span style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>
-              {"Work photos: Unsplash license"}
+              {"Illustrations drawn for this site"}
             </span>
           </div>
         </footer>

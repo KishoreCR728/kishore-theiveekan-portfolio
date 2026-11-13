@@ -1,8 +1,8 @@
 /*
  * Hero: a light panel full of small floating boxes.
  *
- * Hover (or focus, or swipe on a phone) a project card and the boxes fly in, left to right, and build that
- * project's title out of themselves, like pixels. They keep their own colours. Move away and they drift
+ * Hover (or focus, or swipe on a phone) a project card and the near-black boxes fly in, left to right, and
+ * build that project's name (one short word) out of themselves, like pixels. Nothing is recoloured. Move away and they drift
  * back. The pointer gently pushes nearby boxes aside. Everything is eased per box, so nothing snaps.
  *
  * One InstancedMesh draws every box in a single call, so this stays cheap on phones.
@@ -18,6 +18,7 @@ export interface HeroOptions {
   RoundedBoxGeometry: typeof RBG;
   RoomEnvironment: typeof RE;
   canvas: HTMLCanvasElement;
+  /** One short word per project (e.g. "ERP", "JARVIS"): short words stay legible when built from boxes. */
   titles: string[];
   /** Coarse pointer (phones, tablets): fewer boxes, lower pixel ratio. */
   low: boolean;
@@ -38,7 +39,7 @@ export interface Hero {
   frame(f: HeroFrame): void;
   resize(): void;
   /** Build project i's title; -1 releases the boxes. */
-  show(i: number): void;
+  show(i: number, refit?: boolean): void;
   /** Where the formed title ends on screen (client px, relative to the canvas), for placing the caption. */
   titleBottom(): number;
 }
@@ -57,13 +58,14 @@ interface Box {
   back: number;
   delay: number;
   target: THREE_NS.Vector3 | null;
-  /** Dark or orange box: these build the titles, so the words read clearly on the light panel. */
+  /** Near-black box: these build the words, so they read clearly on the light panel. */
   ink: boolean;
 }
 
 const BG = 0xebe8e1;
 // Weighted palette: mostly warm whites and greys, some ink, a few accent orange.
-const PALETTE: [number, number][] = [[0xfbfaf7, 34], [0xe2ddd4, 18], [0xc9c3b8, 12], [0x2a2622, 16], [0x5b554d, 6], [0xe0562a, 14]];
+const PALETTE: [number, number][] = [[0xfbfaf7, 30], [0xe2ddd4, 16], [0xc9c3b8, 10], [0x2a2622, 30], [0xe0562a, 14]];
+const INK = 0x2a2622; // the near-black boxes build the words: one colour, high contrast, and nothing is recoloured
 const smooth = (x: number) => x * x * (3 - 2 * x);
 const easeInOut = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 
@@ -84,7 +86,7 @@ export function createHero(o: HeroOptions): Hero {
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
   camera.position.z = 18;
 
-  const N = o.low ? 460 : 820;
+  const N = o.low ? 640 : 1100;
   const geo = new o.RoundedBoxGeometry(1, 1, 1, 2, 0.16);
   const mat = new THREE.MeshStandardMaterial({ roughness: 0.42, metalness: 0, envMapIntensity: 0.85 });
   const mesh = new THREE.InstancedMesh(geo, mat, N);
@@ -108,7 +110,7 @@ export function createHero(o: HeroOptions): Hero {
       size: rnd(0.16, 0.34),
       push: new THREE.Vector2(),
       f: 0, goal: 0, back: 0, delay: 0, target: null,
-      ink: hex !== 0xfbfaf7 && hex !== 0xe2ddd4,
+      ink: hex === INK,
     });
   }
   if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
@@ -125,7 +127,7 @@ export function createHero(o: HeroOptions): Hero {
   function titlePoints(text: string, budget: number): THREE_NS.Vector3[] {
     const { w, h } = visible();
     const narrow = camera.aspect < 1.25;
-    const lines = narrow && text.includes(" ") ? splitMiddle(text) : [text];
+    const lines = [text];
     const c = document.createElement("canvas"), x = c.getContext("2d", { willReadFrequently: true })!;
     const fs = 120;
     x.font = `600 ${fs}px ${o.font}`;
@@ -134,7 +136,7 @@ export function createHero(o: HeroOptions): Hero {
     c.height = Math.ceil(fs * 1.12 * lines.length + 20);
     x.font = `600 ${fs}px ${o.font}`;
     x.textBaseline = "top";
-    x.fillStyle = "#000"; x.strokeStyle = "#000"; x.lineWidth = fs * 0.07; x.lineJoin = "round"; // a touch bolder than the font, so strokes are at least two boxes wide
+    x.fillStyle = "#000"; x.strokeStyle = "#000"; x.lineWidth = fs * 0.1; x.lineJoin = "round"; // bolder than the font, so every stroke is several boxes wide
     lines.forEach((l, k) => { const lx = 10 + (tw - x.measureText(l).width) / 2, ly = 10 + k * fs * 1.12; x.fillText(l, lx, ly); x.strokeText(l, lx, ly); });
     const data = x.getImageData(0, 0, c.width, c.height).data;
     let filled = 0;
@@ -145,7 +147,7 @@ export function createHero(o: HeroOptions): Hero {
     const pts: [number, number][] = [];
     for (let py = step / 2; py < c.height; py += step) for (let px = step / 2; px < c.width; px += step) if (data[(Math.floor(py) * c.width + Math.floor(px)) * 4 + 3] > 128) pts.push([px, py]);
     // World size: wide on desktop, almost full width on phones; centred a little above the middle.
-    const worldW = w * (narrow ? 0.84 : 0.66), scale = worldW / c.width, cy = h * (narrow ? 0.12 : 0.1);
+    const scale = Math.min((w * (narrow ? 0.8 : 0.56)) / c.width, (h * 0.3) / c.height), cy = h * (narrow ? 0.12 : 0.1);
     cell = step * scale;
     bottomY = cy - (c.height / 2) * scale;
     let out = pts.map(([px, py]) => new THREE.Vector3((px - c.width / 2) * scale, cy - (py - c.height / 2) * scale, 0));
@@ -153,10 +155,11 @@ export function createHero(o: HeroOptions): Hero {
     return out;
   }
 
-  function show(i: number) {
-    if (i === current) return;
+  /** Build word i; -1 releases. `refit` re-lays the current word after a resize without restarting the animation. */
+  function show(i: number, refit = false) {
+    if (i === current && !refit) return;
     current = i;
-    shownAt = performance.now() / 1000;
+    if (!refit) shownAt = performance.now() / 1000;
     if (i < 0 || !o.titles[i]) {
       // Release: right to left, so the word un-builds the way it was built.
       boxes.forEach((b) => { b.goal = 0; b.delay = b.target ? (1 - (b.target.x / visible().w + 0.5)) * 0.25 : 0; });
@@ -176,7 +179,7 @@ export function createHero(o: HeroOptions): Hero {
       used.add(k);
       const b = boxes[k];
       b.target = p; b.goal = 1;
-      b.delay = ((p.x - minX) / spanX) * 0.35 + Math.random() * 0.08; // a left-to-right wave
+      if (!refit) b.delay = ((p.x - minX) / spanX) * 0.35 + Math.random() * 0.08; // a left-to-right wave
     });
     boxes.forEach((b, k) => { if (!used.has(k)) { b.goal = 0; b.delay = 0; } });
   }
@@ -222,14 +225,14 @@ export function createHero(o: HeroOptions): Hero {
       b.push.y += ((want * dy) / len * 1.1 - b.push.y) * kP;
       pos.set(fx + b.push.x, fy + b.push.y, fz);
 
-      let s = b.size;
+      let s = b.size * (1 - 0.45 * Math.min(1, b.back / 3)); // the rest shrink back while a word is shown
       b.rot.x += b.spin.x * dt; b.rot.y += b.spin.y * dt; b.rot.z += b.spin.z * dt;
       qa.setFromEuler(b.rot);
       if (a > 0 && b.target) {
         const tz = b.target.z + Math.sin(t * 1.6 + b.target.x * 0.8) * 0.04; // a faint breathing once formed
         pos.lerp(hit.set(b.target.x, b.target.y, tz), a);
         pos.z += Math.sin(Math.PI * a) * 0.8; // a slight arc towards the viewer on the way
-        s = b.size + (cell * 0.94 - b.size) * a;
+        s = b.size + (cell * 0.95 - b.size) * a;
         qa.slerp(qi, a); // square up to face the viewer
       }
       dummy.position.copy(pos);
@@ -245,11 +248,13 @@ export function createHero(o: HeroOptions): Hero {
 
   function resize() {
     const r = canvas.parentElement!.getBoundingClientRect();
+    const widthChanged = Math.abs(r.width - width) > 1;
     width = r.width; height = r.height;
     renderer.setSize(width, height, false);
     camera.aspect = width / Math.max(1, height);
     camera.updateProjectionMatrix();
-    if (current >= 0) { const i = current; current = -1; show(i); }
+    // Phones fire resize when the address bar hides; only a width change re-lays the word, and it never restarts.
+    if (current >= 0 && widthChanged) show(current, true);
   }
 
   function titleBottom() {
@@ -261,10 +266,3 @@ export function createHero(o: HeroOptions): Hero {
   return { frame, resize, show, titleBottom };
 }
 
-/** "ERP Product Platform" -> ["ERP Product", "Platform"]: the split closest to the middle. */
-function splitMiddle(text: string): string[] {
-  const mid = text.length / 2;
-  let best = -1;
-  for (let i = 0; i < text.length; i++) if (text[i] === " " && (best < 0 || Math.abs(i - mid) < Math.abs(best - mid))) best = i;
-  return best < 0 ? [text] : [text.slice(0, best), text.slice(best + 1)];
-}

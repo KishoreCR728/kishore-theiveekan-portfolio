@@ -2,5 +2,10 @@
 import { HomeController } from "./controller";
 import type { RuntimeData } from "../view";
 
-const raw = document.getElementById("home-data")?.textContent;
-if (raw) void new HomeController(JSON.parse(raw) as RuntimeData).start();
+/** Starts after the page's load event, so text and images always paint first. */
+function boot(): void {
+  const raw = document.getElementById("home-data")?.textContent;
+  if (raw) void new HomeController(JSON.parse(raw) as RuntimeData).start();
+}
+if (document.readyState === "complete") setTimeout(boot, 0);
+else addEventListener("load", () => setTimeout(boot, 0), { once: true });
