@@ -6,6 +6,7 @@ import "@fontsource/instrument-serif/400.css"; // only for the city chapter sign
 import "@/home/lusion.css";
 import "@/home/hover.css";
 import { PageMarkup } from "@/home/Markup";
+import HydrationSignal from "@/home/HydrationSignal";
 import { buildView, runtimeData, type Flagship } from "@/home/view";
 import Career from "@/components/home/Career";
 import Writing from "@/components/home/Writing";
@@ -51,6 +52,7 @@ function runtimeEntry(): string {
 const json = (x: unknown) => JSON.stringify(x).replace(/</g, "\\u003c");
 
 export default function Home() {
+  const dev = process.env.NODE_ENV === "development";
   const flagships: Flagship[] = allCases()
     .filter((c) => c.flagship)
     .map(({ slug, title, oneLiner, tags, status }) => ({ slug, title, oneLiner, tags, status: status ?? null }));
@@ -76,7 +78,8 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json(structuredData) }} />
       <script dangerouslySetInnerHTML={{ __html: staticModeCheck }} />
       <PageMarkup v={view} />
-      <script id="home-data" type="application/json" dangerouslySetInnerHTML={{ __html: json(runtimeData(flagships)) }} />
+      <script id="home-data" type="application/json" data-dev={dev ? "1" : undefined} dangerouslySetInnerHTML={{ __html: json(runtimeData(flagships)) }} />
+      {dev && <HydrationSignal />}
       {/* A module script runs after parsing; main.ts itself waits for the load event before doing any work. */}
       <script type="module" src={runtimeEntry()} />
     </>

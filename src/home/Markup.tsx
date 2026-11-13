@@ -147,7 +147,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                   </span>
                 </div>
                 <div style={{ marginTop: "34px", fontSize: "clamp(20px,2.2vw,30px)", color: "#9a958b", animation: "rise 1s .9s both" }}>
-                  <i data-word={"1"} className="ac">
+                  <i data-word={"1"} className="ac" suppressHydrationWarning>
                     {v.word}
                   </i>
                 </div>
@@ -165,7 +165,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                   opacity: v.loaderTextO,
                 }}
               >
-                <span data-count={"1"}>{v.count}</span>
+                <span data-count={"1"} suppressHydrationWarning>{v.count}</span>
                 <span style={{ fontSize: ".35em" }}>{"%"}</span>
               </div>
               <div
@@ -333,7 +333,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
               }}
             >
               {"CHENNAI · "}
-              <span data-time="">{v.time}</span>
+              <span data-time="" suppressHydrationWarning>{v.time}</span>
             </div>
             <a
               href={"#contact"}
