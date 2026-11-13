@@ -1,271 +1,17 @@
-/* The page markup, converted from the Claude Design source. Interaction logic lives in Experience.jsx. */
+/*
+ * The home page markup, converted from the Claude Design source ("Lusion"). Rendered to static HTML at build time.
+ * Nothing here runs in the browser: interactive elements carry data-ref / data-action hooks that the
+ * browser module (src/home/runtime) picks up.
+ */
 import { Fragment } from "react";
-const kb = (fn) => (e) => {
-  if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
-    fn(e);
-  }
-};
-export function CaseTakeover({ v }) {
-  return (
-    <>
-      <div
-        ref={v.caseRef}
-        data-case={"1"}
-        role={"dialog"}
-        aria-modal={"true"}
-        aria-label={"Case study"}
-        style={{
-          position: "fixed",
-          inset: "0",
-          zIndex: "55",
-          background: "#f0efe9",
-          overflowY: "auto",
-          overflowX: "hidden",
-          animation: "rise .55s cubic-bezier(.2,.8,.2,1) both",
-        }}
-      >
-        <div
-          style={{
-            position: "sticky",
-            top: "0",
-            zIndex: "2",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "22px 4.5vw",
-            background: "linear-gradient(#f0efe9 60%,rgba(240,239,233,0))",
-          }}
-        >
-          <div style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>
-            {"Case study "}
-            {v.cs.num}
-            {" / 10"}
-          </div>
-          <div
-            className="hf58d6ba"
-            style={{
-              background: "#0f0e0c",
-              color: "#f0efe9",
-              borderRadius: "999px",
-              padding: "13px 22px",
-              fontSize: "14px",
-              letterSpacing: ".04em",
-              textTransform: "uppercase",
-              cursor: "pointer",
-            }}
-            onClick={v.closeCase}
-            role="button"
-            tabIndex={0}
-            onKeyDown={kb(v.closeCase)}
-          >
-            {"Close ✕"}
-          </div>
-        </div>
-        <div style={{ padding: "20px 4.5vw 0" }}>
-          <div style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62", marginBottom: "18px" }}>
-            {v.cs.tags}
-          </div>
-          <h1
-            style={{
-              margin: "0 0 18px",
-              fontSize: "clamp(56px,9vw,140px)",
-              lineHeight: ".95",
-              letterSpacing: "-.04em",
-              fontWeight: "400",
-              maxWidth: "12ch",
-              textWrap: "balance",
-            }}
-          >
-            {v.cs.name}
-          </h1>
-          <p style={{ margin: "0 0 40px", fontSize: "clamp(22px,2.4vw,34px)", lineHeight: "1.2", color: "#4a4740", maxWidth: "34ch" }}>
-            <i className="ac">{v.cs.short}</i>
-          </p>
-          <div style={{ borderRadius: "18px", overflow: "hidden", aspectRatio: "21/9", background: "#131211" }}>
-            <div
-              ref={v.caseImgRef}
-              role={"img"}
-              aria-label={v.cs.alt}
-              style={{ width: "100%", height: "100%", backgroundSize: "cover", backgroundPosition: "center" }}
-            ></div>
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4,minmax(0,1fr))",
-              gap: "24px",
-              padding: "34px 0",
-              borderBottom: "1px solid #d8d5cc",
-              fontSize: "15px",
-              lineHeight: "1.5",
-            }}
-          >
-            <div>
-              <div style={{ color: "#6e6a62", fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", marginBottom: "6px" }}>
-                {"Role"}
-              </div>
-              {v.cs.role}
-            </div>
-            <div>
-              <div style={{ color: "#6e6a62", fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", marginBottom: "6px" }}>
-                {"Ownership"}
-              </div>
-              {v.cs.own}
-            </div>
-            <div>
-              <div style={{ color: "#6e6a62", fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", marginBottom: "6px" }}>
-                {"Timeline"}
-              </div>
-              {v.cs.when}
-            </div>
-            <div>
-              <div style={{ color: "#6e6a62", fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", marginBottom: "6px" }}>
-                {"Stack"}
-              </div>
-              {v.cs.stack}
-            </div>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0,260px) minmax(0,1fr)", gap: "32px", padding: "10vh 0 0" }}>
-            <div style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>{"Overview"}</div>
-            <p
-              style={{
-                margin: "0",
-                fontSize: "clamp(24px,2.6vw,38px)",
-                lineHeight: "1.25",
-                letterSpacing: "-.02em",
-                maxWidth: "30ch",
-                textWrap: "pretty",
-              }}
-            >
-              {v.cs.overview}
-            </p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0,260px) minmax(0,1fr)", gap: "32px", padding: "10vh 0 0" }}>
-            <div style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>{"The problem"}</div>
-            <p style={{ margin: "0", fontSize: "19px", lineHeight: "1.55", color: "#4a4740", maxWidth: "62ch", textWrap: "pretty" }}>
-              {v.cs.problem}
-            </p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0,260px) minmax(0,1fr)", gap: "32px", padding: "10vh 0 0" }}>
-            <div style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>{"What I built"}</div>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              {v.cs.built.map((b, $index) => (
-                <Fragment key={$index}>
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "48px minmax(0,1fr)",
-                      gap: "16px",
-                      padding: "22px 0",
-                      borderTop: "1px solid #d8d5cc",
-                      fontSize: "19px",
-                      lineHeight: "1.5",
-                      color: "#4a4740",
-                    }}
-                  >
-                    <span style={{ color: "#6e6a62", fontSize: "13px", letterSpacing: ".08em", paddingTop: "6px" }}>
-                      {"0"}
-                      {b.n}
-                    </span>
-                    <span>{b.t}</span>
-                  </div>
-                </Fragment>
-              ))}
-            </div>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0,260px) minmax(0,1fr)", gap: "32px", padding: "10vh 0 0" }}>
-            <div style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>
-              {"Technical detail"}
-            </div>
-            <pre
-              tabIndex={"0"}
-              style={{
-                margin: "0",
-                padding: "28px",
-                borderRadius: "18px",
-                background: "#0f0e0c",
-                color: "#d9d5cc",
-                font: "14px/1.6 ui-monospace,Menlo,monospace",
-                overflow: "auto",
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {v.cs.code}
-            </pre>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0,260px) minmax(0,1fr)", gap: "32px", padding: "10vh 0 0" }}>
-            <div style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>{"Result"}</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))", gap: "24px" }}>
-              {v.cs.results.map((r, $index) => (
-                <Fragment key={$index}>
-                  <div style={{ borderTop: "1px solid #0f0e0c", paddingTop: "16px" }}>
-                    <div style={{ fontSize: "clamp(40px,5vw,72px)", letterSpacing: "-.04em", lineHeight: "1" }}>{r.v}</div>
-                    <div style={{ fontSize: "15px", color: "#6e6a62", marginTop: "8px" }}>{r.l}</div>
-                  </div>
-                </Fragment>
-              ))}
-            </div>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0,260px) minmax(0,1fr)", gap: "32px", padding: "10vh 0 0" }}>
-            <div style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>
-              {"How it was made"}
-            </div>
-            <p style={{ margin: "0", fontSize: "19px", lineHeight: "1.55", color: "#4a4740", maxWidth: "62ch", textWrap: "pretty" }}>
-              {v.cs.how}
-            </p>
-          </div>
-          <div
-            style={{
-              margin: "14vh 0 0",
-              padding: "8vh 0 10vh",
-              borderTop: "1px solid #0f0e0c",
-              cursor: "pointer",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              gap: "24px",
-            }}
-            onClick={v.nextCase}
-            role="button"
-            tabIndex={0}
-            onKeyDown={kb(v.nextCase)}
-          >
-            <div>
-              <div style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62", marginBottom: "14px" }}>
-                {"Next case study"}
-              </div>
-              <div style={{ fontSize: "clamp(40px,6vw,96px)", letterSpacing: "-.04em", lineHeight: "1" }}>{v.cs.nextName}</div>
-            </div>
-            <div
-              style={{
-                width: "72px",
-                height: "72px",
-                borderRadius: "50%",
-                background: "#0f0e0c",
-                color: "#f0efe9",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "24px",
-                flex: "none",
-              }}
-            >
-              {"→"}
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-export function PageMarkup({ v }) {
+import type { HomeView } from "./view";
+export function PageMarkup({ v }: { v: HomeView }) {
   return (
     <>
       <div style={{ position: "relative", overflowX: "clip" }}>
         <div style={{ position: "fixed", inset: "0", zIndex: "0", pointerEvents: "none", overflow: "hidden" }}>
           <div
-            ref={v.hazeARef}
+            data-ref="hazeA"
             style={{
               position: "absolute",
               width: "60vw",
@@ -279,7 +25,7 @@ export function PageMarkup({ v }) {
             }}
           ></div>
           <div
-            ref={v.hazeBRef}
+            data-ref="hazeB"
             style={{
               position: "absolute",
               width: "50vw",
@@ -305,7 +51,7 @@ export function PageMarkup({ v }) {
           }}
         ></div>
         <div
-          ref={v.barRef}
+          data-ref="bar"
           style={{
             position: "fixed",
             left: "0",
@@ -318,7 +64,7 @@ export function PageMarkup({ v }) {
             zIndex: "51",
           }}
         ></div>
-        {v.loaderOn ? (
+        {(
           <>
             <div data-loader={"1"} style={{ position: "fixed", inset: "0", zIndex: "60", pointerEvents: "none" }}>
               <div
@@ -439,13 +185,12 @@ export function PageMarkup({ v }) {
               </div>
             </div>
           </>
-        ) : null}
-        {v.caseOpen ? <CaseTakeover v={v} /> : null}
-        {v.menuOpen ? (
-          <>
+        )}
+        {(
+          <div data-menu="" hidden>
             <div
               style={{ position: "fixed", inset: "0", zIndex: "45", background: "rgba(15,14,12,.35)", backdropFilter: "blur(6px)" }}
-              onClick={v.toggleMenu}
+              data-action="menu"
               aria-hidden="true"
             ></div>
             <div
@@ -476,7 +221,7 @@ export function PageMarkup({ v }) {
                   href={"#intro"}
                   className="hc311122"
                   style={{ display: "flex", justifyContent: "space-between", padding: "12px 16px", borderRadius: "12px", fontSize: "24px" }}
-                  onClick={v.toggleMenu}
+                  data-action="menu"
                 >
                   {"About"}
                   <span>{"→"}</span>
@@ -485,7 +230,7 @@ export function PageMarkup({ v }) {
                   href={"#work"}
                   className="hc311122"
                   style={{ display: "flex", justifyContent: "space-between", padding: "12px 16px", borderRadius: "12px", fontSize: "24px" }}
-                  onClick={v.toggleMenu}
+                  data-action="menu"
                 >
                   {"Work"}
                   <span>{"→"}</span>
@@ -494,7 +239,7 @@ export function PageMarkup({ v }) {
                   href={"#journey"}
                   className="hc311122"
                   style={{ display: "flex", justifyContent: "space-between", padding: "12px 16px", borderRadius: "12px", fontSize: "24px" }}
-                  onClick={v.toggleMenu}
+                  data-action="menu"
                 >
                   {"Journey"}
                   <span>{"→"}</span>
@@ -503,7 +248,7 @@ export function PageMarkup({ v }) {
                   href={"/writing"}
                   className="hc311122"
                   style={{ display: "flex", justifyContent: "space-between", padding: "12px 16px", borderRadius: "12px", fontSize: "24px" }}
-                  onClick={v.toggleMenu}
+                  data-action="menu"
                 >
                   {"Writing"}
                   <span>{"→"}</span>
@@ -513,7 +258,7 @@ export function PageMarkup({ v }) {
                   href={"#contact"}
                   className="hc311122"
                   style={{ display: "flex", justifyContent: "space-between", padding: "12px 16px", borderRadius: "12px", fontSize: "24px" }}
-                  onClick={v.toggleMenu}
+                  data-action="menu"
                 >
                   {"Contact"}
                   <span>{"→"}</span>
@@ -550,8 +295,8 @@ export function PageMarkup({ v }) {
                 </span>
               </a>
             </div>
-          </>
-        ) : null}
+          </div>
+        )}
         <a className="skip" href="#main">{"Skip to content"}</a>
         <nav
           data-topnav={"1"}
@@ -587,7 +332,7 @@ export function PageMarkup({ v }) {
               }}
             >
               {"CHENNAI · "}
-              {v.time}
+              <span data-time="">{v.time}</span>
             </div>
             <a
               href={"#contact"}
@@ -620,12 +365,11 @@ export function PageMarkup({ v }) {
                 gap: "10px",
                 alignItems: "center",
               }}
-              onClick={v.toggleMenu}
+              data-action="menu"
               role="button"
               tabIndex={0}
-              onKeyDown={kb(v.toggleMenu)}
             >
-              <span>{v.menuLabel}</span>
+              <span data-menu-label="">{v.menuLabel}</span>
               <span style={{ display: "inline-flex", flexDirection: "column", gap: "3px" }}>
                 <i style={{ width: "4px", height: "4px", borderRadius: "50%", background: "#0f0e0c" }}></i>
                 <i style={{ width: "4px", height: "4px", borderRadius: "50%", background: "#0f0e0c" }}></i>
@@ -650,6 +394,7 @@ export function PageMarkup({ v }) {
                 marginBottom: "38px",
               }}
             >
+              <div style={{ maxWidth: "62ch" }}>
               <h1
                 style={{
                   margin: "0",
@@ -661,12 +406,16 @@ export function PageMarkup({ v }) {
                   animation: "rise-t 1s .1s both",
                 }}
               >
-                {"Frontend engineering for "}
+                {"I build "}
                 <i className="ac">{"fast, secure"}</i>
-                {" and "}
-                <i className="ac">{"multilingual"}</i>
-                {" web platforms."}
+                {" web platforms, and "}
+                <i className="ac">{"prove"}</i>
+                {" they work in production."}
               </h1>
+              <p data-proof={"1"} style={{ margin: "18px 0 0", fontSize: "15px", letterSpacing: ".01em", color: "#6e6a62", animation: "rise 1s .25s both" }}>
+                {"3.5+ years · Lead developer on two products · 10 case studies, each with what broke"}
+              </p>
+            </div>
               <div
                 style={{
                   fontSize: "13px",
@@ -695,9 +444,9 @@ export function PageMarkup({ v }) {
             </div>
           </section>
           <section
-            ref={v.heroSecRef}
+            data-ref="heroSec"
             data-screen-label={"3D panel"}
-            style={{ position: "relative", zIndex: "2", height: "320vh", padding: "0 4.5vw" }}
+            style={{ position: "relative", zIndex: "2", height: "240vh", padding: "0 4.5vw" }}
           >
             <div
               style={{
@@ -706,25 +455,13 @@ export function PageMarkup({ v }) {
                 height: "calc(100vh - 110px)",
                 borderRadius: "18px",
                 overflow: "hidden",
-                background: "#131211",
+                background: "#ebe8e1",
               }}
+              data-hero-panel={"1"}
             >
-              <canvas ref={v.glRef} style={{ position: "absolute", inset: "0", width: "100%", height: "100%" }}></canvas>
-              <canvas
-                ref={v.trailRef}
-                style={{
-                  position: "absolute",
-                  inset: "0",
-                  width: "100%",
-                  height: "100%",
-                  pointerEvents: "none",
-                  filter: "blur(10px) saturate(1.3)",
-                  mixBlendMode: "multiply",
-                  opacity: ".7",
-                }}
-              ></canvas>
+              <canvas data-ref="gl" aria-hidden={"true"} style={{ position: "absolute", inset: "0", width: "100%", height: "100%" }}></canvas>
               <div
-                ref={v.heroCapRef}
+                data-ref="heroCap"
                 data-hero-cap={"1"}
                 style={{
                   position: "absolute",
@@ -733,7 +470,7 @@ export function PageMarkup({ v }) {
                   alignItems: "center",
                   justifyContent: "center",
                   textAlign: "center",
-                  color: "#f0efe9",
+                  color: "#0f0e0c",
                   pointerEvents: "none",
                   opacity: "0",
                 }}
@@ -753,7 +490,6 @@ export function PageMarkup({ v }) {
               </div>
               <div data-hero-preview={"1"} aria-hidden={"true"}>
                 <span data-hero-preview-num={"1"}></span>
-                <span data-hero-preview-title={"1"}></span>
                 <span data-hero-preview-line={"1"}></span>
               </div>
               <nav data-hero-cards={"1"} aria-label={"Featured projects"}>
@@ -774,10 +510,10 @@ export function PageMarkup({ v }) {
                   </a>
                 ))}
               </nav>
-              <div style={{ position: "absolute", left: "14px", top: "14px", color: "#f0efe9", fontSize: "18px", lineHeight: "1" }}>
+              <div style={{ position: "absolute", left: "14px", top: "14px", color: "#0f0e0c", fontSize: "18px", lineHeight: "1" }}>
                 {"+"}
               </div>
-              <div style={{ position: "absolute", right: "14px", top: "14px", color: "#f0efe9", fontSize: "18px", lineHeight: "1" }}>
+              <div style={{ position: "absolute", right: "14px", top: "14px", color: "#0f0e0c", fontSize: "18px", lineHeight: "1" }}>
                 {"+"}
               </div>
             </div>
@@ -871,7 +607,7 @@ export function PageMarkup({ v }) {
               </p>
             </div>
             <div
-              ref={v.tiltRef}
+              data-ref="tilt"
               data-profile-card={"1"}
               style={{
                 borderRadius: "22px",
@@ -1000,7 +736,7 @@ export function PageMarkup({ v }) {
               </p>
             </div>
             <div
-              ref={v.gridRef}
+              data-ref="grid"
               style={{ display: "grid", gridTemplateColumns: "repeat(12,minmax(0,1fr))", gap: "64px 28px", willChange: "transform" }}
             >
               {v.projects.map((p, $index) => (
@@ -1019,7 +755,6 @@ export function PageMarkup({ v }) {
                       display: "block",
                       color: "inherit",
                     }}
-                    onClick={p.open}
                   >
                     <div
                       style={{
@@ -1122,7 +857,7 @@ export function PageMarkup({ v }) {
           {v.slots && v.slots.afterWork}
           <section
             id={"journey"}
-            ref={v.diveSecRef}
+            data-ref="diveSec"
             data-screen-label={"Journey"}
             style={{ position: "relative", zIndex: "2", height: "900vh", color: "#0f0e0c" }}
           >
@@ -1136,7 +871,7 @@ export function PageMarkup({ v }) {
               }}
             >
               <canvas
-                ref={v.diveGlRef}
+                data-ref="diveGl"
                 style={{ position: "absolute", inset: "0", width: "100%", height: "100%", touchAction: "none", cursor: "grab" }}
               ></canvas>
               <div
@@ -1270,7 +1005,7 @@ export function PageMarkup({ v }) {
                 </Fragment>
               ))}
               <div
-                ref={v.railRef}
+                data-ref="rail"
                 style={{
                   position: "absolute",
                   right: "4.5vw",
@@ -1294,10 +1029,9 @@ export function PageMarkup({ v }) {
                     color: "#b3aea5",
                     transition: "color .4s",
                   }}
-                  onClick={v.goOpen}
+                  data-action="chapter" data-ch="0"
                   role="button"
                   tabIndex={0}
-                  onKeyDown={kb(v.goOpen)}
                 >
                   <span>{"Welcome"}</span>
                   <span
@@ -1320,10 +1054,9 @@ export function PageMarkup({ v }) {
                         color: "#b3aea5",
                         transition: "color .4s",
                       }}
-                      onClick={y.go}
+                      data-action="chapter" data-ch={String($index + 1)}
                       role="button"
                       tabIndex={0}
-                      onKeyDown={kb(y.go)}
                     >
                       <span>{y.short}</span>
                       <span
@@ -1336,7 +1069,7 @@ export function PageMarkup({ v }) {
               </div>
               <div style={{ position: "absolute", right: "4.5vw", bottom: "28px", display: "flex", alignItems: "center", gap: "10px" }}>
                 <span
-                  ref={v.counterRef}
+                  data-ref="counter"
                   style={{ font: "500 12px/1 ui-monospace,Menlo,monospace", letterSpacing: ".1em", color: "#8a857c", marginRight: "10px" }}
                 >
                   {"01 / 06"}
@@ -1357,10 +1090,9 @@ export function PageMarkup({ v }) {
                     cursor: "pointer",
                     background: "rgba(255,255,255,.7)",
                   }}
-                  onClick={v.prevChapter}
+                  data-action="chapter-prev"
                   role="button"
                   tabIndex={0}
-                  onKeyDown={kb(v.prevChapter)}
                 >
                   <span>{"←"}</span>
                   <span>{"Prev."}</span>
@@ -1381,10 +1113,9 @@ export function PageMarkup({ v }) {
                     textTransform: "uppercase",
                     cursor: "pointer",
                   }}
-                  onClick={v.nextChapter}
+                  data-action="chapter-next"
                   role="button"
                   tabIndex={0}
-                  onKeyDown={kb(v.nextChapter)}
                 >
                   <span>{"Next"}</span>
                   <span>{"→"}</span>
@@ -1409,7 +1140,7 @@ export function PageMarkup({ v }) {
           {v.slots && v.slots.afterJourney}
           <section
             id={"method"}
-            ref={v.methSecRef}
+            data-ref="methSec"
             data-screen-label={"How I work"}
             style={{ position: "relative", zIndex: "2", height: "260vh" }}
           >
@@ -1454,7 +1185,7 @@ export function PageMarkup({ v }) {
                 </div>
               </div>
               <div
-                ref={v.trackRef}
+                data-ref="track"
                 style={{ display: "flex", gap: "28px", padding: "0 4.5vw", willChange: "transform", width: "max-content" }}
               >
                 <div
@@ -2689,7 +2420,7 @@ export function PageMarkup({ v }) {
             style={{ position: "relative", zIndex: "2", padding: "14vh 4.5vw 8vh", textAlign: "center" }}
           >
             <div style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62", marginBottom: "30px" }}>
-              {"Open to conversations"}
+              {"Hiring for a frontend role?"}
             </div>
             <h2
               data-reveal={"1"}
@@ -2764,10 +2495,9 @@ export function PageMarkup({ v }) {
                   cursor: "pointer",
                   transition: "transform .4s cubic-bezier(.2,.8,.2,1),background .3s",
                 }}
-                onClick={v.toTop}
+                data-action="top"
                 role="button"
                 tabIndex={0}
-                onKeyDown={kb(v.toTop)}
               >
                 {"↑"}
               </div>

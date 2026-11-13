@@ -1,162 +1,33 @@
-"use client";
 /*
- * The home page: scroll, 3D and interaction logic, ported from the Claude Design prototype ("Lusion").
- * Props: `flagships` (the four full case studies, shown first with their checked one-liners)
- * and `slots` (server-rendered sections placed after Work and after the Journey).
+ * The home page's scroll-linked scenes, ported from the original prototype component with as few changes as
+ * possible: the 3D city of the career journey, parallax, the method cards and the progress bar.
+ * Called with `this` bound to the HomeController (./controller.ts), which provides R(), m, sc, state and data.
+ * The hero lives in ./hero.ts. Loaded only after the page is ready, and never in static mode.
  */
-import { Component, createRef } from "react";
-import * as portfolio from "../content/portfolio";
-import "@fontsource/instrument-serif/400.css"; // only for the city chapter signs drawn on canvas
-import "./lusion.css";
-import "./hover.css";
-import { PageMarkup } from "./Markup";
+import { createHero } from './hero';
 
-/** WebGL2 on real hardware. Software renderers draw each frame in hundreds of ms, so they get the static page. */
-function hasWebGL() {
-  try {
-    const gl = document.createElement("canvas").getContext("webgl2");
-    if (!gl) return false;
-    const info = gl.getExtension("WEBGL_debug_renderer_info");
-    const name = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "";
-    gl.getExtension("WEBGL_lose_context")?.loseContext();
-    return !/swiftshader|llvmpipe|software|basic render/i.test(name);
-  } catch { return false; }
-}
-
-export default class Experience extends Component {
-  state = { phase: 'load', count: 0, word: 'Curious.', time: '', menuOpen: false, caseIdx: -1, d: portfolio };
-  _r = {};
-  m = { x: -1e4, y: -1e4, px: -1e4, py: -1e4, tx: -1e4, ty: -1e4, nx: 0, ny: 0 };
-  sc = { target: 0, cur: 0, last: -1, vel: 0 };
-  R(k) { return this._r[k] || (this._r[k] = createRef()); }
-
-  async componentDidMount() {
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (document.documentElement.classList.contains('static-mode') || reduce || !hasWebGL()) { this.enableStatic(); }
-    this._onKey = e => {
-      // Keep keyboard focus inside the open menu (the Menu/Close button plus the menu links).
-      if (e.key === 'Tab' && this.state.menuOpen) {
-        const items = [document.querySelector('[data-topnav] [aria-label="Menu"]'), ...document.querySelectorAll('[data-overlay] a[href]')].filter(Boolean);
-        if (items.length) { const i = items.indexOf(document.activeElement); const n = e.shiftKey ? (i <= 0 ? items.length - 1 : i - 1) : (i < 0 || i >= items.length - 1 ? 0 : i + 1); e.preventDefault(); items[n].focus(); }
-        return;
-      }
-      if (e.key !== 'Escape') return; if (this.state.caseIdx >= 0) this.closeCase(); else if (this.state.menuOpen) this.setState({ menuOpen: false }); };
-    window.addEventListener('keydown', this._onKey);
-    this._onPop = () => this.setState({ caseIdx: -1 });
-    window.addEventListener('popstate', this._onPop);
-    const words = ['Curious.', 'Persistent.', 'Practical.', 'Careful.', 'Investigative.'];
-    let c = 0;
-    let skip = false; try { skip = sessionStorage.getItem('skipLoader') === '1'; sessionStorage.removeItem('skipLoader'); } catch {}
-    // Coming back (browser Back or the "Back to selected work" link): skip the loader and return to
-    // the exact scroll position the visitor left from. The position is saved whenever they leave.
-    let backY = -1;
-    try { const nav = performance.getEntriesByType('navigation')[0]; if (nav && nav.type === 'back_forward' && !location.hash) { const y = Number(sessionStorage.getItem('homeY')); if (y > 0) { backY = y; skip = true; history.scrollRestoration = 'manual'; } } } catch {}
-    this._onHide = () => { try { sessionStorage.setItem('homeY', String(Math.round(window.scrollY))); } catch {} };
-    window.addEventListener('pagehide', this._onHide);
-    if (backY > 0) { const go = () => { const y = Math.min(backY, document.documentElement.scrollHeight - innerHeight); window.scrollTo(0, y); this.sc.target = this.sc.cur = this.sc.last = y; }; requestAnimationFrame(go); setTimeout(() => { if (Math.abs(window.scrollY - backY) > 4 && window.scrollY < 4) go(); }, 500); }
-    if (skip && !this._static) this.setState({ phase: 'ready', count: 100 });
-    if (!this._static && !skip) this._pre = setInterval(() => {
-      c = Math.min(100, c + 3 + Math.ceil(Math.random() * 5));
-      { const n = document.querySelector('[data-count]'), w = document.querySelector('[data-word]'); if (n) n.textContent = c; if (w) w.textContent = words[Math.min(4, Math.floor(c / 20))]; }
-      if (c >= 100) { clearInterval(this._pre); setTimeout(() => this.setState({ phase: 'exit' }), 120); setTimeout(() => this.setState({ phase: 'ready' }), 700); }
-    }, 30);
-    const tick = () => this.setState({ time: new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }).format(new Date()) });
-    tick(); this._t = setInterval(tick, 30000);
-    this._onMove = e => { this.m.tx = e.clientX; this.m.ty = e.clientY; this.m.nx = (e.clientX / innerWidth) * 2 - 1; this.m.ny = (e.clientY / innerHeight) * 2 - 1; };
-    window.addEventListener('mousemove', this._onMove);
-    if (backY < 0) this.sc.target = this.sc.cur = window.scrollY;
-    this._onWheel = e => {
-      if (this.state.caseIdx >= 0 || this.state.menuOpen || this.state.phase !== 'ready') { if (this.state.phase !== 'ready') e.preventDefault(); return; }
-      e.preventDefault();
-      const max = document.documentElement.scrollHeight - innerHeight; const js = this.R('diveSec').current, jr = js && js.getBoundingClientRect(), inJ = jr && jr.top <= 2 && jr.bottom >= innerHeight + 2; this.inJ = !!inJ;
-      this.sc.target = Math.max(0, Math.min(max, this.sc.target + e.deltaY * (e.deltaMode === 1 ? 16 : 1) * (inJ ? .5 : .9)));
-    };
-    if (!this._static) window.addEventListener('wheel', this._onWheel, { passive: false });
-    this._onScroll = () => { if (Math.abs(window.scrollY - this.sc.last) > 1.5) this.sc.target = this.sc.cur = window.scrollY; };
-    window.addEventListener('scroll', this._onScroll, { passive: true });
-
-    setTimeout(() => this.setupReveals(), 150); setTimeout(() => this.setupReveals(), 1500);
-    if (this._static) return;
-    await new Promise(r => { const t = setInterval(() => { if (this.state.phase === 'ready') { clearInterval(t); r(); } }, 120); }); if (document.fonts && document.fonts.ready) await document.fonts.ready;
-    this.initGL().catch(() => this.enableStatic());
-  }
-  enableStatic() {
-    this._static = true; clearInterval(this._pre); document.documentElement.classList.add('static-mode');
-    if (this._onWheel) window.removeEventListener('wheel', this._onWheel);
-    this._alive = false; cancelAnimationFrame(this._raf);
-    this.setState({ phase: 'ready', count: 100 });
-  }
-  componentDidUpdate(_, prev) {
-    const open = st => st.caseIdx >= 0 || st.menuOpen;
-    const was = open(prev), is = open(this.state);
-    if (is && !was) this._opener = document.activeElement;
-    if (is !== was || (is && prev.menuOpen !== this.state.menuOpen)) {
-      document.querySelectorAll('main, footer').forEach(el => { el.inert = is; });
-      const nav = document.querySelector('nav'); if (nav) nav.inert = this.state.caseIdx >= 0;
-    }
-    if (this.state.menuOpen && !prev.menuOpen) { const first = document.querySelector('[data-overlay] a'); if (first) first.focus({ preventScroll: true }); }
-    if (was && !is && this._opener && this._opener.isConnected) this._opener.focus({ preventScroll: true });
-  }
-  componentWillUnmount() { window.removeEventListener('pagehide', this._onHide); window.removeEventListener('keydown', this._onKey); window.removeEventListener('popstate', this._onPop); clearInterval(this._pre); clearInterval(this._t); window.removeEventListener('mousemove', this._onMove); window.removeEventListener('wheel', this._onWheel); window.removeEventListener('scroll', this._onScroll); this._io && this._io.disconnect(); this._alive = false; cancelAnimationFrame(this._raf); }
-
-  setupReveals() {
-    const io = this._io || (this._io = new IntersectionObserver(es => es.forEach(en => {
-      if (!en.isIntersecting) return; const el = en.target; io.unobserve(el);
-      if (el.hasAttribute('data-reveal')) el.querySelectorAll('[data-w]').forEach((w, i) => { w.style.transitionDelay = i * 45 + 'ms'; w.style.transform = 'none'; });
-      else { el.style.opacity = '1'; el.style.transform = 'none'; }
-    }), { threshold: .1 }));
-    document.querySelectorAll('[data-reveal],[data-fade]').forEach(el => io.observe(el));
-    const g = this.R('grid').current; if (g) Array.from(g.children).forEach((el, i) => { el.style.transitionDelay = (i % 2) * 140 + 'ms'; io.observe(el); });
-    this._pars = Array.from(document.querySelectorAll('[data-par]'));
-    this._floats = Array.from(document.querySelectorAll('[data-float]'));
-    this._yrs = Array.from(document.querySelectorAll('[data-yr]'));
-    this._tilts = Array.from(document.querySelectorAll('[data-tilt]'));
-  }
-
-  async initGL() {
+export async function initGL() {
     const THREE = await import('three');
     const LOW = matchMedia('(pointer: coarse)').matches;
     const [{ RoomEnvironment }, { RoundedBoxGeometry }, { mergeGeometries }] = await Promise.all([import('three/addons/environments/RoomEnvironment.js'), import('three/addons/geometries/RoundedBoxGeometry.js'), import('three/addons/utils/BufferGeometryUtils.js')]);
-    const canvas = this.R('gl').current, trail = this.R('trail').current, dcv = this.R('diveGl').current; if (!canvas || !dcv) return;
+    const canvas = this.R('gl').current, dcv = this.R('diveGl').current; if (!canvas || !dcv) return;
     this._alive = true;
     const rnd = (a, b) => a + Math.random() * (b - a);
     const FF = getComputedStyle(document.body).fontFamily; // the self-hosted DM Sans from next/font
-    const palette = [0xf0efe9, 0xf0efe9, 0xf0efe9, 0x1a1816, 0x1a1816, 0x8c8880, 0xe8d5b0, 0xe0562a]; // a few orange shapes; all of them glow orange when a project card is hovered
-    const mat = hex => new THREE.MeshPhysicalMaterial({ color: hex, roughness: .22, metalness: 0, clearcoat: .8, clearcoatRoughness: .15, envMapIntensity: .9, emissive: 0xe0562a, emissiveIntensity: 0 });
-    const glass = () => new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .1, transmission: 1, thickness: 1.4, ior: 1.4, envMapIntensity: 1 });
-
-    // HERO
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, LOW ? 1.25 : 1.75)); renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1;
-    const scene = new THREE.Scene(); scene.background = new THREE.Color(0x131211); scene.fog = new THREE.Fog(0x131211, 12, 30);
-    const env = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), .04).texture; scene.environment = env;
-    const camera = new THREE.PerspectiveCamera(30, 1, .1, 100); camera.position.z = 18;
-    const key = new THREE.DirectionalLight(0xffffff, 2.4); key.position.set(5, 8, 6); scene.add(key);
-    const rim = new THREE.DirectionalLight(0xffe2c8, 1); rim.position.set(-6, -3, -4); scene.add(rim);
-    const geos = [new RoundedBoxGeometry(1, 1, 1, 6, .22), new THREE.CapsuleGeometry(.38, 1.1, 8, 24), new THREE.TorusGeometry(.62, .24, 24, 64), new THREE.SphereGeometry(.7, 48, 48), new RoundedBoxGeometry(2.2, .5, .5, 6, .24)];
-    const group = new THREE.Group(); scene.add(group); const items = [];
-    for (let i = 0; i < 40; i++) {
-      const mesh = new THREE.Mesh(geos[i % geos.length], i % 6 === 0 ? glass() : mat(palette[Math.floor(Math.random() * palette.length)]));
-      const r = rnd(1, 6), th = rnd(0, 6.283), base = new THREE.Vector3(r * Math.cos(th), r * Math.sin(th) * .7 + rnd(-1, 1) * 1.4, rnd(-6, 4));
-      mesh.rotation.set(rnd(0, 6.283), rnd(0, 6.283), rnd(0, 6.283)); mesh.scale.setScalar(rnd(.7, 1.5)); group.add(mesh);
-      items.push({ mesh, base, spin: new THREE.Vector3(rnd(-.4, .4), rnd(-.4, .4), rnd(-.2, .2)), ph: rnd(0, 6.283) });
-    }
-    const tctx = trail.getContext('2d');
-
-    // The four flagship projects are HTML cards over the canvas (readable, crawlable, keyboard reachable).
-    // Hovering, focusing or swiping to a card gathers the shapes into a slow orbit above it, glowing orange,
-    // and shows the project's name and one line large in the panel. Every value eases, so nothing snaps.
+    // HERO: the light box field (typed module, ./hero.ts)
     const panel = canvas.parentElement, cards = [...panel.querySelectorAll('[data-hero-card]')], preview = panel.querySelector('[data-hero-preview]');
-    const F = (this.props.flagships || []).slice(0, 4);
-    const pull = { i: -1, amt: 0, tgt: new THREE.Vector3(), cur: new THREE.Vector3(), has: false, w: new THREE.Vector3(), tm: 0 }, ndc = new THREE.Vector2(), ray = new THREE.Raycaster(), zPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), ring = new THREE.Vector3();
+    const F = this.data.flagships;
+    const hero = createHero({ THREE, RoundedBoxGeometry, RoomEnvironment, canvas, titles: F.map(f => f.title), low: LOW, font: FF });
+    this._hero = hero;
+    const heroState = { i: -1, tm: 0 };
     const show = i => {
-      clearTimeout(pull.tm); if (i === pull.i) return; pull.i = i; panel.classList.toggle('hero-focus', i >= 0);
+      clearTimeout(heroState.tm); if (i === heroState.i) return; heroState.i = i; panel.classList.toggle('hero-focus', i >= 0); hero.show(i);
       if (!preview) return;
-      if (i >= 0 && F[i]) { preview.querySelector('[data-hero-preview-num]').textContent = '0' + (i + 1) + ' · Case study'; preview.querySelector('[data-hero-preview-title]').textContent = F[i].title; preview.querySelector('[data-hero-preview-line]').textContent = F[i].oneLiner; preview.classList.add('on'); }
+      if (i >= 0 && F[i]) { preview.querySelector('[data-hero-preview-num]').textContent = '0' + (i + 1) + ' · ' + F[i].title; preview.querySelector('[data-hero-preview-line]').textContent = F[i].oneLiner; preview.style.top = Math.round(hero.titleBottom() + 22) + 'px'; preview.classList.add('on'); }
       else preview.classList.remove('on');
     };
-    const hide = () => { clearTimeout(pull.tm); pull.tm = setTimeout(() => show(-1), 160); }; // small delay so moving between cards doesn't flicker
-    { const strip = panel.querySelector('[data-hero-cards]'); let st = 0; if (strip) strip.addEventListener('scroll', () => { if (!cards[1] || matchMedia('(min-width: 761px)').matches) return; const step = cards[1].offsetLeft - cards[0].offsetLeft; show(Math.max(0, Math.min(cards.length - 1, Math.round(strip.scrollLeft / step)))); clearTimeout(st); st = setTimeout(() => show(-1), 1800); }, { passive: true }); }
+    const hide = () => { clearTimeout(heroState.tm); heroState.tm = setTimeout(() => show(-1), 220); }; // a short delay, so moving between cards never flickers
+    { const strip = panel.querySelector('[data-hero-cards]'); let st = 0; if (strip) strip.addEventListener('scroll', () => { if (!cards[1] || matchMedia('(min-width: 761px)').matches) return; const step = cards[1].offsetLeft - cards[0].offsetLeft; show(Math.max(0, Math.min(cards.length - 1, Math.round(strip.scrollLeft / step)))); clearTimeout(st); st = setTimeout(() => show(-1), 2600); }, { passive: true }); }
     cards.forEach((c, i) => { c.addEventListener('mouseenter', () => show(i)); c.addEventListener('focus', () => show(i)); c.addEventListener('mouseleave', hide); c.addEventListener('blur', hide); });
 
     // JOURNEY — Skyline: pastel low-poly city along a winding avenue; districts grow as the camera approaches
@@ -299,7 +170,7 @@ export default class Experience extends Component {
     const HELI = [], padBusy = new Set(); { const mm = std(0x2a2622, .45, .2), gm = std(0x9fb0ba, .1, .5), rm = new THREE.MeshBasicMaterial({ color: 0x555049, transparent: true, opacity: .55 }); for (let k = 0; k < Math.min(6, Math.max(1, HP.length >> 1)); k++) { const g = new THREE.Group(); const fus = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 14), mm); fus.scale.set(.8, .75, 1.8); g.add(fus); const cnp = new THREE.Mesh(new THREE.SphereGeometry(.66, 16, 12), gm); cnp.position.set(0, .2, 1.1); cnp.scale.set(.9, .7, .9); g.add(cnp); const boom = new THREE.Mesh(new THREE.CylinderGeometry(.14, .28, 3.4, 8), mm); boom.rotation.x = Math.PI / 2; boom.position.set(0, .15, -3.1); g.add(boom); const fin = new THREE.Mesh(new THREE.BoxGeometry(.08, 1.2, .6), mm); fin.position.set(0, .75, -4.7); g.add(fin); const hub = new THREE.Mesh(new THREE.CylinderGeometry(.12, .16, .5, 8), mm); hub.position.y = .9; g.add(hub); const rotor = new THREE.Group(); rotor.position.y = 1.1; for (const a of [0, Math.PI / 2]) { const bl = new THREE.Mesh(new THREE.BoxGeometry(6.6, .04, .3), rm); bl.rotation.y = a; rotor.add(bl); } g.add(rotor); const tr = new THREE.Mesh(new THREE.BoxGeometry(.05, 1.3, .16), rm); tr.position.set(.18, .75, -4.75); g.add(tr); for (const s of [-.6, .6]) { const skid = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, 2.8, 6), mm); skid.rotation.x = Math.PI / 2; skid.position.set(s, -.9, 0); g.add(skid); for (const zz of [-.85, .85]) { const leg = new THREE.Mesh(new THREE.CylinderGeometry(.04, .04, .55, 6), mm); leg.position.set(s, -.62, zz); g.add(leg); } } dscene.add(g); const from = k % Math.max(1, HP.length); padBusy.add(from); HELI.push({ g, rotor, tr, from, to: from, s: 0, sp: rnd(.035, .05), wait: rnd(1, 3), yaw: 0 }); } }
     // ---- signage: LED display per plaza, banners on avenue lamp posts
     const mkCanvasTex = (w, hgt, draw) => { const c = document.createElement('canvas'); c.width = w; c.height = hgt; const x = c.getContext('2d'); draw(x, w, hgt); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; };
-    const DISPLAYS = []; const chapterTitles = (this.state.d ? this.state.d.timeline : []).map(t => [t.y, t.t]);
+    const DISPLAYS = []; const chapterTitles = this.data.chapters.map(t => [t[0], t[1]]);
     PLAZA.forEach((l, k) => { const g = new THREE.Group(); g.position.set(l.x, 0, l.z - 6.5); const [yr, title] = chapterTitles[l.i] || ['', '']; const tex = mkCanvasTex(1024, 512, (x, w, hh) => { x.fillStyle = '#0f0e0c'; x.fillRect(0, 0, w, hh); x.fillStyle = '#e0562a'; x.font = '600 60px ' + FF; x.fillText(yr, 60, 130); x.fillStyle = '#f0efe9'; x.font = '400 88px Instrument Serif, Georgia, serif'; const words = String(title).split(' '); let line = '', yy = 260; for (const w0 of words) { const test = line + w0 + ' '; if (x.measureText(test).width > w - 120) { x.fillText(line, 60, yy); line = w0 + ' '; yy += 96; } else line = test; } x.fillText(line, 60, yy); }); const scr = new THREE.Mesh(new THREE.PlaneGeometry(16, 8), new THREE.MeshBasicMaterial({ map: tex })); scr.position.y = 12; const frame = new THREE.Mesh(new THREE.BoxGeometry(17, 9, .6), std(0x2a2622, .6, .2)); frame.position.set(0, 12, -.35); for (const s of [-6, 6]) { const leg = new THREE.Mesh(new THREE.BoxGeometry(.5, 7.6, .5), std(0x2a2622)); leg.position.set(s, 3.8, -.35); g.add(leg); } g.add(frame); g.add(scr); dscene.add(g); DISPLAYS.push({ g, i: l.i }); });
     { const banTex = mkCanvasTex(256, 768, (x, w, hh) => { x.fillStyle = '#e0562a'; x.fillRect(0, 0, w, hh); x.fillStyle = '#ffffff'; x.font = '600 54px ' + FF; x.save(); x.translate(w / 2 + 20, hh - 40); x.rotate(-Math.PI / 2); x.fillText('KISHORE.DEV', 0, 0); x.restore(); }); const banM = new THREE.MeshBasicMaterial({ map: banTex, side: THREE.DoubleSide }); const BANS = []; for (const c of AVE_C) for (let z = Z0; z > Z0 - ZLEN; z -= 36) for (const o of [-(AVE_W / 2 + 1.3), AVE_W / 2 + 1.3]) BANS.push([sx(c) + o + (o > 0 ? .6 : -.6), z, 0]); const banI = new THREE.InstancedMesh(new THREE.PlaneGeometry(1.1, 3.3), banM, BANS.length); BANS.forEach(([x, z, yaw], k) => { dm.position.set(x, 5.4, z); dm.rotation.set(0, yaw, 0); dm.scale.set(1, 1, 1); dm.updateMatrix(); banI.setMatrixAt(k, dm.matrix); }); dscene.add(banI); }
     for (const [m, gs] of MERGE) { const merged = mergeGeometries(gs, false); gs.forEach(g => g.dispose()); const mesh = new THREE.Mesh(merged, m); mesh.receiveShadow = true; dscene.add(mesh); }
@@ -325,12 +196,12 @@ export default class Experience extends Component {
     const back = x => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
 
     const size = () => {
-      const r = canvas.parentElement.getBoundingClientRect(); renderer.setSize(r.width, r.height, false); camera.aspect = r.width / r.height; camera.updateProjectionMatrix(); trail.width = r.width; trail.height = r.height;
+      hero.resize();
       const q = dcv.parentElement.getBoundingClientRect(); drend.setSize(q.width, q.height, false); dcam.aspect = q.width / q.height; dcam.updateProjectionMatrix();
     };
     size(); window.addEventListener('resize', size);
 
-    let t0 = performance.now(), hue = 20;
+    let t0 = performance.now();
     const prog = el => { if (!el) return 0; const r = el.getBoundingClientRect(); return Math.min(1, Math.max(0, -r.top / (r.height - innerHeight))); };
     const smooth = p => p * p * (3 - 2 * p), clamp01 = x => Math.max(0, Math.min(1, x));
     const loop = now => {
@@ -338,7 +209,7 @@ export default class Experience extends Component {
       this._raf = requestAnimationFrame(loop);
       const dt = Math.min(.05, (now - t0) / 1000); t0 = now; const t = now / 1000;
       const prev = this.sc.cur;
-      if (this.state.caseIdx < 0 && !this.state.menuOpen) {
+      if (!this.state.menuOpen) {
         this.sc.cur += (this.sc.target - this.sc.cur) * (1 - Math.exp(-dt * (this.inJ ? 4.5 : 6.5)));
         if (Math.abs(this.sc.cur - window.scrollY) > .3) { this.sc.last = Math.round(this.sc.cur); window.scrollTo(0, this.sc.cur); }
       }
@@ -349,7 +220,7 @@ export default class Experience extends Component {
       const hA = this.R('hazeA').current, hB = this.R('hazeB').current; if (hA) hA.style.top = (-10 * innerWidth / 100 - sy * .06) + 'px'; if (hB) hB.style.top = (H * .3 - sy * .03) + 'px';
       if (this._pars) for (const el of this._pars) { const r = el.parentElement.getBoundingClientRect(); if (r.bottom > 0 && r.top < H) el.style.transform = `translateY(${((r.top + r.height / 2 - H / 2) / H) * -9}%)`; }
       if (this._floats) for (const el of this._floats) { const r = el.getBoundingClientRect(); if (r.bottom < -200 || r.top > H + 200) continue; const c = (r.top + r.height / 2 - H / 2) / (H / 2); const a = clamp01(1 - Math.max(0, Math.abs(c) - .35) / .7); el.style.opacity = String(.08 + a * .92); el.style.transform = `translateY(${c * 40}px) scale(${.96 + a * .04})`; }
-      if (this._tilts) for (const el of this._tilts) { const r = el.getBoundingClientRect(); if (r.bottom < 0 || r.top > H || r.right < 0 || r.left > innerWidth) continue; const inside = this.m.tx > r.left && this.m.tx < r.right && this.m.ty > r.top && this.m.ty < r.bottom; const dx = inside ? (this.m.tx - (r.left + r.width / 2)) / r.width : 0, dy = inside ? (this.m.ty - (r.top + r.height / 2)) / r.height : 0; el.style.transform = `perspective(1200px) rotateY(${dx * 8}deg) rotateX(${-dy * 8}deg) translateY(${inside ? -6 : 0}px)`; this.animCard(el, inside, t, dt); }
+      if (this._tilts) for (const el of this._tilts) { const r = el.getBoundingClientRect(); if (r.bottom < 0 || r.top > H || r.right < 0 || r.left > innerWidth) continue; const inside = this.m.tx > r.left && this.m.tx < r.right && this.m.ty > r.top && this.m.ty < r.bottom; const dx = inside ? (this.m.tx - (r.left + r.width / 2)) / r.width : 0, dy = inside ? (this.m.ty - (r.top + r.height / 2)) / r.height : 0; el.style.transform = `perspective(1200px) rotateY(${dx * 8}deg) rotateX(${-dy * 8}deg) translateY(${inside ? -6 : 0}px)`; animCard.call(this, el, inside, t, dt); }
       // Profile card: tilts gently only while the pointer is over it, and eases back to flat otherwise.
       const tilt = this.R('tilt').current; if (tilt) { const r = tilt.getBoundingClientRect(); if (r.bottom > 0 && r.top < H) {
         const inside = this.m.tx >= r.left && this.m.tx <= r.right && this.m.ty >= r.top && this.m.ty <= r.bottom;
@@ -363,34 +234,9 @@ export default class Experience extends Component {
       // hero
       const hs = this.R('heroSec').current, hr = hs && hs.getBoundingClientRect();
       if (hr && hr.bottom > 0 && hr.top < H) {
-        const p = prog(hs), e = smooth(p), spread = 1 + (1 - smooth(Math.min(1, p * 1.6))) * 1.6;
-        camera.position.z = 18 - e * 14;
-        group.rotation.y += ((m.nx * .3 + e * 1.6) - group.rotation.y) * .06; group.rotation.x += ((m.ny * .2 - vn * .15) - group.rotation.x) * .06; group.rotation.z += (vn * .12 - group.rotation.z) * .08;
-        camera.position.x += (m.nx * .7 - camera.position.x) * .05; camera.position.y += (-m.ny * .5 - camera.position.y) * .05;
-        const ease = x => x * x * (3 - 2 * x), kA = 1 - Math.exp(-dt * 2.4), kP = 1 - Math.exp(-dt * 3.2);
-        pull.amt += ((pull.i >= 0 ? 1 : 0) - pull.amt) * kA;
-        if (pull.i >= 0) {
-          // Orbit centre: right of the project name on wide screens, centre on phones; far enough back that shapes stay small.
-          const wide = camera.aspect > 1; ndc.set(wide ? .3 : 0, wide ? .08 : .02); ray.setFromCamera(ndc, camera);
-          zPlane.constant = -(camera.position.z - 21); if (ray.ray.intersectPlane(zPlane, pull.w)) { group.updateMatrixWorld(); pull.tgt.copy(pull.w); group.worldToLocal(pull.tgt); if (!pull.has) { pull.cur.copy(pull.tgt); pull.has = true; } }
-        }
-        pull.cur.lerp(pull.tgt, kP);
-        scene.fog.near = 12 + pull.amt * 10; scene.fog.far = 30 + pull.amt * 34; // clear the haze so the orbit reads bright
-        items.forEach((it, j) => {
-          const px = it.base.x * spread + Math.cos(t * .35 + it.ph) * .18, py = it.base.y * spread + Math.sin(t * .5 + it.ph) * .25 - vn * .6, pz = it.base.z * spread;
-          const joins = j % 2 === 0, aa = joins ? ease(Math.min(1, Math.max(0, pull.amt * 1.35 - (j % 7) * .05))) : 0;
-          const ang = j * 2.39996 + t * .28, rad = (camera.aspect > 1 ? 2.6 : 1.8) + (j % 5) * .75;
-          ring.set(pull.cur.x + Math.cos(ang) * rad, pull.cur.y + Math.sin(ang) * rad * .7, pull.cur.z + Math.sin(j * 1.7 + t * .4) * 1.6);
-          if (joins) it.mesh.position.set(px + (ring.x - px) * aa, py + (ring.y - py) * aa, pz + (ring.z - pz) * aa);
-          else { const o = ease(pull.amt); it.mesh.position.set(px * (1 + o * .5), py * (1 + o * .5), pz - o * 9); } // the rest step back and aside, clearing the cards
-          it.mesh.rotation.x += it.spin.x * dt; it.mesh.rotation.y += (it.spin.y + vn * 1.5 + pull.amt * .5) * dt; it.mesh.rotation.z += it.spin.z * dt;
-          if (it.mesh.material.emissiveIntensity !== undefined) it.mesh.material.emissiveIntensity = aa * .6;
-        });
-        renderer.render(scene, camera);
+        const p = prog(hs);
+        hero.frame({ dt, t, p, pointer: { x: m.tx, y: m.ty, nx: m.nx, ny: m.ny } });
         const cap = this.R('heroCap').current; if (cap) { const o = p > .7 ? Math.min(1, (p - .7) / .18) : 0; cap.style.opacity = String(o); cap.style.transform = `scale(${.92 + o * .08})`; }
-        tctx.globalCompositeOperation = 'destination-out'; tctx.fillStyle = 'rgba(0,0,0,.08)'; tctx.fillRect(0, 0, trail.width, trail.height); tctx.globalCompositeOperation = 'lighter';
-        const pr = canvas.parentElement.getBoundingClientRect(), lx = m.x - pr.left, ly = m.y - pr.top, lpx = m.px - pr.left, lpy = m.py - pr.top;
-        if (m.x > -9000 && lx > -200 && ly > -200 && lx < pr.width + 200 && ly < pr.height + 200) { const spd = Math.hypot(m.tx - m.x, m.ty - m.y); hue = (hue + 2 + spd * .1) % 360; tctx.lineCap = 'round'; tctx.lineWidth = 8 + Math.min(26, spd * .4); tctx.strokeStyle = `hsla(${hue},70%,55%,.7)`; tctx.beginPath(); tctx.moveTo(lpx, lpy); tctx.lineTo(lx, ly); tctx.stroke(); }
       }
 
       // chaptered city
@@ -447,7 +293,7 @@ export default class Experience extends Component {
     this._raf = requestAnimationFrame(loop);
   }
 
-  animCard(el, inside, t, dt) {
+export function animCard(el, inside, t, dt) {
     const q = s => el.querySelector('[data-v="' + s + '"]'), qa = s => el.querySelectorAll('[data-v="' + s + '"]'), type = el.getAttribute('data-card'), r = el.getBoundingClientRect(), mx = (this.m.tx - r.left) / r.width - .5, my = (this.m.ty - r.top) / r.height - .5;
     if (type === 'observe') { const p = q('pupil'), l = q('lid'); if (p) p.style.transform = `translate(${(inside ? mx : Math.sin(t) * .3) * 60}px,${(inside ? my : Math.cos(t * .7) * .3) * 22}px)`; if (l) l.style.transform = `scaleY(${(t % 4) > 3.8 ? 1 : 0})`; }
     else if (type === 'reproduce') { const a = q('a'), b = q('b'); const f = x => `rotate(${Math.sin(x) * 40}deg) scale(${1 + Math.sin(x * 2) * .12})`; if (a) a.style.transform = f(t * 1.6); if (b) b.style.transform = f(t * 1.6 - .8); }
@@ -458,38 +304,3 @@ export default class Experience extends Component {
     else if (type === 'verify') { const ring = q('ring'), pct = q('pct'), ck = q('check'); const p = Math.min(1, ((t * (inside ? .5 : .25)) % 1.4)); if (ring) ring.style.background = `conic-gradient(${p >= 1 ? '#e0562a' : '#0f0e0c'} ${p * 100}%,#dedbd2 0)`; if (pct) pct.textContent = p >= 1 ? 'VERIFIED · UAT + PROD' : Math.round(p * 100) + '%'; if (ck) ck.style.opacity = String(p >= 1 ? 1 : .12); }
     else if (type === 'ai') { const ph = (t * (inside ? 1.3 : .7)) % 6; const w = (a, b) => Math.max(0, Math.min(1, (ph - a) / (b - a))) * 100 + '%'; const l2 = q('l2'), l3 = q('l3'), l4 = q('l4'), cur = q('cur'); if (l2) l2.style.width = w(1, 1.8); if (l3) l3.style.width = w(2, 2.8); if (l4) l4.style.width = w(3.2, 4.4); if (cur) cur.style.opacity = String(Math.floor(t * 3) % 2); }
   }
-  openCase(i, push = true) { if (push) history.pushState(null, '', '/work/' + this.state.d.projects[i].slug); this.setState({ caseIdx: i }, () => { const c = this.R('case').current; if (c) c.scrollTop = 0; const im = this.R('caseImg').current; if (im) im.style.backgroundImage = `url(${this.state.d.projects[i].img})`; const close = c && c.querySelector('[role="button"]'); if (close) close.focus({ preventScroll: true }); }); }
-  closeCase() { history.pushState(null, '', '/'); this.setState({ caseIdx: -1 }); }
-
-  renderVals() {
-    const s = this.state, d = s.d, W = str => str.split(' ').map(t => ({ t }));
-    const F = this.props.flagships || [];
-    const all = d ? d.projects : [];
-    const P = [
-      ...F.map((f) => { const p = all.find((x) => x.slug === f.slug) || {}; return { ...p, slug: f.slug, name: f.status ? `${f.title} (unreleased)` : f.title, short: f.oneLiner, tags: f.tags.join(' • ').toLowerCase(), flagship: true }; }),
-      ...all.filter((p) => !F.some((f) => f.slug === p.slug)),
-    ];
-    const cs0 = P[s.caseIdx >= 0 ? s.caseIdx : 0];
-    const cs = cs0 && cs0.built ? { ...cs0, built: cs0.built.map((t, i) => ({ n: i + 1, t })), results: cs0.results.map(([v, l]) => ({ v, l })), nextName: P[(s.caseIdx + 1) % P.length].name } : {};
-    const spans = ['7', '5', '5', '7', '6', '6', '5', '7', '7', '5'], ratios = ['3/2', '4/3', '4/3', '3/2', '4/3', '4/3', '4/3', '3/2', '3/2', '4/3'];
-    return {
-      loaderOn: s.phase !== 'ready', topT: s.phase === 'exit' ? 'translateY(-101%)' : 'translateY(0)', botT: s.phase === 'exit' ? 'translateY(101%)' : 'translateY(0)', loaderTextO: s.phase === 'exit' ? '0' : '1',
-      count: s.count, word: s.word, time: s.time, menuOpen: s.menuOpen, menuLabel: s.menuOpen ? 'Close' : 'Menu',
-      toggleMenu: () => this.setState(x => ({ menuOpen: !x.menuOpen })),
-      toTop: () => { this.sc.target = 0; },
-      caseOpen: s.caseIdx >= 0 && !!d, cs, closeCase: () => this.closeCase(), nextCase: () => this.openCase((s.caseIdx + 1) % P.length),
-      glRef: this.R('gl'), trailRef: this.R('trail'), heroSecRef: this.R('heroSec'), heroCapRef: this.R('heroCap'), gridRef: this.R('grid'), caseRef: this.R('case'), caseImgRef: this.R('caseImg'), barRef: this.R('bar'),
-      diveSecRef: this.R('diveSec'), diveGlRef: this.R('diveGl'), diveDotsRef: this.R('diveDots'), diveHintRef: this.R('diveHint'), railRef: this.R('rail'), counterRef: this.R('counter'), goOpen: () => this._goCh && this._goCh(0), prevChapter: () => this._goCh && this._goCh((this.J ? this.J.ch : 0) - 1), nextChapter: () => this._goCh && this._goCh((this.J ? this.J.ch : 0) + 1), methSecRef: this.R('methSec'), trackRef: this.R('track'), tiltRef: this.R('tilt'), hazeARef: this.R('hazeA'), hazeBRef: this.R('hazeB'),
-      wIntro: W('Frontend engineer. Angular, React, TypeScript, secure delivery.'), wStatement: W('Built to ship, index and pass review.'), wWork: W('Selected work.'), wStack: W('Tools in production use.'), wContact: W('Start a conversation.'),
-      // Cards are plain links to the case-study pages (no in-page takeover).
-      projects: P.map((p, i) => ({ ...p, href: '/work/' + p.slug, num: String(i + 1).padStart(2, '0'), open: undefined, span: spans[i], ratio: ratios[i], offset: i % 2 ? '10vh' : '0' })),
-      slots: this.props.slots,
-      heroProjects: (this.props.flagships || []).map(({ slug, title, oneLiner, tags, status }) => ({ slug, title, oneLiner, tags: (tags || []).slice(0, 2).join(' · '), status: status ? status.split(' ')[0] : null })),
-      contributed: d ? d.contributed.map(([name, share, desc]) => ({ name, share, desc })) : [],
-      timeline: d ? d.timeline.map((y, i) => ({ ...y, chips: (y.tags || []).map(t => ({ t })), go: () => this._goCh && this._goCh(i + 1), short: (y.k || '').split('·').pop().trim() })) : [],
-      stacks: d ? d.stacks.map(([name, items]) => ({ name, items: items.map(t => ({ t })) })) : [],
-    };
-  }
-
-  render() { return <PageMarkup v={this.renderVals()} />; }
-}

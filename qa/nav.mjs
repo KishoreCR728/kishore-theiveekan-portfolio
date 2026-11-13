@@ -98,12 +98,12 @@ for (const width of [1440, 390]) {
     const t = new URL(href, base + "/");
     if (pathOf(page.url()) !== pathOf(t.href)) fail(`menu @${width}: ${href} landed on ${pathOf(page.url())}`);
     else if (t.hash) { const s = await onScreen(page, t.hash.slice(1)); if (s !== "ok") fail(`menu @${width}: ${href} section not on screen (${s})`); }
-    const open = await page.evaluate(() => !!document.querySelector("[data-overlay]"));
+    const open = await page.evaluate(() => (() => { const o = document.querySelector("[data-overlay]"); return !!(o && o.getClientRects().length); })()); // the menu stays in the page, hidden, when closed
     if (open && pathOf(page.url()) === "/") fail(`menu @${width}: still open after choosing ${href}`);
   }
   await page.goto(base + "/"); await settle(page, base + "/");
   await page.getByRole("button", { name: "Menu" }).click(); await page.waitForTimeout(400); await page.keyboard.press("Escape"); await page.waitForTimeout(500);
-  if (await page.evaluate(() => !!document.querySelector("[data-overlay]"))) fail(`menu @${width}: Escape did not close it`);
+  if (await page.evaluate(() => (() => { const o = document.querySelector("[data-overlay]"); return !!(o && o.getClientRects().length); })())) fail(`menu @${width}: Escape did not close it`);
   await ctx.close();
 }
 
