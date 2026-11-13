@@ -198,4 +198,5 @@
 /* Drawn illustration at the top of each case study (same set as the home work cards). */
 .case-visual { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; max-height: 52vh; object-fit: cover; margin-top: 34px; border-radius: 18px; background: #161412; }
 .site-foot a { display: inline-flex; align-items: center; min-height: 24px; }
-.site-head .pill { min-width: 44px; justify-content: center; }
+.site-head .pill { min-width: 24px; justify-content: center; }
+@media (max-width: 420px) { .site-head nav { gap: 5px; } .site-head .pill { padding: 9px 10px; font-size: 11.5px; } }

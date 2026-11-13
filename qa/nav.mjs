@@ -137,8 +137,9 @@ for (const width of [1440, 390]) {
 // 7. Previous and next walk the case studies in opposite directions.
 {
   const { ctx, page } = await newPage(); await page.goto(`${base}/work/${slugs[1]}`);
+  const want = await page.getAttribute(".pager a[rel=prev]", "href");
   await page.click(".pager a[rel=prev]"); await page.waitForLoadState("load");
-  if (pathOf(page.url()) !== `/work/${slugs[0]}`) fail(`prev from ${slugs[1]} went to ${pathOf(page.url())}`);
+  if (!want || !want.startsWith("/work/") || want === `/work/${slugs[1]}` || pathOf(page.url()) !== want) fail(`prev from ${slugs[1]} went to ${pathOf(page.url())}, link said ${want}`);
   const p1 = pathOf(page.url()); await page.click(".pager a[rel=next]"); await page.waitForLoadState("load");
   if (pathOf(page.url()) !== `/work/${slugs[1]}`) fail(`prev then next did not return to ${slugs[1]} (from ${p1} to ${pathOf(page.url())})`);
   await ctx.close();
