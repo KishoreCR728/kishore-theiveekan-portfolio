@@ -102,6 +102,8 @@ export class HomeController {
     try {
       const scene = await import("./scene.js");
       await scene.initGL.call(this);
+      // If the GPU drops a WebGL context (driver reset, memory pressure), fall back to the static layout.
+      ["gl", "diveGl"].forEach((name) => this.R(name).current?.addEventListener("webglcontextlost", () => this.enableStatic(), { once: true }));
     } catch (err) {
       console.warn("3D scenes unavailable; showing the static layout.", err);
       this.enableStatic();
@@ -158,7 +160,7 @@ export class HomeController {
 
   /* ---------- menu and keyboard ---------- */
 
-  private menuToggle(): HTMLElement | null { return $('[data-topnav] [aria-label="Menu"]'); }
+  private menuToggle(): HTMLElement | null { return $("[data-menu-toggle]"); }
 
   setMenu(open: boolean): void {
     if (open === this.state.menuOpen) return;
@@ -194,7 +196,14 @@ export class HomeController {
     const run = (el: HTMLElement) => {
       const action = el.dataset.action;
       // Menu links carry data-action="menu" too: following one closes the menu.
-      if (action === "menu") this.setMenu(el.tagName === "A" ? false : !this.state.menuOpen);
+      if (action === "menu") {
+        if (el.tagName !== "A") { this.setMenu(!this.state.menuOpen); return; }
+        this.setMenu(false);
+        // An in-page menu link moves keyboard focus to the section it opens, not back to the Menu button.
+        const href = el.getAttribute("href") || "";
+        const target = href.startsWith("#") ? document.getElementById(href.slice(1)) : null;
+        if (target) { if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1"); target.focus({ preventScroll: true }); }
+      }
       else if (action === "top") { if (this.isStatic) scrollTo({ top: 0, behavior: "smooth" }); else this.sc.target = 0; }
       else if (action === "chapter") this._goCh?.(Number(el.dataset.ch || 0));
       else if (action === "chapter-prev") this._goCh?.((this.J?.ch ?? 0) - 1);

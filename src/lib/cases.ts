@@ -36,6 +36,17 @@ type Legacy = {
   overview: string; problem: string; built: string[]; results: string[][]; how: string;
 };
 
+/** Search snippet of at most 155 characters that ends on a whole sentence (never cut mid-word). */
+function metaDescription(short: string, overview: string): string {
+  let out = short;
+  for (const sentence of overview.match(/[^.!?]+[.!?]+/g) ?? []) {
+    const next = `${out} ${sentence.trim()}`;
+    if (next.length > 155) break;
+    out = next;
+  }
+  return out;
+}
+
 const fromMarkdown = (): Case[] =>
   caseStudies().map(({ slug, meta, body }) => ({
     slug,
@@ -65,7 +76,7 @@ const fromLegacy = (skip: Set<string>): Case[] =>
     .map((p) => ({
       slug: p.slug,
       title: p.name,
-      description: `${p.short} ${p.overview}`.slice(0, 158),
+      description: metaDescription(p.short, p.overview),
       oneLiner: p.short,
       tags: p.tags.split("•").map((t) => tagName(t.trim())),
       flagship: false,

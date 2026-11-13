@@ -187,7 +187,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
           </>
         )}
         {(
-          <div data-menu="" hidden>
+          <div data-menu="" id="site-menu" hidden>
             <div
               style={{ position: "fixed", inset: "0", zIndex: "45", background: "rgba(15,14,12,.35)", backdropFilter: "blur(6px)" }}
               data-action="menu"
@@ -298,6 +298,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
           </div>
         )}
         <a className="skip" href="#main">{"Skip to content"}</a>
+        <header>
         <nav
           data-topnav={"1"}
           aria-label={"Site"}
@@ -349,9 +350,11 @@ export function PageMarkup({ v }: { v: HomeView }) {
             >
               {"Let's talk"}
             </a>
-            <div
+            <button
+              type="button"
               aria-expanded={v.menuOpen}
-              aria-label={"Menu"}
+              aria-controls="site-menu"
+              data-menu-toggle=""
               className="he1fcd71"
               style={{
                 background: "#fff",
@@ -361,13 +364,14 @@ export function PageMarkup({ v }: { v: HomeView }) {
                 letterSpacing: ".04em",
                 textTransform: "uppercase",
                 cursor: "pointer",
+                border: "0",
+                font: "inherit",
+                color: "inherit",
                 display: "flex",
                 gap: "10px",
                 alignItems: "center",
               }}
               data-action="menu"
-              role="button"
-              tabIndex={0}
             >
               <span data-menu-label="">{v.menuLabel}</span>
               <span style={{ display: "inline-flex", flexDirection: "column", gap: "3px" }}>
@@ -375,9 +379,10 @@ export function PageMarkup({ v }: { v: HomeView }) {
                 <i style={{ width: "4px", height: "4px", borderRadius: "50%", background: "#0f0e0c" }}></i>
                 <i style={{ width: "4px", height: "4px", borderRadius: "50%", background: "#0f0e0c" }}></i>
               </span>
-            </div>
+            </button>
           </div>
         </nav>
+        </header>
         <main id="main" tabIndex={-1}>
           <section data-screen-label={"Hero"} style={{ position: "relative", zIndex: "2", padding: "150px 4.5vw 0" }}>
             <p style={{ margin: "0 0 22px", fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62", animation: "rise-t 1s both" }}>
@@ -847,7 +852,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                       >
                         {p.tags}
                       </div>
-                      <div style={{ fontSize: "clamp(28px,2.9vw,44px)", letterSpacing: "-.025em", lineHeight: "1.05" }}>{p.name}</div>
+                      <h3 style={{ margin: "0", fontWeight: "400", fontSize: "clamp(28px,2.9vw,44px)", letterSpacing: "-.025em", lineHeight: "1.05" }}>{p.name}</h3>
                     </div>
                   </a>
                 </Fragment>
@@ -859,8 +864,9 @@ export function PageMarkup({ v }: { v: HomeView }) {
             id={"journey"}
             data-ref="diveSec"
             data-screen-label={"Journey"}
-            style={{ position: "relative", zIndex: "2", height: "600vh", color: "#0f0e0c" }}
+            style={{ position: "relative", zIndex: "2", height: "480vh", color: "#0f0e0c" }}
           >
+            <h2 className="sr-only">{"Since 2023 at Finstein: the journey in five districts"}</h2>
             <div
               style={{
                 position: "sticky",
@@ -872,6 +878,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
             >
               <canvas
                 data-ref="diveGl"
+                aria-hidden={"true"}
                 style={{ position: "absolute", inset: "0", width: "100%", height: "100%", touchAction: "none", cursor: "grab" }}
               ></canvas>
               <div
@@ -1137,7 +1144,10 @@ export function PageMarkup({ v }: { v: HomeView }) {
                   fontSize: "12px",
                   letterSpacing: ".12em",
                   textTransform: "uppercase",
-                  color: "#6e6a62",
+                  color: "#55524b",
+                  background: "rgba(240,239,233,.86)",
+                  padding: "6px 10px",
+                  borderRadius: "999px",
                   pointerEvents: "none",
                 }}
               >

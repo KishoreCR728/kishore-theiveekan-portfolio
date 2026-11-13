@@ -44,7 +44,7 @@ const staticModeCheck = `(function(){try{var d=document.documentElement;if(match
 
 /** The browser module's file name carries a content hash (scripts/build-runtime.mjs writes the manifest). */
 function runtimeEntry(): string {
-  const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/home/manifest.json"), "utf8")) as { entry: string };
+  const manifest = JSON.parse(fs.readFileSync(path.join(process.cwd(), "src/home/runtime-manifest.json"), "utf8")) as { entry: string };
   return manifest.entry;
 }
 

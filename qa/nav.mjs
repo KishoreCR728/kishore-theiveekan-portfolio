@@ -138,7 +138,7 @@ for (const width of [1440, 390]) {
 {
   const { ctx, page } = await newPage(); await page.goto(`${base}/work/${slugs[1]}`);
   await page.click(".pager a[rel=prev]"); await page.waitForLoadState("load");
-  if (pathOf(page.url()) !== `/work/${slugs[0]}` && !pathOf(page.url()).startsWith("/work/")) fail(`prev from ${slugs[1]} went to ${pathOf(page.url())}`);
+  if (pathOf(page.url()) !== `/work/${slugs[0]}`) fail(`prev from ${slugs[1]} went to ${pathOf(page.url())}`);
   const p1 = pathOf(page.url()); await page.click(".pager a[rel=next]"); await page.waitForLoadState("load");
   if (pathOf(page.url()) !== `/work/${slugs[1]}`) fail(`prev then next did not return to ${slugs[1]} (from ${p1} to ${pathOf(page.url())})`);
   await ctx.close();

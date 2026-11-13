@@ -18,8 +18,36 @@ export const metadata: Metadata = {
 
 export default function WritingIndex() {
   const posts = articles();
+  // Structured data: a collection of the articles, by the same Person as the home page (@id).
+  const ld = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${site.url}/writing#page`,
+        url: `${site.url}/writing`,
+        name: `Writing | ${site.name}`,
+        description,
+        inLanguage: "en",
+        isPartOf: { "@id": `${site.url}/#website` },
+        author: { "@id": `${site.url}/#person` },
+        mainEntity: {
+          "@type": "ItemList",
+          itemListElement: posts.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: `${site.url}/writing/${p.slug}`, name: p.meta.title })),
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+          { "@type": "ListItem", position: 2, name: "Writing", item: `${site.url}/writing` },
+        ],
+      },
+    ],
+  };
   return (
     <div className="page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
       <SiteHeader current="writing" />
       <main id="main" className="wrap">
         <header className="hero-block">

@@ -131,12 +131,15 @@ export function createHero(o: HeroOptions): Hero {
     const c = document.createElement("canvas"), x = c.getContext("2d", { willReadFrequently: true })!;
     const fs = 120;
     x.font = `600 ${fs}px ${o.font}`;
+    // Open letter spacing keeps at least one empty column of boxes between letters.
+    (x as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = `${Math.round(fs * 0.16)}px`;
     const tw = Math.max(...lines.map((l) => x.measureText(l).width));
     c.width = Math.ceil(tw + 20);
     c.height = Math.ceil(fs * 1.12 * lines.length + 20);
     x.font = `600 ${fs}px ${o.font}`;
+    (x as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = `${Math.round(fs * 0.16)}px`;
     x.textBaseline = "top";
-    x.fillStyle = "#000"; x.strokeStyle = "#000"; x.lineWidth = fs * 0.1; x.lineJoin = "round"; // bolder than the font, so every stroke is several boxes wide
+    x.fillStyle = "#000"; x.strokeStyle = "#000"; x.lineWidth = fs * 0.05; x.lineJoin = "round"; // a little bolder than the font, without letters merging
     lines.forEach((l, k) => { const lx = 10 + (tw - x.measureText(l).width) / 2, ly = 10 + k * fs * 1.12; x.fillText(l, lx, ly); x.strokeText(l, lx, ly); });
     const data = x.getImageData(0, 0, c.width, c.height).data;
     let filled = 0;

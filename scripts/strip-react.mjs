@@ -26,4 +26,7 @@ const chunks = path.join(root, "_next/static/chunks");
 let removed = 0;
 if (fs.existsSync(chunks)) for (const f of walk(chunks).filter((f) => f.endsWith(".js"))) { fs.rmSync(f); removed++; }
 for (const f of ["_not-found.html", "_not-found"]) fs.rmSync(path.join(root, f), { recursive: true, force: true });
+// Per-build manifests for client-side navigation (_next/static/<buildId>/) are unused as well.
+const st = path.join(root, "_next/static");
+if (fs.existsSync(st)) for (const d of fs.readdirSync(st)) { const dir = path.join(st, d); if (fs.existsSync(path.join(dir, "_buildManifest.js"))) fs.rmSync(dir, { recursive: true, force: true }); }
 console.log(`plain HTML: ${n} pages · ${removed} unused runtime files removed`);

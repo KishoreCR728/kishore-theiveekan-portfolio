@@ -49,7 +49,7 @@ export const projects = [
     how: 'The most AI-collaborative project here, by nature. The memory model, safety gates and packaging were the core design decisions.' },
   { slug: 'consulting-corporate-site', num: '07', name: 'Consulting Firm Corporate Site', short: 'A corporate site kept fast and secure without a framework.', tags: 'html • css • javascript • playwright • gitlab ci', img: '/images/work/consulting-corporate-site.svg', alt: 'A website layout wireframe with a highlighted call to action', size: 's',
     role: 'Lead developer since July 2025', own: 'Lead developer', when: 'Jul 2025 – present', stack: 'HTML, CSS, JavaScript, Playwright, GitLab CI, Apache',
-    overview: 'Hand-authored pages for a consulting firm: services, cyber advisory, an ERPNext cost calculator, blog and guides, maintained continuously since July 2025.',
+    overview: 'Hand-authored pages for a consulting firm: services, cyber advisory, an ERP cost calculator, blog and guides, maintained continuously since July 2025.',
     problem: 'Longevity. Frameworks came and went; the site needed to stay fast, secure and editable by whoever was on the team that year.',
     built: ['A shell script producing committed minified CSS and JS bundles; no client build step.', 'A cookie-consent manager, a WhatsApp channel, reCAPTCHA v3 forms and a WordPress blog migration from Medium.', 'Playwright end-to-end coverage and GitLab CI deployment.', 'VAPT remediation cycles: CSP, HSTS, X-Frame-Options, Permissions-Policy.'],
     code: '# no client build step: commit the minified output\ncat css/*.css | cleancss -o dist/site.min.css\nterser js/app.js -c -m -o dist/site.min.js',

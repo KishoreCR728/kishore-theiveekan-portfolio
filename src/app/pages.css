@@ -194,3 +194,8 @@
 
 /* Phones narrower than 360 px: drop Writing from the header (it stays in the footer). */
 @media (max-width: 359px) { .site-head .hide-sm { display: none; } }
+
+/* Drawn illustration at the top of each case study (same set as the home work cards). */
+.case-visual { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; max-height: 52vh; object-fit: cover; margin-top: 34px; border-radius: 18px; background: #161412; }
+.site-foot a { display: inline-flex; align-items: center; min-height: 24px; }
+.site-head .pill { min-width: 44px; justify-content: center; }

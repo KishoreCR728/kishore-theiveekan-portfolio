@@ -10,6 +10,6 @@ const result = await build({
 });
 const entry = Object.entries(result.metafile.outputs).find(([, o]) => o.entryPoint)?.[0];
 if (!entry) throw new Error("no entry output");
-fs.writeFileSync(path.join(out, "manifest.json"), JSON.stringify({ entry: "/" + path.relative("public", entry).split(path.sep).join("/") }));
+fs.writeFileSync(path.resolve("src/home/runtime-manifest.json"), JSON.stringify({ entry: "/" + path.relative("public", entry).split(path.sep).join("/") }));
 const sizes = Object.entries(result.metafile.outputs).filter(([f]) => f.endsWith(".js")).map(([f, o]) => `${path.basename(f)} ${(o.bytes / 1024).toFixed(1)} KB`);
 console.log("home runtime:", sizes.join(", "));

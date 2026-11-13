@@ -13,7 +13,7 @@ html.static-mode [data-loader] { display: none !important; }
   nav { padding: 14px 4.5vw !important; }
   nav > div:first-child { font-size: 16px !important; white-space: nowrap; }
   nav > div:last-child > div:first-child[style*="height"] { display: none !important; }
-  nav > div:last-child > a, nav > div:last-child > div[role="button"] { padding: 10px 14px !important; font-size: 12px !important; white-space: nowrap; }
+  nav > div:last-child > a, nav > div:last-child > button { padding: 10px 14px !important; font-size: 12px !important; white-space: nowrap; }
   [data-screen-label="Hero"] { padding-top: 104px !important; }
   [data-screen-label="Intro"], [data-screen-label="Character"] { grid-template-columns: minmax(0, 1fr) !important; gap: 36px !important; }
   [data-screen-label="Intro"] { padding-top: 14vh !important; padding-bottom: 8vh !important; }
@@ -116,3 +116,6 @@ html.static-mode [data-hero-cards] { position: relative; left: auto; right: auto
 
 [data-hero-cap] > div { text-shadow: 0 0 24px #ebe8e1, 0 0 48px #ebe8e1; } /* a paper-coloured halo where boxes pass behind the caption */
 @media (max-width: 760px) { [data-hero-card] .hc-title { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; } }
+
+/* 24 px minimum targets for footer links (WCAG 2.5.8). */
+footer a { display: inline-flex; align-items: center; min-height: 24px; }

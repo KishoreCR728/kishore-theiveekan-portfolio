@@ -40,9 +40,13 @@ export default async function CasePage({ params }: Props) {
   const next = cases[(i + 1) % cases.length];
   const prev = cases[(i - 1 + cases.length) % cases.length];
   const { nodes } = renderMarkdown(c.body);
+  const image = c.flagship ? `/og/work-${c.slug}.png` : "/og.png";
   const ld = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
+    "@id": `${site.url}/work/${c.slug}#work`,
+    isPartOf: { "@id": `${site.url}/#website` },
+    image: `${site.url}${image}`,
     name: c.title,
     description: c.description,
     url: `${site.url}/work/${c.slug}`,
@@ -75,6 +79,7 @@ export default async function CasePage({ params }: Props) {
           <ul className="chips" aria-label="Technologies">
             {c.tags.map((t) => <li key={t} className="chip">{t}</li>)}
           </ul>
+          <img className="case-visual" src={`/images/work/${c.slug}.svg`} alt="" width={1200} height={800} decoding="async" />
         </header>
 
         {c.impact.length > 0 && (
