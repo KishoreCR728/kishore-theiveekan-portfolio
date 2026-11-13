@@ -144,12 +144,20 @@ export default class Experience extends Component {
     const tctx = trail.getContext('2d');
 
     // The four flagship projects are HTML cards over the canvas (readable, crawlable, keyboard reachable).
-    // Hovering or focusing a card pulls the shapes toward it and makes them glow orange.
-    const panel = canvas.parentElement, cards = [...panel.querySelectorAll('[data-hero-card]')];
-    const pull = { i: -1, amt: 0, world: new THREE.Vector3(), local: new THREE.Vector3() }, ndc = new THREE.Vector2(), ray = new THREE.Raycaster(), zPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
-    const setPull = i => { pull.i = i; };
-    { const strip = panel.querySelector('[data-hero-cards]'); let st = 0; if (strip) strip.addEventListener('scroll', () => { if (!cards[1]) return; const step = cards[1].offsetLeft - cards[0].offsetLeft; setPull(Math.max(0, Math.min(cards.length - 1, Math.round(strip.scrollLeft / step)))); clearTimeout(st); st = setTimeout(() => setPull(-1), 1600); }, { passive: true }); }
-    cards.forEach((c, i) => { c.addEventListener('mouseenter', () => setPull(i)); c.addEventListener('focus', () => setPull(i)); c.addEventListener('mouseleave', () => setPull(-1)); c.addEventListener('blur', () => setPull(-1)); });
+    // Hovering, focusing or swiping to a card gathers the shapes into a slow orbit above it, glowing orange,
+    // and shows the project's name and one line large in the panel. Every value eases, so nothing snaps.
+    const panel = canvas.parentElement, cards = [...panel.querySelectorAll('[data-hero-card]')], preview = panel.querySelector('[data-hero-preview]');
+    const F = (this.props.flagships || []).slice(0, 4);
+    const pull = { i: -1, amt: 0, tgt: new THREE.Vector3(), cur: new THREE.Vector3(), has: false, w: new THREE.Vector3(), tm: 0 }, ndc = new THREE.Vector2(), ray = new THREE.Raycaster(), zPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), ring = new THREE.Vector3();
+    const show = i => {
+      clearTimeout(pull.tm); if (i === pull.i) return; pull.i = i; panel.classList.toggle('hero-focus', i >= 0);
+      if (!preview) return;
+      if (i >= 0 && F[i]) { preview.querySelector('[data-hero-preview-num]').textContent = '0' + (i + 1) + ' · Case study'; preview.querySelector('[data-hero-preview-title]').textContent = F[i].title; preview.querySelector('[data-hero-preview-line]').textContent = F[i].oneLiner; preview.classList.add('on'); }
+      else preview.classList.remove('on');
+    };
+    const hide = () => { clearTimeout(pull.tm); pull.tm = setTimeout(() => show(-1), 160); }; // small delay so moving between cards doesn't flicker
+    { const strip = panel.querySelector('[data-hero-cards]'); let st = 0; if (strip) strip.addEventListener('scroll', () => { if (!cards[1] || matchMedia('(min-width: 761px)').matches) return; const step = cards[1].offsetLeft - cards[0].offsetLeft; show(Math.max(0, Math.min(cards.length - 1, Math.round(strip.scrollLeft / step)))); clearTimeout(st); st = setTimeout(() => show(-1), 1800); }, { passive: true }); }
+    cards.forEach((c, i) => { c.addEventListener('mouseenter', () => show(i)); c.addEventListener('focus', () => show(i)); c.addEventListener('mouseleave', hide); c.addEventListener('blur', hide); });
 
     // JOURNEY — Skyline: pastel low-poly city along a winding avenue; districts grow as the camera approaches
     const drend = new THREE.WebGLRenderer({ canvas: dcv, antialias: true, alpha: true, powerPreference: 'high-performance' });
@@ -359,18 +367,25 @@ export default class Experience extends Component {
         camera.position.z = 18 - e * 14;
         group.rotation.y += ((m.nx * .3 + e * 1.6) - group.rotation.y) * .06; group.rotation.x += ((m.ny * .2 - vn * .15) - group.rotation.x) * .06; group.rotation.z += (vn * .12 - group.rotation.z) * .08;
         camera.position.x += (m.nx * .7 - camera.position.x) * .05; camera.position.y += (-m.ny * .5 - camera.position.y) * .05;
-        pull.amt += ((pull.i >= 0 ? 1 : 0) - pull.amt) * .06;
-        if (pull.i >= 0 && cards[pull.i]) {
-          const cr = canvas.getBoundingClientRect(), kr = cards[pull.i].getBoundingClientRect();
-          ndc.set(((kr.left + kr.width / 2 - cr.left) / cr.width) * 2 - 1, -(((kr.top - cr.top) - cr.height * .12) / cr.height) * 2 + 1); ray.setFromCamera(ndc, camera);
-          zPlane.constant = -(camera.position.z - 10); if (ray.ray.intersectPlane(zPlane, pull.world)) { group.updateMatrixWorld(); pull.local.copy(pull.world); group.worldToLocal(pull.local); }
+        const ease = x => x * x * (3 - 2 * x), kA = 1 - Math.exp(-dt * 2.4), kP = 1 - Math.exp(-dt * 3.2);
+        pull.amt += ((pull.i >= 0 ? 1 : 0) - pull.amt) * kA;
+        if (pull.i >= 0) {
+          // Orbit centre: right of the project name on wide screens, centre on phones; far enough back that shapes stay small.
+          const wide = camera.aspect > 1; ndc.set(wide ? .3 : 0, wide ? .08 : .02); ray.setFromCamera(ndc, camera);
+          zPlane.constant = -(camera.position.z - 21); if (ray.ray.intersectPlane(zPlane, pull.w)) { group.updateMatrixWorld(); pull.tgt.copy(pull.w); group.worldToLocal(pull.tgt); if (!pull.has) { pull.cur.copy(pull.tgt); pull.has = true; } }
         }
-        for (const it of items) {
-          const px = it.base.x * spread + Math.cos(t * .35 + it.ph) * .18, py = it.base.y * spread + Math.sin(t * .5 + it.ph) * .25 - vn * .6, pz = it.base.z * spread, a = pull.amt * (.35 + .25 * Math.sin(it.ph));
-          it.mesh.position.set(px + (pull.local.x - px) * a, py + (pull.local.y - py) * a, pz + (pull.local.z - pz) * a);
-          it.mesh.rotation.x += it.spin.x * dt; it.mesh.rotation.y += (it.spin.y + vn * 1.5 + pull.amt * .6) * dt; it.mesh.rotation.z += it.spin.z * dt;
-          if (it.mesh.material.emissiveIntensity !== undefined) it.mesh.material.emissiveIntensity = pull.amt * .55;
-        }
+        pull.cur.lerp(pull.tgt, kP);
+        scene.fog.near = 12 + pull.amt * 10; scene.fog.far = 30 + pull.amt * 34; // clear the haze so the orbit reads bright
+        items.forEach((it, j) => {
+          const px = it.base.x * spread + Math.cos(t * .35 + it.ph) * .18, py = it.base.y * spread + Math.sin(t * .5 + it.ph) * .25 - vn * .6, pz = it.base.z * spread;
+          const joins = j % 2 === 0, aa = joins ? ease(Math.min(1, Math.max(0, pull.amt * 1.35 - (j % 7) * .05))) : 0;
+          const ang = j * 2.39996 + t * .28, rad = (camera.aspect > 1 ? 2.6 : 1.8) + (j % 5) * .75;
+          ring.set(pull.cur.x + Math.cos(ang) * rad, pull.cur.y + Math.sin(ang) * rad * .7, pull.cur.z + Math.sin(j * 1.7 + t * .4) * 1.6);
+          if (joins) it.mesh.position.set(px + (ring.x - px) * aa, py + (ring.y - py) * aa, pz + (ring.z - pz) * aa);
+          else { const o = ease(pull.amt); it.mesh.position.set(px * (1 + o * .5), py * (1 + o * .5), pz - o * 9); } // the rest step back and aside, clearing the cards
+          it.mesh.rotation.x += it.spin.x * dt; it.mesh.rotation.y += (it.spin.y + vn * 1.5 + pull.amt * .5) * dt; it.mesh.rotation.z += it.spin.z * dt;
+          if (it.mesh.material.emissiveIntensity !== undefined) it.mesh.material.emissiveIntensity = aa * .6;
+        });
         renderer.render(scene, camera);
         const cap = this.R('heroCap').current; if (cap) { const o = p > .7 ? Math.min(1, (p - .7) / .18) : 0; cap.style.opacity = String(o); cap.style.transform = `scale(${.92 + o * .08})`; }
         tctx.globalCompositeOperation = 'destination-out'; tctx.fillStyle = 'rgba(0,0,0,.08)'; tctx.fillRect(0, 0, trail.width, trail.height); tctx.globalCompositeOperation = 'lighter';
@@ -469,7 +484,7 @@ export default class Experience extends Component {
       // Cards are plain links to the case-study pages (no in-page takeover).
       projects: P.map((p, i) => ({ ...p, href: '/work/' + p.slug, num: String(i + 1).padStart(2, '0'), open: undefined, span: spans[i], ratio: ratios[i], offset: i % 2 ? '10vh' : '0' })),
       slots: this.props.slots,
-      heroProjects: (this.props.flagships || []).map(({ slug, title, oneLiner, status }) => ({ slug, title, oneLiner, status: status ? status.split(' ')[0] : null })),
+      heroProjects: (this.props.flagships || []).map(({ slug, title, oneLiner, tags, status }) => ({ slug, title, oneLiner, tags: (tags || []).slice(0, 2).join(' · '), status: status ? status.split(' ')[0] : null })),
       contributed: d ? d.contributed.map(([name, share, desc]) => ({ name, share, desc })) : [],
       timeline: d ? d.timeline.map((y, i) => ({ ...y, chips: (y.tags || []).map(t => ({ t })), go: () => this._goCh && this._goCh(i + 1), short: (y.k || '').split('·').pop().trim() })) : [],
       stacks: d ? d.stacks.map(([name, items]) => ({ name, items: items.map(t => ({ t })) })) : [],

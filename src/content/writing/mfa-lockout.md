@@ -1,6 +1,6 @@
 ---
 title: Every code was “Invalid”: a login lockout, and a fix that didn't deploy
-order: 3
+order: 5
 topic: Authentication
 date: 2026-11-11
 description: Every two-factor code came back invalid in production. The server was sound; a failed check still saved a new secret. Then the fix 'deployed' without being in the build.

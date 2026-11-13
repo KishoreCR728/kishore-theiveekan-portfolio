@@ -12,6 +12,11 @@ const posts = fs.readdirSync(path.join(root, "writing")).filter((f) => f.endsWit
 if (posts.length !== 5) fail(`expected 5 articles, found ${posts.length}`);
 if (!fs.existsSync(path.join(root, "writing.html"))) fail("missing writing index");
 for (const f of walk(root).filter((f) => f.endsWith(".html"))) { const t = fs.readFileSync(f, "utf8"); const og = t.match(/property="og:image" content="[^"]*?(\/og[^"]*)"/); if (/noindex/.test(t) || f.endsWith("404.html") || f.includes("_not-found")) continue; if (!og) fail(`no og:image in ${f}`); else if (!fs.existsSync(path.join(root, og[1]))) fail(`og:image ${og[1]} missing for ${f}`); if (!/<meta name="description"/.test(t)) fail(`no description in ${f}`); if (!/rel="canonical"/.test(t)) fail(`no canonical in ${f}`); }
+// Fonts are subset (scripts/subset-fonts.sh). Any visible character outside the subset would fall back to another font.
+const FONT_CHARS = /[\u0020-\u007E\u00A0\u00A9\u00B0\u00B7\u00E7\u00F7\u2013\u2014\u2018\u2019\u201C\u201D\u2022\u2026\u2190-\u2193\u2197\u2265\u2713\u2715\s]/;
+for (const f of walk(root).filter((f) => f.endsWith(".html"))) { const text = fs.readFileSync(f, "utf8").replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, "").replace(/<[^>]+>/g, " ").replace(/&[a-z]+;|&#\d+;/g, " "); const bad = [...new Set([...text].filter((c) => !FONT_CHARS.test(c)))]; if (bad.length) fail(`characters outside the font subset in ${f}: ${bad.join(" ")}`); }
+// Inner pages are plain HTML (scripts/defer-hydration.mjs): no React runtime, no embedded React data.
+for (const f of walk(root).filter((f) => f.endsWith(".html") && path.basename(f) !== "index.html")) { const t = fs.readFileSync(f, "utf8"); if (/\/_next\/static\/chunks\/[^"]+\.js|self\.__next_f/.test(t)) fail(`inner page still ships the React runtime: ${f}`); }
 for (const f of ["robots.txt", "sitemap.xml", "llms.txt", "og.png", "Kishore-Theiveekan-CV.pdf", "404.html"]) if (!fs.existsSync(path.join(root, f))) fail(`missing ${f}`);
 const server = await serve(root, port);
 const browser = await chromium.launch({ channel: "chrome", args: ["--use-angle=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist", "--enable-unsafe-swiftshader"] });

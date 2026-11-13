@@ -725,6 +725,7 @@ export function PageMarkup({ v }) {
               ></canvas>
               <div
                 ref={v.heroCapRef}
+                data-hero-cap={"1"}
                 style={{
                   position: "absolute",
                   inset: "0",
@@ -750,21 +751,26 @@ export function PageMarkup({ v }) {
                   <i className="ac">{"Pick one."}</i>
                 </div>
               </div>
+              <div data-hero-preview={"1"} aria-hidden={"true"}>
+                <span data-hero-preview-num={"1"}></span>
+                <span data-hero-preview-title={"1"}></span>
+                <span data-hero-preview-line={"1"}></span>
+              </div>
               <nav data-hero-cards={"1"} aria-label={"Featured projects"}>
                 {(v.heroProjects || []).map((p, i) => (
-                  <a key={p.slug} href={"/work/" + p.slug} data-hero-card={String(i)} data-hero-link={p.slug}>
+                  <a key={p.slug} href={"/work/" + p.slug} data-hero-card={String(i)} data-hero-link={p.slug} data-line={p.oneLiner} title={p.oneLiner}>
                     <span className="hc-img">
-                      <img src={"/images/card-" + p.slug + ".webp"} alt={""} width={840} height={420} loading={"lazy"} decoding={"async"} />
+                      <img src={"/images/card-" + p.slug + ".svg"} alt={""} width={240} height={150} decoding={"async"} />
                     </span>
                     <span className="hc-body">
                       <span className="hc-top">
-                        <span className="hc-num">{"0" + (i + 1)}</span>
+                        <span>{"0" + (i + 1)}</span>
                         {p.status ? <span className="hc-status">{p.status}</span> : null}
                       </span>
                       <span className="hc-title">{p.title}</span>
-                      <span className="hc-line">{p.oneLiner}</span>
-                      <span className="hc-open">{"Read the case study →"}</span>
+                      <span className="hc-tags">{p.tags}</span>
                     </span>
+                    <span className="hc-arrow" aria-hidden={"true"}>{"→"}</span>
                   </a>
                 ))}
               </nav>

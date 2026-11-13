@@ -1,6 +1,6 @@
 ---
 title: Our build said success. The crawlers saw a blank page.
-order: 5
+order: 1
 topic: Build and release
 date: 2026-11-11
 video: short-blank-page

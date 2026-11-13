@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node scripts/defer-hydration.mjs out",
     "start": "node -e \"import('./qa/serve.mjs').then((m) => m.serve('out', 3000)).then(() => console.log('http://127.0.0.1:3000'))\"",
     "test": "node qa/run.mjs && node qa/nav.mjs",
     "og": "node scripts/og.mjs",

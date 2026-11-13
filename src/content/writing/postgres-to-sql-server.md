@@ -1,6 +1,6 @@
 ---
 title: Same app, new database: the bugs only real files could find
-order: 2
+order: 3
 topic: Data and performance
 date: 2026-11-11
 description: A finance app moved from PostgreSQL to SQL Server, and real client files broke it: a 2,100-parameter ceiling, a race on one connection, a ten-second browser freeze and 33 blank export columns.

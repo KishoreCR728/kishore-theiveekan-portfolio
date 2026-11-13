@@ -1,6 +1,6 @@
 ---
 title: “Reject All” didn’t stop the trackers
-order: 1
+order: 2
 topic: Privacy and consent
 date: 2026-11-11
 description: A cookie banner's own start-up order let analytics and sales trackers run before consent and after Reject All. Finding the real cause, a fix that fails closed, and the black videos that followed.

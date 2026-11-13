@@ -6,7 +6,7 @@ import { site } from "@/content/site";
 
 const sans = localFont({
   src: "../fonts/dm-sans-latin-opsz-normal.woff2",
-  weight: "100 1000",
+  weight: "400 600", // subset by scripts/subset-fonts.sh; qa/run.mjs fails if a page uses a character outside it
   variable: "--font-sans",
   display: "swap",
   fallback: ["Helvetica", "Arial", "sans-serif"],
