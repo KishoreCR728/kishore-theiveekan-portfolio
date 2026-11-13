@@ -32,7 +32,6 @@ export async function initGL() {
     canvas,
     titles: F.map((f) => f.title.split(" ")[0].toUpperCase()),
     low: LOW,
-    font: FF,
   });
   this._hero = hero;
   const heroState = { i: -1, tm: 0 };
@@ -56,7 +55,6 @@ export async function initGL() {
   }; // a short delay, so moving between cards never flickers
   {
     const strip = panel.querySelector("[data-hero-cards]");
-    let st = 0;
     if (strip)
       strip.addEventListener(
         "scroll",
@@ -64,8 +62,7 @@ export async function initGL() {
           if (!cards[1] || matchMedia("(min-width: 761px)").matches) return;
           const step = cards[1].offsetLeft - cards[0].offsetLeft;
           show(Math.max(0, Math.min(cards.length - 1, Math.round(strip.scrollLeft / step))));
-          clearTimeout(st);
-          st = setTimeout(() => show(-1), 2600);
+          // The word stays while its card is centred (no timer on phones).
         },
         { passive: true },
       );

@@ -460,7 +460,8 @@ export function PageMarkup({ v }: { v: HomeView }) {
                 height: "calc(100vh - 110px)",
                 borderRadius: "18px",
                 overflow: "hidden",
-                background: "#ebe8e1",
+                background: "#ffffff",
+                boxShadow: "0 30px 80px -50px rgba(15,14,12,.35), 0 0 0 1px rgba(15,14,12,.05)",
               }}
               data-hero-panel={"1"}
             >
