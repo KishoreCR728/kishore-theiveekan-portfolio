@@ -1,13 +1,13 @@
 /*
- * Hero: a white panel with a ring of small glossy cubes and spheres orbiting the centre.
+ * Hero: a white studio. About fifty large glossy shapes (rounded cubes, capsules, rings, spheres in orange,
+ * ink and white) orbit the centre above a seamless floor that catches their soft shadows.
  *
- * Scrolling turns the ring (the objects travel round in a circle) and moves the camera in a little.
- * Hovering, focusing or swiping to a project card makes the orange cubes leave the ring and lock into that
- * project's name on an exact grid, drawn from a hand-made 5x7 pixel font (each font pixel is a 2x2 block of
- * cubes when there are enough orange cubes, otherwise one cube). They build left to right, square up to the
- * viewer and then shimmer gently. Moving away sends them back into orbit. No object changes colour.
+ * Scrolling turns the orbit and moves the camera in; the pointer makes the whole set lean toward it.
+ * Hovering, focusing or swiping to a project card parts the shapes to the sides, and small orange cubes rise
+ * from the floor and lock into the project's name on an exact grid (a hand-drawn 5x7 pixel font, each font
+ * pixel a 2x2 block of cubes), building left to right, then shimmer. Moving away drops them back to the floor.
  *
- * Two InstancedMeshes draw everything (cubes and spheres), so this stays light on phones.
+ * One InstancedMesh per shape type plus one for the word's cubes: a handful of draw calls in total.
  */
 import type * as THREE_NS from "three";
 import type { RoundedBoxGeometry as RBG } from "three/addons/geometries/RoundedBoxGeometry.js";
@@ -22,7 +22,7 @@ export interface HeroOptions {
   canvas: HTMLCanvasElement;
   /** One short uppercase word per project (e.g. "ERP", "JARVIS"). */
   titles: string[];
-  /** Coarse pointer (phones, tablets): fewer objects, lower pixel ratio. */
+  /** Coarse pointer (phones, tablets): fewer shapes, smaller shadow map, standard material. */
   low: boolean;
 }
 
@@ -38,7 +38,7 @@ export interface HeroFrame {
 export interface Hero {
   frame(f: HeroFrame): void;
   resize(): void;
-  /** Build project i's word; -1 releases the cubes. `refit` re-lays it after a resize without restarting. */
+  /** Build project i's word; -1 releases it. `refit` re-lays it after a resize without restarting. */
   show(i: number, refit?: boolean): void;
   /** Where the word ends on screen (px from the top of the canvas), for placing the caption. */
   titleBottom(): number;
@@ -74,6 +74,7 @@ const FONT: Record<string, string[]> = {
   Z: ["#####", "....#", "...#.", "..#..", ".#...", "#....", "#####"],
 };
 
+
 /** Font pixels of a word as [column, row] (row 0 = top), plus the word's size in font pixels. */
 function wordPixels(word: string): { px: [number, number][]; cols: number; rows: number } {
   const px: [number, number][] = [];
@@ -86,26 +87,16 @@ function wordPixels(word: string): { px: [number, number][]; cols: number; rows:
   return { px, cols: Math.max(1, x - 1), rows: 7 };
 }
 
-const BG = 0xffffff;
 const ORANGE = 0xe0562a;
-// Non-orange cube colours: warm whites, greys and some ink. The orange share is set exactly (see createHero).
-const CUBE_COLOURS: [number, number][] = [[0xf1efea, 40], [0xe1ddd5, 23], [0xc6c0b5, 13], [0x2a2622, 24]];
-const SPHERE_COLOURS: [number, number][] = [[0xf1efea, 40], [0xdad5cc, 25], [0x2a2622, 15], [ORANGE, 20]];
+const SHAPE_COLOURS: [number, number][] = [[ORANGE, 34], [0x1f1c19, 22], [0xf4f2ee, 30], [0xd9d3c8, 14]];
+const FLOOR_Y = -3.4;
 const easeInOut = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 const smooth = (x: number) => x * x * (3 - 2 * x);
 
-/** A floating object: its place on the ring (a cylinder around the vertical axis) and its own motion. */
-interface Body {
-  r: number; theta: number; y: number;
-  phase: number; spin: THREE_NS.Vector3; rot: THREE_NS.Euler; size: number;
-  push: THREE_NS.Vector2;
-}
-interface Cube extends Body {
-  orange: boolean;
-  /** Formation progress 0..1, its goal and start delay; how far it has stepped back; its grid cell. */
-  f: number; goal: number; delay: number; back: number;
-  target: THREE_NS.Vector3 | null;
-}
+/** A large shape on the orbit. */
+interface Shape { kind: number; r: number; theta: number; y: number; size: number; phase: number; spin: THREE_NS.Vector3; rot: THREE_NS.Euler; }
+/** One small cube of the word: its grid cell, where it rises from, and its progress. */
+interface Cell { target: THREE_NS.Vector3; from: THREE_NS.Vector3; f: number; goal: number; delay: number; }
 
 export function createHero(o: HeroOptions): Hero {
   const { THREE, canvas } = o;
@@ -113,189 +104,177 @@ export function createHero(o: HeroOptions): Hero {
   renderer.setPixelRatio(Math.min(devicePixelRatio, o.low ? 1.5 : 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(BG);
-  scene.fog = new THREE.Fog(BG, 17, 36);
+  scene.background = new THREE.Color(0xffffff);
+  scene.fog = new THREE.Fog(0xffffff, 20, 42);
   scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new o.RoomEnvironment(), 0.04).texture;
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xe9e4da, 0.7));
-  const key = new THREE.DirectionalLight(0xffffff, 1.4);
-  key.position.set(5, 8, 9);
-  scene.add(key);
-  const rim = new THREE.DirectionalLight(0xffe4d2, 0.6);
-  rim.position.set(-6, -3, -4);
-  scene.add(rim);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xeee9e0, 0.55));
+  const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+  sun.position.set(3, 12, 6);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(o.low ? 1024 : 2048, o.low ? 1024 : 2048);
+  Object.assign(sun.shadow.camera, { left: -14, right: 14, top: 14, bottom: -14, near: 1, far: 40 });
+  sun.shadow.radius = 6;
+  sun.shadow.bias = -0.0005;
+  scene.add(sun);
+  // The seamless floor: invisible except for the shadows it catches.
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.ShadowMaterial({ opacity: 0.13 }));
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.y = FLOOR_Y;
+  floor.receiveShadow = true;
+  scene.add(floor);
 
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-  camera.position.z = 18;
+  camera.position.set(0, 1.2, 19);
 
   const rnd = (a: number, b: number) => a + Math.random() * (b - a);
-  const picker = (list: [number, number][]) => {
-    const total = list.reduce((s, [, w]) => s + w, 0);
-    return () => { let r = Math.random() * total; for (const [c, w] of list) { if ((r -= w) <= 0) return c; } return list[0][0]; };
-  };
-  const body = (size: number): Body => ({
-    r: Math.sqrt(rnd(9, 144)), // radius 3..12, spread evenly over the ring's area
-    theta: rnd(0, Math.PI * 2), y: rnd(-5.8, 5.8), phase: rnd(0, Math.PI * 2),
-    spin: new THREE.Vector3(rnd(-0.6, 0.6), rnd(-0.6, 0.6), rnd(-0.3, 0.3)),
-    rot: new THREE.Euler(rnd(0, 6.3), rnd(0, 6.3), rnd(0, 6.3)), size, push: new THREE.Vector2(),
-  });
-  // Clear-coated on desktop; the cheaper standard material on touch devices keeps phones at a smooth frame rate.
   const glossy = () => o.low
-    ? new THREE.MeshStandardMaterial({ roughness: 0.3, metalness: 0, envMapIntensity: 1.1 })
-    : new THREE.MeshPhysicalMaterial({ roughness: 0.32, metalness: 0, clearcoat: 0.7, clearcoatRoughness: 0.22, envMapIntensity: 1 });
+    ? new THREE.MeshStandardMaterial({ roughness: 0.25, metalness: 0, envMapIntensity: 1.15 })
+    : new THREE.MeshPhysicalMaterial({ roughness: 0.22, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.12, envMapIntensity: 1.1 });
   const color = new THREE.Color();
 
-  // Cubes
-  const NC = o.low ? 960 : 1100; // enough orange cubes on phones too for 2x2 lettering
-  const cubeMesh = new THREE.InstancedMesh(new o.RoundedBoxGeometry(1, 1, 1, 2, 0.14), glossy(), NC);
-  cubeMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-  scene.add(cubeMesh);
-  // Exactly enough orange cubes for 2x2 lettering of the longest word (plus a margin); the rest from the other colours.
-  const needOrange = Math.max(...o.titles.map((w) => wordPixels(w).px.length * 4), 0) + 48;
-  const orangeTotal = Math.min(NC - 200, Math.max(needOrange, Math.round(NC * 0.36)));
-  const pickOther = picker(CUBE_COLOURS.filter(([c]) => c !== ORANGE));
-  const cubes: Cube[] = [];
-  for (let i = 0; i < NC; i++) {
-    const orange = i < orangeTotal, hex = orange ? ORANGE : pickOther();
-    cubeMesh.setColorAt(i, color.setHex(hex));
-    cubes.push({ ...body(rnd(0.13, 0.3)), orange, f: 0, goal: 0, delay: 0, back: 0, target: null });
+  // ---- the large shapes (one InstancedMesh per kind)
+  const geos = [
+    new o.RoundedBoxGeometry(1.1, 1.1, 1.1, 4, 0.24),
+    new THREE.CapsuleGeometry(0.36, 1.05, 10, 24),
+    new THREE.TorusGeometry(0.58, 0.22, 24, 64),
+    new THREE.SphereGeometry(0.66, 40, 28),
+  ];
+  const COUNT = o.low ? 30 : 48;
+  const shapes: Shape[] = [];
+  const totalW = SHAPE_COLOURS.reduce((s, [, w]) => s + w, 0);
+  const pickColour = () => { let r = Math.random() * totalW; for (const [c, w] of SHAPE_COLOURS) { if ((r -= w) <= 0) return c; } return ORANGE; };
+  for (let i = 0; i < COUNT; i++) {
+    shapes.push({
+      kind: i % geos.length, r: rnd(3.2, 8.5), theta: (i / COUNT) * Math.PI * 2 + rnd(-0.2, 0.2), y: rnd(-2.2, 3.4),
+      size: rnd(0.75, 1.35), phase: rnd(0, Math.PI * 2),
+      spin: new THREE.Vector3(rnd(-0.35, 0.35), rnd(-0.35, 0.35), rnd(-0.2, 0.2)), rot: new THREE.Euler(rnd(0, 6.3), rnd(0, 6.3), rnd(0, 6.3)),
+    });
   }
-  if (cubeMesh.instanceColor) cubeMesh.instanceColor.needsUpdate = true;
-  const orangeCount = cubes.filter((c) => c.orange).length;
+  const meshes = geos.map((g, k) => {
+    const list = shapes.filter((s) => s.kind === k);
+    const m = new THREE.InstancedMesh(g, glossy(), Math.max(1, list.length));
+    m.castShadow = true;
+    m.frustumCulled = false; // instances move every frame; never cull the whole mesh on a stale bounding sphere
+    m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    list.forEach((_, j) => m.setColorAt(j, color.setHex(pickColour())));
+    if (m.instanceColor) m.instanceColor.needsUpdate = true;
+    scene.add(m);
+    return { m, list };
+  });
 
-  // Spheres (decoration only; they stay in orbit)
-  const NS = o.low ? 120 : 220;
-  const sphereMesh = new THREE.InstancedMesh(new THREE.SphereGeometry(0.5, 16, 12), glossy(), NS);
-  sphereMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-  scene.add(sphereMesh);
-  const pickSphere = picker(SPHERE_COLOURS);
-  const spheres: Body[] = [];
-  for (let i = 0; i < NS; i++) { sphereMesh.setColorAt(i, color.setHex(pickSphere())); spheres.push(body(rnd(0.14, 0.36))); }
-  if (sphereMesh.instanceColor) sphereMesh.instanceColor.needsUpdate = true;
+  // ---- the word's cubes (enough for the longest name in 2x2 lettering)
+  const maxCells = Math.max(...o.titles.map((w) => wordPixels(w).px.length * 4), 4);
+  const cubeMat = glossy();
+  const cubes = new THREE.InstancedMesh(new o.RoundedBoxGeometry(1, 1, 1, 2, 0.16), cubeMat, maxCells);
+  cubes.castShadow = true;
+  cubes.frustumCulled = false; // its bounding sphere would be computed while every cube is hidden
+  cubes.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  for (let i = 0; i < maxCells; i++) cubes.setColorAt(i, color.setHex(ORANGE));
+  if (cubes.instanceColor) cubes.instanceColor.needsUpdate = true;
+  scene.add(cubes);
+  const cells: Cell[] = Array.from({ length: maxCells }, () => ({ target: new THREE.Vector3(), from: new THREE.Vector3(), f: 0, goal: 0, delay: 0 }));
 
   // Scratch objects, reused every frame.
-  const dummy = new THREE.Object3D(), q = new THREE.Quaternion(), qi = new THREE.Quaternion();
-  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), pointerHit = new THREE.Vector3();
+  const dummy = new THREE.Object3D(), q = new THREE.Quaternion(), qi = new THREE.Quaternion(), tilt = new THREE.Euler();
   const pos = new THREE.Vector3(), aim = new THREE.Vector3();
-  let current = -1, shownAt = 0, cell = 0.2, bottomY = 0, width = 1, height = 1, spin = 0, clear = 0;
+  let current = -1, shownAt = 0, clearX = 7.5, cell = 0.2, bottomY = 0, width = 1, height = 1, spin = 0, part = 0, leanX = 0, leanY = 0;
 
   const visible = () => { const h = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z; return { h, w: h * camera.aspect }; };
 
-  /** Lays the word out on an exact grid on the z = 0 plane and pairs each grid cell with an orange cube. */
+  /** Lays the word out on an exact grid on the z = 1 plane; the cubes rise from the floor below their cell. */
   function show(i: number, refit = false) {
     if (i === current && !refit) return;
     current = i;
     if (!refit) shownAt = performance.now() / 1000;
     if (i < 0 || !o.titles[i]) {
-      // Release right to left, so the word un-builds the way it was built.
       const w = visible().w;
-      cubes.forEach((c) => { c.goal = 0; c.delay = c.target ? 0.25 * (0.5 - c.target.x / w) : 0; });
+      cells.forEach((c) => { c.goal = 0; c.delay = 0.2 * (0.5 - c.target.x / w); });
       return;
     }
     const { px, cols, rows } = wordPixels(o.titles[i]);
-    const sub = px.length * 4 <= orangeCount ? 2 : 1;
     const { w, h } = visible();
     const narrow = camera.aspect < 1.25;
-    const pixel = Math.min((w * (narrow ? 0.86 : 0.58)) / cols, (h * (narrow ? 0.2 : 0.3)) / rows);
-    cell = pixel / sub;
-    const cy = h * (narrow ? 0.12 : 0.09);
+    const pixel = Math.min((w * (narrow ? 0.84 : 0.56)) / cols, (h * (narrow ? 0.2 : 0.29)) / rows);
+    cell = pixel / 2;
+    const cy = h * (narrow ? 0.12 : 0.08);
     const x0 = (-cols * pixel) / 2, y0 = cy + (rows * pixel) / 2;
     bottomY = cy - (rows * pixel) / 2;
-    const targets: THREE_NS.Vector3[] = [];
-    for (const [cx, ry] of px) for (let a = 0; a < sub; a++) for (let b = 0; b < sub; b++)
-      targets.push(new THREE.Vector3(x0 + (cx + (a + 0.5) / sub) * pixel, y0 - (ry + (b + 0.5) / sub) * pixel, 0));
-    // Pair cells and orange cubes by horizontal order, so every flight is short and natural.
-    const screenX = (c: Cube) => Math.cos(c.theta + spin) * c.r;
-    const pool = cubes.map((c, k) => ({ k, c })).filter(({ c }) => c.orange).sort((a, b) => screenX(a.c) - screenX(b.c));
-    const sorted = [...targets].sort((a, b) => a.x - b.x || b.y - a.y);
-    const used = new Set<number>();
-    const spanX = cols * pixel || 1;
-    sorted.forEach((t, n) => {
-      const { k, c } = pool[Math.min(pool.length - 1, Math.floor((n * pool.length) / sorted.length))];
-      used.add(k);
-      c.target = t;
+    clearX = (cols * pixel) / 2 + 1.8; // how far the shapes must move aside to leave the word clear
+    let n = 0;
+    for (const [cx, ry] of px) for (let a = 0; a < 2; a++) for (let b = 0; b < 2; b++) {
+      const c = cells[n++];
+      c.target.set(x0 + (cx + (a + 0.5) / 2) * pixel, y0 - (ry + (b + 0.5) / 2) * pixel, 1);
+      if (!refit || c.goal === 0) {
+        c.from.set(c.target.x + rnd(-0.6, 0.6), FLOOR_Y + 0.2, rnd(-1, 3));
+        c.delay = ((c.target.x - x0) / (cols * pixel)) * 0.5 + (y0 - c.target.y) * 0.02 + rnd(0, 0.06);
+      }
       c.goal = 1;
-      if (!refit) c.delay = ((t.x - x0) / spanX) * 0.36 + (y0 - t.y) * 0.012; // left to right, top to bottom
-    });
-    cubes.forEach((c, k) => { if (!used.has(k)) { c.goal = 0; if (!refit) c.delay = 0; } });
+    }
+    for (let k = n; k < cells.length; k++) { cells[k].goal = 0; cells[k].delay = 0; }
   }
 
-  /** Floating position of a body on the turning ring, in world space. */
-  const ringPos = (b: Body, t: number, out: THREE_NS.Vector3) => {
-    const a = b.theta + spin, r = b.r + Math.sin(t * 0.4 + b.phase) * 0.25;
-    return out.set(Math.cos(a) * r, b.y + Math.sin(t * 0.5 + b.phase) * 0.22, Math.sin(a) * r - 3);
-  };
-
   function frame({ dt, t, p, pointer }: HeroFrame) {
-    // Scroll turns the ring (objects travel round the centre) on top of a slow idle drift; the pointer adds a little.
     const e = smooth(p);
-    const targetSpin = t * 0.05 + e * Math.PI * 1.2 + pointer.nx * 0.15;
-    spin += (targetSpin - spin) * (1 - Math.exp(-dt * 4));
-    camera.position.z = 18 - e * 3;
-    camera.position.x += (pointer.nx * 0.5 - camera.position.x) * 0.05;
-    camera.position.y += (-pointer.ny * 0.35 - camera.position.y) * 0.05;
-    camera.lookAt(0, 0, 0);
+    const k4 = 1 - Math.exp(-dt * 4), kF = 1 - Math.exp(-dt * 3.4);
+    // Scroll turns the orbit (the shapes travel round the centre) on top of a slow idle drift.
+    spin += (t * 0.06 + e * Math.PI * 1.3 - spin) * k4;
+    // The set leans toward the pointer; the camera moves in a little as the section scrolls.
+    leanX += (pointer.ny * 0.12 - leanX) * k4;
+    leanY += (pointer.nx * 0.22 - leanY) * k4;
+    camera.position.z = 19 - e * 2; // a gentle push in: nothing comes close enough to fill the frame
+    camera.position.x += (pointer.nx * 0.6 - camera.position.x) * 0.05;
+    camera.position.y += (1.2 - pointer.ny * 0.4 - camera.position.y) * 0.05;
+    camera.lookAt(0, 0.2, 0);
+    part += ((current >= 0 ? 1 : 0) - part) * kF;
 
-    // Pointer on the z = 0 plane: nearby floating objects move aside.
-    const rect = canvas.getBoundingClientRect();
-    let px = 1e9, py = 1e9;
-    if (pointer.x >= rect.left && pointer.x <= rect.right && pointer.y >= rect.top && pointer.y <= rect.bottom) {
-      ndc.set(((pointer.x - rect.left) / rect.width) * 2 - 1, -((pointer.y - rect.top) / rect.height) * 2 + 1);
-      ray.setFromCamera(ndc, camera);
-      if (ray.ray.intersectPlane(plane, pointerHit)) { px = pointerHit.x; py = pointerHit.y; }
+    const cosL = Math.cos(leanY), sinL = Math.sin(leanY);
+    for (const { m, list } of meshes) {
+      list.forEach((s, j) => {
+        const a = s.theta + spin;
+        let x = Math.cos(a) * s.r, z = Math.sin(a) * s.r - 2;
+        // While a word is shown the shapes part: out to the left and right and a little back, clearing the centre.
+        if (part > 0) {
+          z -= part * 2.2;
+          // Clear the word in screen space: shapes further back must move further out to look clear of it.
+          const reach = clearX * (camera.position.z - z) / (camera.position.z - 1);
+          const side = x >= 0 ? 1 : -1, need = Math.max(0, reach - Math.abs(x));
+          x += side * need * part;
+        }
+        const y = s.y + Math.sin(t * 0.6 + s.phase) * 0.3;
+        // lean (rotate the whole set slightly around the vertical axis)
+        const lx = x * cosL + z * sinL; z = -x * sinL + z * cosL; x = lx;
+        pos.set(x, y + z * leanX * 0.08, z);
+        s.rot.x += s.spin.x * dt; s.rot.y += s.spin.y * dt; s.rot.z += s.spin.z * dt;
+        q.setFromEuler(s.rot);
+        tilt.set(leanX * 0.4, leanY * 0.4, 0);
+        dummy.position.copy(pos); dummy.quaternion.copy(q); dummy.rotation.x += tilt.x; dummy.rotation.y += tilt.y;
+        dummy.scale.setScalar(s.size * (1 - part * 0.22)); dummy.updateMatrix();
+        m.setMatrixAt(j, dummy.matrix);
+      });
+      m.instanceMatrix.needsUpdate = true;
     }
-    const kP = 1 - Math.exp(-dt * 5), kF = 1 - Math.exp(-dt * 3.6);
-    const repel = (b: Body) => {
-      const dx = pos.x - px, dy = pos.y - py, d2 = dx * dx + dy * dy, near = pos.z > -6 && d2 < 3.2;
-      const want = near ? (1.8 - Math.sqrt(d2)) / 1.8 : 0, len = Math.sqrt(d2) || 1;
-      b.push.x += ((want * dx) / len * 1.2 - b.push.x) * kP;
-      b.push.y += ((want * dy) / len * 1.2 - b.push.y) * kP;
-      pos.x += b.push.x;
-      pos.y += b.push.y;
-    };
 
-    const since = performance.now() / 1000 - shownAt, showing = current >= 0;
-    clear += ((showing ? 1 : 0) - clear) * kF;
-    /** While a word is shown, everything not in it moves behind the word's plane, so nothing crosses in front. */
-    const behind = (amount: number) => { if (amount > 0 && pos.z > -2.5) pos.z += (-2.5 - pos.z) * amount; };
-    for (let i = 0; i < NC; i++) {
-      const c = cubes[i];
+    const since = performance.now() / 1000 - shownAt;
+    for (let i = 0; i < cells.length; i++) {
+      const c = cells[i];
       const g = since >= c.delay ? c.goal : 1 - c.goal;
       c.f += (g - c.f) * kF;
-      if (c.f < 0.0005) c.f = 0;
+      if (c.f < 0.001) c.f = 0;
       const a = easeInOut(Math.min(1, c.f));
-      c.back += ((showing && c.goal === 0 ? 1 : 0) - c.back) * kF;
-
-      ringPos(c, t, pos);
-      pos.z -= c.back * 2; // while a word is shown, the rest of the ring steps back
-      behind(c.back);
-      if (a < 0.5) repel(c);
-      c.rot.x += c.spin.x * dt; c.rot.y += c.spin.y * dt; c.rot.z += c.spin.z * dt;
-      q.setFromEuler(c.rot);
-      let s = c.size * (1 - 0.4 * c.back);
-      if (a > 0 && c.target) {
-        aim.copy(c.target);
-        aim.z += Math.sin(t * 2.4 - c.target.x * 1.6) * 0.035 * a; // a soft shimmer across the settled word
-        pos.lerp(aim, a);
-        pos.z += Math.sin(Math.PI * a) * 1.4; // an arc towards the viewer on the way in
-        s += (cell * 0.9 - s) * a;
-        q.slerp(qi, a); // square up to the viewer
-      }
-      dummy.position.copy(pos); dummy.quaternion.copy(q); dummy.scale.setScalar(s); dummy.updateMatrix();
-      cubeMesh.setMatrixAt(i, dummy.matrix);
-      if (c.goal === 0 && c.f === 0) c.target = null;
+      if (a === 0) { dummy.position.set(0, -50, 0); dummy.scale.setScalar(0.0001); dummy.updateMatrix(); cubes.setMatrixAt(i, dummy.matrix); continue; }
+      aim.copy(c.target);
+      aim.z += Math.sin(t * 2.4 - c.target.x * 1.6) * 0.04 * a; // a soft shimmer across the settled word
+      pos.lerpVectors(c.from, aim, a);
+      pos.z += Math.sin(Math.PI * a) * 1.2; // rise in an arc toward the viewer
+      q.setFromAxisAngle(aim.set(1, 0.4, 0).normalize(), (1 - a) * 2.2).slerp(qi, a);
+      dummy.position.copy(pos); dummy.quaternion.copy(q); dummy.scale.setScalar(cell * 0.9 * Math.min(1, a * 1.6)); dummy.updateMatrix();
+      cubes.setMatrixAt(i, dummy.matrix);
     }
-    cubeMesh.instanceMatrix.needsUpdate = true;
-
-    for (let i = 0; i < NS; i++) {
-      const b = spheres[i];
-      ringPos(b, t, pos);
-      behind(clear);
-      repel(b);
-      dummy.position.copy(pos); dummy.quaternion.identity(); dummy.scale.setScalar(b.size * (showing ? 0.75 : 1)); dummy.updateMatrix();
-      sphereMesh.setMatrixAt(i, dummy.matrix);
-    }
-    sphereMesh.instanceMatrix.needsUpdate = true;
+    cubes.instanceMatrix.needsUpdate = true;
     renderer.render(scene, camera);
   }
 
@@ -312,7 +291,7 @@ export function createHero(o: HeroOptions): Hero {
   }
 
   function titleBottom() {
-    pos.set(0, bottomY, 0).project(camera);
+    pos.set(0, bottomY, 1).project(camera);
     return (-pos.y * 0.5 + 0.5) * height;
   }
 

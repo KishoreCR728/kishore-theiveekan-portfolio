@@ -80,7 +80,7 @@ html.static-mode [data-chapter-label] { position: relative !important; top: auto
 [data-hero-cards]:hover [data-hero-card]:not(:hover) .hc-img { opacity: .55; }
 [data-hero-card]:hover, [data-hero-card]:focus-visible { transform: translateY(-4px); background: #fff; color: #0f0e0c; border-color: rgba(224,86,42,.6); box-shadow: 0 18px 40px -18px rgba(15,14,12,.45); }
 [data-hero-card]:focus-visible { outline: 2px solid #e0562a; outline-offset: 3px; }
-[data-hero-card] .hc-img { flex: 0 0 auto; width: 76px; height: 48px; border-radius: 9px; overflow: hidden; background: #1d1b19; }
+[data-hero-card] .hc-img { flex: 0 0 auto; width: 80px; height: 45px; border-radius: 8px; overflow: hidden; background: #f3f0ea; box-shadow: 0 0 0 1px rgba(15,14,12,.08); }
 [data-hero-card] .hc-img { transition: opacity .45s; }
 [data-hero-card] .hc-img img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--e); }
 [data-hero-card]:hover .hc-img img, [data-hero-card]:focus-visible .hc-img img { transform: scale(1.12); }
@@ -119,3 +119,7 @@ html.static-mode [data-hero-cards] { position: relative; left: auto; right: auto
 
 /* 24 px minimum targets for footer links (WCAG 2.5.8). */
 footer a { display: inline-flex; align-items: center; min-height: 24px; }
+
+/* Over the full-screen 3D city the top bar has no frosted band, so the whole view is visible (scene.js toggles it). */
+[data-topnav]::before { transition: opacity .4s ease; }
+html.in-journey [data-topnav]::before { opacity: 0; }

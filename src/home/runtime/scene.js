@@ -1142,8 +1142,24 @@ export async function initGL() {
   const routeGeo = new THREE.BufferGeometry();
   routeGeo.setAttribute("position", new THREE.BufferAttribute(routePos, 3));
   dscene.add(new THREE.Line(routeGeo, new THREE.LineBasicMaterial({ color: 0xe0562a })));
-  const routeDot = new THREE.Mesh(new THREE.SphereGeometry(1.1, 16, 16), new THREE.MeshBasicMaterial({ color: 0xe0562a }));
-  dscene.add(routeDot);
+  // "You are here": a flat navigation arrow on the road (white outline, orange body, pulsing halo), like a
+  // maps app. It points along the route and glides with the scroll. Drawn last and without depth test, so
+  // buildings never hide it.
+  const navArrow = new THREE.Group();
+  {
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 1.7); shape.lineTo(1.2, -1.15); shape.lineTo(0, -0.5); shape.lineTo(-1.2, -1.15); shape.closePath();
+    const flat = (m, sc, y, order) => { const g = new THREE.ShapeGeometry(shape); g.rotateX(-Math.PI / 2); const me = new THREE.Mesh(g, m); me.scale.setScalar(sc); me.position.y = y; me.renderOrder = order; return me; };
+    const mat = (c, o = 1) => new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: o, depthTest: false, depthWrite: false, fog: false });
+    const halo = new THREE.Mesh(new THREE.RingGeometry(2.1, 2.6, 48).rotateX(-Math.PI / 2), mat(0xe0562a, 0.35));
+    halo.renderOrder = 20; halo.position.y = 0.05;
+    const disc = new THREE.Mesh(new THREE.CircleGeometry(2.1, 48).rotateX(-Math.PI / 2), mat(0xe0562a, 0.14));
+    disc.renderOrder = 20;
+    navArrow.add(disc, halo, flat(mat(0xffffff), 1.32, 0.1, 21), flat(mat(0xe0562a), 1, 0.2, 22));
+    navArrow.userData = { halo, heading: 0 };
+    navArrow.scale.setScalar(3);
+  }
+  dscene.add(navArrow);
   const chapterU = [0];
   {
     for (let i = 0; i < N_D; i++) {
@@ -1293,7 +1309,7 @@ export async function initGL() {
     if (this._pars)
       for (const el of this._pars) {
         const r = el.parentElement.getBoundingClientRect();
-        if (r.bottom > 0 && r.top < H) el.style.transform = `translateY(${((r.top + r.height / 2 - H / 2) / H) * -9}%)`;
+        if (r.bottom > 0 && r.top < H) el.style.transform = `translateY(${((r.top + r.height / 2 - H / 2) / H) * -3}%)`;
       }
     if (this._floats)
       for (const el of this._floats) {
@@ -1352,6 +1368,9 @@ export async function initGL() {
     // chaptered city
     const ds = this.R("diveSec").current,
       dr = ds && ds.getBoundingClientRect();
+    // While the 3D city fills the screen, the top bar drops its frosted backdrop so the whole view shows.
+    const cityFull = !!dr && dr.top <= 2 && dr.bottom >= H - 2;
+    if (cityFull !== this._cityFull) { this._cityFull = cityFull; document.documentElement.classList.toggle("in-journey", cityFull); }
     if (dr && dr.bottom > 0 && dr.top < H) {
       const live = dr.top <= 2;
       if (live) {
@@ -1658,9 +1677,18 @@ export async function initGL() {
       });
       sigLamp.instanceMatrix.needsUpdate = true;
       {
-        routeAt(clamp01(J.uRoute || 0), tmpA);
-        routeDot.position.set(tmpA.x, 1.6 + Math.sin(tC * 4) * 0.3, tmpA.z);
-        routeDot.scale.setScalar(1 + Math.sin(tC * 4) * 0.2);
+        const u = clamp01((J.uRoute || 0) + 0.11); // a little ahead of the drone, so it sits in the lower middle of the view
+        routeAt(u, tmpA);
+        routeAt(Math.min(1, u + 0.004), tmpB);
+        if (u >= 0.996) routeAt(Math.max(0, u - 0.004), tmpB).sub(tmpA).negate().add(tmpA); // at the end, keep the last direction
+        const want = Math.atan2(tmpB.x - tmpA.x, tmpB.z - tmpA.z) + Math.PI;
+        const d = ((want - navArrow.userData.heading + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+        navArrow.userData.heading += d * Math.min(1, dt * 6); // turn smoothly at corners
+        navArrow.rotation.y = navArrow.userData.heading;
+        navArrow.position.set(tmpA.x, 1.2, tmpA.z);
+        const pulse = (tC * 0.8) % 1;
+        navArrow.userData.halo.scale.setScalar(1 + pulse * 0.9);
+        navArrow.userData.halo.material.opacity = 0.4 * (1 - pulse);
       }
       for (let k = 0; k < NCAR; k++) {
         const c = CARS[k],

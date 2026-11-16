@@ -12,7 +12,8 @@ export type Slots = { afterWork?: ReactNode; afterJourney?: ReactNode; beforeCon
 const words = (text: string) => text.split(" ").map((t) => ({ t }));
 
 const SPANS = ["7", "5", "5", "7", "6", "6", "5", "7", "7", "5"];
-const RATIOS = ["3/2", "4/3", "4/3", "3/2", "4/3", "4/3", "4/3", "3/2", "3/2", "4/3"];
+// Every card is 16:9, the shape of the project images, so nothing is cropped.
+const RATIOS = Array.from({ length: 10 }, () => "16/9");
 
 export function buildView(flagships: Flagship[], slots: Slots) {
   // The four full case studies first (with their checked one-liners), then the shorter ones.

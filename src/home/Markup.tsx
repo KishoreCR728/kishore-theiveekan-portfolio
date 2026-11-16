@@ -502,7 +502,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                 {(v.heroProjects || []).map((p, i) => (
                   <a key={p.slug} href={"/work/" + p.slug} data-hero-card={String(i)} data-hero-link={p.slug} data-line={p.oneLiner} title={p.oneLiner}>
                     <span className="hc-img">
-                      <img src={"/images/card-" + p.slug + ".svg"} alt={""} width={240} height={150} decoding={"async"} />
+                      <img src={"/images/work/" + p.slug + "-800.webp"} alt={""} width={240} height={135} decoding={"async"} />
                     </span>
                     <span className="hc-body">
                       <span className="hc-top">
@@ -771,9 +771,13 @@ export function PageMarkup({ v }: { v: HomeView }) {
                         background: "#131211",
                       }}
                     >
-                      <div data-par={"1"} style={{ position: "absolute", inset: "-12% 0", willChange: "transform" }}>
+                      <div data-par={"1"} style={{ position: "absolute", inset: "-4% 0", willChange: "transform" }}>
                         <img
                           src={p.img}
+                          srcSet={`${p.img.replace(".webp", "-800.webp")} 800w, ${p.img} 1600w`}
+                          sizes={"(max-width: 760px) 92vw, 50vw"}
+                          width={1600}
+                          height={900}
                           alt={p.alt}
                           loading={"lazy"}
                           className="h6b162d1"
@@ -789,21 +793,15 @@ export function PageMarkup({ v }: { v: HomeView }) {
                       <div
                         style={{
                           position: "absolute",
-                          inset: "0",
-                          background: "linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.4) 100%)",
-                          pointerEvents: "none",
-                        }}
-                      ></div>
-                      <div
-                        style={{
-                          position: "absolute",
                           left: "24px",
                           top: "22px",
                           fontSize: "13px",
                           letterSpacing: ".08em",
                           textTransform: "uppercase",
-                          color: "#f0efe9",
-                          opacity: ".85",
+                          color: "#0f0e0c",
+                          background: "rgba(255,255,255,.88)",
+                          borderRadius: "999px",
+                          padding: "5px 10px",
                         }}
                       >
                         {p.num}
@@ -826,20 +824,6 @@ export function PageMarkup({ v }: { v: HomeView }) {
                       >
                         {"↗"}
                       </div>
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: "24px",
-                          right: "24px",
-                          bottom: "22px",
-                          color: "#f0efe9",
-                          fontSize: "clamp(18px,1.6vw,24px)",
-                          lineHeight: "1.2",
-                          maxWidth: "30ch",
-                        }}
-                      >
-                        <i className="ac">{p.short}</i>
-                      </div>
                     </div>
                     <div style={{ padding: "20px 4px 0" }}>
                       <div
@@ -854,6 +838,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                         {p.tags}
                       </div>
                       <h3 style={{ margin: "0", fontWeight: "400", fontSize: "clamp(28px,2.9vw,44px)", letterSpacing: "-.025em", lineHeight: "1.05" }}>{p.name}</h3>
+                      <p style={{ margin: "10px 0 0", maxWidth: "52ch", fontSize: "clamp(15px,1.15vw,17px)", lineHeight: "1.5", color: "#4a463f" }}>{p.short}</p>
                     </div>
                   </a>
                 </Fragment>
@@ -1018,7 +1003,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                 style={{
                   position: "absolute",
                   right: "4.5vw",
-                  top: "50%",
+                  top: "calc(50% + 46px)",
                   transform: "translateY(-50%)",
                   display: "flex",
                   flexDirection: "column",
@@ -2569,7 +2554,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
             {"No cookies, no trackers"}
             <br />
             <span style={{ fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62" }}>
-              {"Illustrations drawn for this site"}
+              {"Project images: illustrative mockups and a real Jarvis screenshot"}
             </span>
           </div>
         </footer>

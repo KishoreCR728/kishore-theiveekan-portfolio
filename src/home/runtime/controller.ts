@@ -47,6 +47,7 @@ export class HomeController {
   _NCH = 0;
   _crane?: unknown;
   _tilt?: { x: number; y: number };
+  _cityFull?: boolean;
   J?: { ch: number };
   _pars: HTMLElement[] = []; _floats: HTMLElement[] = []; _yrs: HTMLElement[] = []; _tilts: HTMLElement[] = [];
   private refs = new Map<string, Ref>();

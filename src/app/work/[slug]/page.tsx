@@ -79,7 +79,17 @@ export default async function CasePage({ params }: Props) {
           <ul className="chips" aria-label="Technologies">
             {c.tags.map((t) => <li key={t} className="chip">{t}</li>)}
           </ul>
-          <img className="case-visual" src={`/images/work/${c.slug}.svg`} alt="" width={1200} height={800} decoding="async" />
+          <img
+            className="case-visual"
+            src={`/images/work/${c.slug}.webp`}
+            srcSet={`/images/work/${c.slug}-800.webp 800w, /images/work/${c.slug}.webp 1600w`}
+            sizes="(max-width: 1240px) 92vw, 1160px"
+            alt={c.slug === "jarvis-assistant" ? "Real screenshot of the Jarvis console" : "Illustrative mockup of the project's interface (invented content, no client material)"}
+            width={1600}
+            height={900}
+            fetchPriority="high"
+            decoding="async"
+          />
         </header>
 
         {c.impact.length > 0 && (
