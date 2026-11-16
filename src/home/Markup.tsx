@@ -460,7 +460,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                 height: "calc(100vh - 110px)",
                 borderRadius: "18px",
                 overflow: "hidden",
-                background: "#0b0a09",
+                background: "#000",
               }}
               data-hero-panel={"1"}
             >
@@ -494,6 +494,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                 </div>
               </div>
               <div data-hero-preview={"1"} aria-hidden={"true"}>
+                <span data-hero-title={"1"}></span>
                 <span data-hero-preview-num={"1"}></span>
                 <span data-hero-preview-line={"1"}></span>
               </div>

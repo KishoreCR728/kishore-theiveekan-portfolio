@@ -8,7 +8,7 @@
  * adds html.static-mode; then only the menu, clock, reveals and Back restore run.
  */
 import type { RuntimeData } from "../view";
-import type { Hero } from "./hero";
+import type { Hero, Clear } from "./hero";
 
 type Ref<T extends Element = HTMLElement> = { current: T | null };
 interface Pointer { x: number; y: number; px: number; py: number; tx: number; ty: number; nx: number; ny: number }
@@ -39,6 +39,8 @@ export class HomeController {
   inJ = false;
   // Set and used by the scene module (scene.js), declared here so the shape is visible in one place.
   _alive = false; _raf = 0; _hero?: Hero;
+  /** The area the hero's shapes keep clear while a project's name shows (read by the scene when it starts). */
+  _heroZone: Clear | null = null;
   _goCh?: (i: number) => void;
   _jStep?: (dy: number) => boolean;
   _jLast = 0;
@@ -98,8 +100,16 @@ export class HomeController {
     setTimeout(() => this.setupReveals(), 1500);
     if (this.isStatic) return;
 
+    this.bindHeroTitles();
     await new Promise<void>((ok) => { const t = setInterval(() => { if (this.state.phase === "ready") { clearInterval(t); ok(); } }, 120); });
     if (document.fonts) await document.fonts.ready;
+    // three.js (about 640 KB) and the scenes load on the visitor's first move, scroll, touch or key press,
+    // so opening the page never waits on them. The panel is plain black until then.
+    await new Promise<void>((ok) => {
+      const evs = ["pointermove", "pointerdown", "wheel", "touchstart", "keydown", "scroll"];
+      const go = () => { evs.forEach((n) => removeEventListener(n, go)); ok(); };
+      evs.forEach((n) => addEventListener(n, go, { passive: true }));
+    });
     try {
       const scene = await import("./scene.js");
       await scene.initGL.call(this);
@@ -230,12 +240,75 @@ export class HomeController {
     // Leave browser zoom (Ctrl/Cmd + wheel, trackpad pinch) and the sideways hero card strip alone.
     if (e.ctrlKey || e.metaKey || (e.target as Element | null)?.closest?.("[data-hero-cards]")) return;
     if (this.state.menuOpen || this.state.phase !== "ready") { if (this.state.phase !== "ready") e.preventDefault(); return; }
+    if (!this._alive) return; // the smooth-scroll loop is not running yet: let the browser scroll
     e.preventDefault();
     const max = document.documentElement.scrollHeight - innerHeight;
     const js = this.R("diveSec").current, jr = js?.getBoundingClientRect();
     this.inJ = !!jr && jr.top <= 2 && jr.bottom >= innerHeight + 2;
     this.sc.target = Math.max(0, Math.min(max, this.sc.target + e.deltaY * (e.deltaMode === 1 ? 16 : 1) * (this.inJ ? 0.5 : 0.9)));
   };
+
+  /* ---------- hero: the project name over the shapes ---------- */
+
+  /**
+   * Hovering, focusing or swiping to a project card shows its name in large letters with its one-liner.
+   * Each letter rises out of a mask; picking another card sends the old letters up and out while the new ones
+   * rise in, in the same place. Plain HTML and CSS, so it works the moment the page loads, before the 3D.
+   */
+  private bindHeroTitles(): void {
+    const panel = $("[data-hero-panel]"), title = $("[data-hero-title]"), preview = $("[data-hero-preview]");
+    if (!panel || !title || !preview) return;
+    const cards = $$("[data-hero-card]"), F = this.data.flagships;
+    const num = $("[data-hero-preview-num]", preview), line = $("[data-hero-preview-line]", preview);
+    let cur = -1, tm = 0;
+    const zone = (): Clear | null => {
+      if (cur < 0) return null;
+      const p = panel.getBoundingClientRect(), w = title.getBoundingClientRect(), l = line?.getBoundingClientRect();
+      const top = w.top, bottom = l && l.height ? l.bottom : w.bottom, half = Math.max(w.width, l?.width ?? 0) / 2;
+      // An oval around the text block (wide enough that the block's corners sit inside), plus breathing room.
+      return { cx: w.left + w.width / 2 - p.left, cy: (top + bottom) / 2 - p.top, rx: half * 1.3 + 40, ry: ((bottom - top) / 2) * 1.35 + 36 };
+    };
+    const show = (i: number) => {
+      clearTimeout(tm);
+      if (i === cur) return;
+      cur = i;
+      panel.classList.toggle("hero-focus", i >= 0);
+      const old = title.querySelectorAll(".ht-word:not(.out)");
+      old.forEach((el) => { el.classList.add("out"); setTimeout(() => el.remove(), 900); });
+      const wait = old.length ? 160 : 0; // let the old name clear before the new one rises
+      if (i >= 0 && F[i]) {
+        const word = document.createElement("span");
+        word.className = "ht-word";
+        [...F[i].title.split(" ")[0].toUpperCase()].forEach((ch, k) => {
+          const mask = document.createElement("span"), l = document.createElement("span");
+          mask.className = "ht-l"; l.textContent = ch; l.style.transitionDelay = wait + k * 45 + "ms";
+          mask.append(l); word.append(mask);
+        });
+        title.append(word);
+        requestAnimationFrame(() => requestAnimationFrame(() => word.classList.add("in")));
+        if (num) num.textContent = "0" + (i + 1) + " · " + F[i].title;
+        if (line) line.textContent = F[i].oneLiner;
+        preview.classList.add("on");
+      } else preview.classList.remove("on");
+      this._heroZone = zone();
+      this._hero?.clear(this._heroZone);
+    };
+    const hide = () => { clearTimeout(tm); tm = window.setTimeout(() => show(-1), 220); }; // moving between cards never flickers
+    cards.forEach((c, i) => {
+      c.addEventListener("mouseenter", () => show(i));
+      c.addEventListener("focus", () => show(i));
+      c.addEventListener("mouseleave", hide);
+      c.addEventListener("blur", hide);
+    });
+    // Phones: the card centred in the swipe strip shows its name, and it stays while that card is centred.
+    const strip = $("[data-hero-cards]");
+    strip?.addEventListener("scroll", () => {
+      if (!cards[1] || matchMedia("(min-width: 761px)").matches) return;
+      const step = cards[1].offsetLeft - cards[0].offsetLeft;
+      show(Math.max(0, Math.min(cards.length - 1, Math.round(strip.scrollLeft / step))));
+    }, { passive: true });
+    addEventListener("resize", () => { if (cur >= 0) { this._heroZone = zone(); this._hero?.clear(this._heroZone); } });
+  }
 
   /* ---------- reveals ---------- */
 

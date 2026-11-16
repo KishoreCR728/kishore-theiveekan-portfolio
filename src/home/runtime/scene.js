@@ -20,59 +20,12 @@ export async function initGL() {
   this._alive = true;
   const rnd = (a, b) => a + Math.random() * (b - a);
   const FF = getComputedStyle(document.body).fontFamily; // the self-hosted DM Sans from next/font
-  // HERO: the light box field (typed module, ./hero.ts)
-  const panel = canvas.parentElement,
-    cards = [...panel.querySelectorAll("[data-hero-card]")],
-    preview = panel.querySelector("[data-hero-preview]");
-  const F = this.data.flagships;
-  const hero = createHero({
-    THREE,
-    RoundedBoxGeometry,
-    RoomEnvironment,
-    canvas,
-    titles: F.map((f) => f.title.split(" ")[0].toUpperCase()),
-    low: LOW,
-  });
+  // HERO: the shape field (typed module, ./hero.ts). The project names over it are run by the controller.
+  const panel = canvas.parentElement;
+  const hero = createHero({ THREE, RoundedBoxGeometry, RoomEnvironment, canvas, low: LOW });
   this._hero = hero;
-  const heroState = { i: -1, tm: 0 };
-  const show = (i) => {
-    clearTimeout(heroState.tm);
-    if (i === heroState.i) return;
-    heroState.i = i;
-    panel.classList.toggle("hero-focus", i >= 0);
-    hero.show(i);
-    if (!preview) return;
-    if (i >= 0 && F[i]) {
-      preview.querySelector("[data-hero-preview-num]").textContent = "0" + (i + 1) + " · " + F[i].title;
-      preview.querySelector("[data-hero-preview-line]").textContent = F[i].oneLiner;
-      preview.style.top = Math.round(hero.titleBottom() + 22) + "px";
-      preview.classList.add("on");
-    } else preview.classList.remove("on");
-  };
-  const hide = () => {
-    clearTimeout(heroState.tm);
-    heroState.tm = setTimeout(() => show(-1), 220);
-  }; // a short delay, so moving between cards never flickers
-  {
-    const strip = panel.querySelector("[data-hero-cards]");
-    if (strip)
-      strip.addEventListener(
-        "scroll",
-        () => {
-          if (!cards[1] || matchMedia("(min-width: 761px)").matches) return;
-          const step = cards[1].offsetLeft - cards[0].offsetLeft;
-          show(Math.max(0, Math.min(cards.length - 1, Math.round(strip.scrollLeft / step))));
-          // The word stays while its card is centred (no timer on phones).
-        },
-        { passive: true },
-      );
-  }
-  cards.forEach((c, i) => {
-    c.addEventListener("mouseenter", () => show(i));
-    c.addEventListener("focus", () => show(i));
-    c.addEventListener("mouseleave", hide);
-    c.addEventListener("blur", hide);
-  });
+  if (this._heroZone) hero.clear(this._heroZone);
+  requestAnimationFrame(() => panel.classList.add("gl-on")); // fade the canvas in over the black panel
 
   // JOURNEY — Skyline: pastel low-poly city along a winding avenue; districts grow as the camera approaches
   const drend = new THREE.WebGLRenderer({ canvas: dcv, antialias: true, alpha: true, powerPreference: "high-performance" });
@@ -1262,7 +1215,6 @@ export async function initGL() {
 
   const size = () => {
     hero.resize();
-    if (preview && heroState.i >= 0) preview.style.top = Math.round(hero.titleBottom() + 22) + "px";
     const q = dcv.parentElement.getBoundingClientRect();
     drend.setSize(q.width, q.height, false);
     dcam.aspect = q.width / q.height;
