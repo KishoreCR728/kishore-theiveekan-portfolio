@@ -460,8 +460,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                 height: "calc(100vh - 110px)",
                 borderRadius: "18px",
                 overflow: "hidden",
-                background: "#ffffff",
-                boxShadow: "0 30px 80px -50px rgba(15,14,12,.35), 0 0 0 1px rgba(15,14,12,.05)",
+                background: "#0b0a09",
               }}
               data-hero-panel={"1"}
             >
@@ -476,7 +475,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                   alignItems: "center",
                   justifyContent: "center",
                   textAlign: "center",
-                  color: "#0f0e0c",
+                  color: "#f0efe9",
                   pointerEvents: "none",
                   opacity: "0",
                 }}
@@ -516,10 +515,10 @@ export function PageMarkup({ v }: { v: HomeView }) {
                   </a>
                 ))}
               </nav>
-              <div style={{ position: "absolute", left: "14px", top: "14px", color: "#0f0e0c", fontSize: "18px", lineHeight: "1" }}>
+              <div style={{ position: "absolute", left: "14px", top: "14px", color: "#f0efe9", fontSize: "18px", lineHeight: "1" }}>
                 {"+"}
               </div>
-              <div style={{ position: "absolute", right: "14px", top: "14px", color: "#0f0e0c", fontSize: "18px", lineHeight: "1" }}>
+              <div style={{ position: "absolute", right: "14px", top: "14px", color: "#f0efe9", fontSize: "18px", lineHeight: "1" }}>
                 {"+"}
               </div>
             </div>

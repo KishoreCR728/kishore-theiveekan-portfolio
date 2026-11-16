@@ -1356,7 +1356,7 @@ export async function initGL() {
       hr = hs && hs.getBoundingClientRect();
     if (hr && hr.bottom > 0 && hr.top < H) {
       const p = prog(hs);
-      hero.frame({ dt, t, p, pointer: { x: m.tx, y: m.ty, nx: m.nx, ny: m.ny } });
+      hero.frame({ dt, t, p, vn, pointer: { x: m.tx, y: m.ty, nx: m.nx, ny: m.ny } });
       const cap = this.R("heroCap").current;
       if (cap) {
         const o = p > 0.7 ? Math.min(1, (p - 0.7) / 0.18) : 0;
