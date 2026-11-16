@@ -90,7 +90,7 @@ export default async function ArticlePage({ params }: Props) {
               <a className="pill" href="/#work">Case studies</a>
             </div>
           </aside>
-          <Pager kind="article" prev={{ href: `/writing/${prev.slug}`, title: prev.meta.title }} next={{ href: `/writing/${next.slug}`, title: next.meta.title }} />
+          <Pager kind="article" prev={{ href: `/writing/${prev.slug}`, title: prev.meta.title, line: prev.meta.topic }} next={{ href: `/writing/${next.slug}`, title: next.meta.title, line: next.meta.topic }} />
         </div>
       </main>
       <SiteFooter />

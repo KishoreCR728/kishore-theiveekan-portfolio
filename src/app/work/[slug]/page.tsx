@@ -83,7 +83,7 @@ export default async function CasePage({ params }: Props) {
             className="case-visual"
             src={`/images/work/${c.slug}.webp`}
             srcSet={`/images/work/${c.slug}-800.webp 800w, /images/work/${c.slug}.webp 1600w`}
-            sizes="(max-width: 1240px) 92vw, 1160px"
+            sizes="(max-width: 1380px) 92vw, 1280px"
             alt={c.slug === "jarvis-assistant" ? "Real screenshot of the Jarvis console" : "Illustrative mockup of the project's interface (invented content, no client material)"}
             width={1600}
             height={900}
@@ -122,7 +122,7 @@ export default async function CasePage({ params }: Props) {
           <article className="prose">{nodes}</article>
         </div>
 
-        <Pager kind="case study" prev={{ href: `/work/${prev.slug}`, title: prev.title }} next={{ href: `/work/${next.slug}`, title: next.title }} />
+        <Pager kind="case study" prev={{ href: `/work/${prev.slug}`, title: prev.title, line: prev.oneLiner, image: `/images/work/${prev.slug}-800.webp` }} next={{ href: `/work/${next.slug}`, title: next.title, line: next.oneLiner, image: `/images/work/${next.slug}-800.webp` }} />
       </main>
       <SiteFooter />
     </div>
