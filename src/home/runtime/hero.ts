@@ -46,7 +46,7 @@ export interface Hero {
 
 const BG = 0x000000;
 const SHAPE_COLOURS: [number, number][] = [[0xe0562a, 40], [0xff8a5c, 14], [0xf4f1ec, 46]];
-const TRAIL_SCALE = 3; // drawn at a third of the size and scaled up, plus a light blur: soft and cheap
+const TRAIL_SCALE = 3; // drawn at a third of the size and scaled up, strokes blurred as they are drawn: soft and cheap
 const smooth = (x: number) => x * x * (3 - 2 * x);
 
 interface Shape {
@@ -58,7 +58,9 @@ interface Shape {
 export function createHero(o: HeroOptions): Hero {
   const { THREE, canvas } = o;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+  // Sharpness steps down (never below 1) if a weaker GPU cannot keep about 50 frames a second at this size.
+  let ratio = Math.min(devicePixelRatio, 1.5), slowFor = 0;
+  renderer.setPixelRatio(ratio);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.15;
 
@@ -107,8 +109,9 @@ export function createHero(o: HeroOptions): Hero {
   // ---- the original hero's colour trail: a small 2D canvas over the panel, scaled up and blurred.
   const trail = o.low ? null : document.createElement("canvas");
   const tctx = trail?.getContext("2d") ?? null;
+  if (tctx) tctx.filter = "blur(2.2px)"; // ≈6 px once scaled up; a CSS blur on the layer would cost the GPU every frame
   if (trail) {
-    Object.assign(trail.style, { position: "absolute", inset: "0", width: "100%", height: "100%", pointerEvents: "none", opacity: "0.75", filter: "blur(5px)" });
+    Object.assign(trail.style, { position: "absolute", inset: "0", width: "100%", height: "100%", pointerEvents: "none", opacity: "0.75" });
     trail.setAttribute("aria-hidden", "true");
     canvas.after(trail);
   }
@@ -188,6 +191,10 @@ export function createHero(o: HeroOptions): Hero {
     }
 
     renderer.render(scene, camera);
+    if (ratio > 1 && intro >= 1) {
+      slowFor = dt > 1 / 48 && dt < 0.25 ? slowFor + dt : Math.max(0, slowFor - dt * 0.5);
+      if (slowFor > 1.2) { ratio = Math.max(1, ratio - 0.25); slowFor = 0; renderer.setPixelRatio(ratio); renderer.setSize(width, height, false); }
+    }
 
     // Colour trail (original hero): fade the old strokes, draw a new one from the last pointer position.
     if ((rectAge += dt) > 0.25) { rect = canvas.getBoundingClientRect(); rectAge = 0; }
