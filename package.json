@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/build-runtime.mjs && next dev",
+    "prebuild": "node -e \"require('fs').rmSync('.next', { recursive: true, force: true })\"",
     "build": "node scripts/build-runtime.mjs && next build && node scripts/strip-react.mjs out",
     "start": "node -e \"import('./qa/serve.mjs').then((m) => m.serve('out', 3000)).then(() => console.log('http://127.0.0.1:3000'))\"",
     "test": "node qa/run.mjs && node qa/nav.mjs && node qa/gpu.mjs",

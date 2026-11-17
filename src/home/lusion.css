@@ -95,8 +95,11 @@ html.static-mode [data-chapter-label] { position: relative !important; top: auto
 [data-hero-preview] > span { display: block; }
 [data-hero-preview] > [data-hero-title] { display: grid; justify-items: center; margin-bottom: 18px; }
 .ht-word { grid-area: 1 / 1; display: block; white-space: nowrap; font-size: clamp(54px, min(10.5vw, 19vh), 176px); font-weight: 600; line-height: .92; letter-spacing: -.045em; }
-.ht-l { display: inline-block; overflow: hidden; padding: .04em .012em .1em; margin: -.04em 0 -.1em; vertical-align: top; }
-.ht-l > span { display: inline-block; background: linear-gradient(180deg, #ffa27c 0%, #ff7a45 45%, #e0562a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; transform: translateY(108%) rotate(6deg); transform-origin: 0 100%; transition: transform .85s cubic-bezier(.22,1,.36,1); }
+/* The mask clips only up and down (the rise-in); sideways it stays open so no letter edge is ever cut. Letter spacing
+   is done with margins so each letter's box (where its gradient paints) covers the whole glyph. */
+.ht-l { display: inline-block; overflow: hidden; overflow: visible clip; padding: .04em 0 .1em; margin: -.04em -.045em -.1em 0; vertical-align: top; letter-spacing: 0; }
+.ht-l:last-child { margin-right: 0; }
+.ht-l > span { display: inline-block; padding: 0 .08em; margin: 0 -.08em; background: linear-gradient(180deg, #ffa27c 0%, #ff7a45 45%, #e0562a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; transform: translateY(108%) rotate(6deg); transform-origin: 0 100%; transition: transform .85s cubic-bezier(.22,1,.36,1); }
 .ht-word.in .ht-l > span { transform: none; }
 .ht-word.out .ht-l > span { transform: translateY(-70%) rotate(-3deg); opacity: 0; transition: transform .45s cubic-bezier(.55,0,.75,.2), opacity .22s linear; transition-delay: 0ms !important; }
 [data-hero-preview-num], [data-hero-preview-line] { opacity: 0; transform: translateY(10px); transition: opacity .45s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1); }
