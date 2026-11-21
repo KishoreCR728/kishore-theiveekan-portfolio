@@ -297,8 +297,8 @@ export function PageMarkup({ v }: { v: HomeView }) {
             </div>
           </div>
         )}
-        <a className="skip" href="#main">{"Skip to content"}</a>
         <header>
+        <a className="skip" href="#main">{"Skip to content"}</a>
         <nav
           data-topnav={"1"}
           aria-label={"Site"}

@@ -98,9 +98,9 @@ export class HomeController {
 
     setTimeout(() => this.setupReveals(), 150);
     setTimeout(() => this.setupReveals(), 1500);
+    this.bindHeroTitles(); // works in the static layout too: plain HTML and CSS
     if (this.isStatic) return;
 
-    this.bindHeroTitles();
     await new Promise<void>((ok) => { const t = setInterval(() => { if (this.state.phase === "ready") { clearInterval(t); ok(); } }, 120); });
     if (document.fonts) await document.fonts.ready;
     // three.js (about 640 KB) and the scenes load on the visitor's first move, scroll, touch or key press,
@@ -279,6 +279,7 @@ export class HomeController {
       if (i >= 0 && F[i]) {
         const word = document.createElement("span");
         word.className = "ht-word";
+        word.setAttribute("aria-hidden", "true"); // decoration: the focused card already gives the name
         [...F[i].title.split(" ")[0].toUpperCase()].forEach((ch, k) => {
           const mask = document.createElement("span"), l = document.createElement("span");
           mask.className = "ht-l"; l.textContent = ch; l.style.transitionDelay = wait + k * 45 + "ms";

@@ -63,6 +63,11 @@
   ],
   "redirects": [
     {
+      "source": "/work",
+      "destination": "/#work",
+      "permanent": false
+    },
+    {
       "source": "/work/finstein-corporate-site",
       "destination": "/work/consulting-corporate-site",
       "permanent": true

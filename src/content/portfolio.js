@@ -65,7 +65,7 @@ export const projects = [
     how: 'The build tooling was hand-written; later SEO and AEO passes were AI-assisted.' },
   { slug: 'security-delivery-loop', num: '09', name: 'Security & Delivery Loop', short: 'From penetration-test finding to verified production change, across six websites.', tags: 'process • csp • hsts • nginx • gitlab ci • sonarqube', img: '/images/work/security-delivery-loop.webp', alt: 'Illustrative mockup (invented interface, no client content): a board of penetration-test findings moving from finding to sign-off', size: 's',
     role: 'Remediation owner', own: 'Across 6 websites; adopted the shared CI template in 2 repositories', when: '2025 – 2026', stack: 'CSP, HSTS, COOP/COEP, reCAPTCHA v3, Nginx, Apache, GitLab CI, SonarQube, DefectDojo',
-    overview: 'The process run across every public site: finding → analysis → fix → deploy → retest → sign-off, plus a shared security-gated CI template used across 11 repositories, adopted in 2 by me.',
+    overview: 'The process I run across every public site: finding → analysis → fix → deploy → retest → sign-off, plus a shared security-gated CI template used across 11 repositories, adopted in 2 by me.',
     problem: 'Penetration test reports arrive as a list. Turning each line into a safe production change without breaking integrations, and proving it, is the actual work.',
     built: ['CSP allowlists, HSTS, X-Frame-Options and Permissions-Policy across public production sites.', 'A shared GitLab CI template: mr_scan → sca → sast → secrets → compliance → approval → build → deploy → rollback, with a blocking SonarQube gate and DefectDojo.', 'UAT/production parity investigations across Nginx and Apache.', 'Client-facing status communication per finding, including accepted-risk classification.'],
     code: 'stages: [scan, build, approve, deploy, retest]\nsecurity_gate:\n  stage: scan\n  script: ./run-security-checks.sh\n  allow_failure: false',
@@ -83,7 +83,7 @@ export const projects = [
 
 export const contributed = [
   ['Group finance and accounts console', 'Frontend feature owner · 626 commits', 'Procurement, ledger and reporting screens across a 181-component Angular console with 49 feature modules, built against a 448-endpoint NestJS API.'],
-  ['Manufacturing execution system', 'Feature work + technical documentation', 'A manufacturing execution system: 616-endpoint NestJS backend, 148-component Angular 19 SSR console with D3 dashboards, barcode labels and CASL permissions. Authored the system documentation.'],
+  ['Manufacturing execution system', 'Feature work + technical documentation', 'A manufacturing execution system: 616-endpoint NestJS backend, 148-component Angular 19 console with D3 dashboards, barcode labels and CASL permissions. Authored the system documentation.'],
   ['Banking application testing', 'Test automation contributor', 'Wrote automated tests in an existing WebdriverIO + Appium framework and tested banking applications across Android, iOS, web, macOS and Safari.'],
   ['Learning platform', 'Frontend, learner and admin apps', 'Two Angular applications on a shared 191-endpoint API: the student experience and a separately deployed administration console.'],
   ['Gold-loan back-office', 'Frontend contributor', 'A 332-component Angular console for a gold-loan lender, organised as 41 lazily-loaded modules.'],
@@ -99,7 +99,7 @@ export const timeline = [
 
 export const stacks = [
   ['Interfaces', ['Angular 8→21', 'TypeScript', 'RxJS', 'Signals', 'NgRx', 'React 19', 'three.js', 'GSAP', 'Lenis', 'SCSS', 'Tailwind', 'PrimeNG']],
-  ['Platform', ['NestJS', 'Node', 'Express', 'TypeORM', 'MySQL', 'PostgreSQL', 'Firebase', 'Redis', 'REST', 'SSR']],
+  ['Platform', ['NestJS', 'Node', 'Express', 'TypeORM', 'MySQL', 'PostgreSQL', 'Firebase', 'Redis', 'REST', 'Prerendering (SSG)']],
   ['Quality', ['Playwright', 'WebdriverIO', 'Appium', 'Vitest', 'Jest', 'Lighthouse CI', 'Puppeteer', 'SonarQube', 'Allure']],
   ['Delivery', ['GitLab CI', 'GitHub Actions', 'Docker', 'Nginx', 'Apache', 'Vercel', 'Railway', 'AWS Amplify', 'Linux']],
   ['Security', ['VAPT remediation', 'CSP', 'HSTS', 'COOP/COEP', 'CASL RBAC', 'JWT', 'reCAPTCHA v3', 'Gitleaks']],

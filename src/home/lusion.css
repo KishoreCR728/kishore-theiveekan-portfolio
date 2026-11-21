@@ -59,7 +59,7 @@ html.static-mode div:has(> [data-card]) { flex-wrap: wrap !important; transform:
 }
 /* Without 3D the panel uses a CSS glow, not a photo: a gradient is never the largest paint, so phones show the page sooner. */
 /* Without 3D (reduced motion, no hardware WebGL): one still frame of the box field, drawn as a small SVG. */
-html.static-mode [data-screen-label="3D panel"] > div { background: #000 url(/images/hero-boxes.svg) center / cover no-repeat !important; }
+html.static-mode [data-screen-label="3D panel"] > div { background: radial-gradient(ellipse 46% 34% at 50% 42%, rgba(0,0,0,.88), rgba(0,0,0,.55) 60%, transparent), #000 url(/images/hero-still.webp) center / cover no-repeat !important; }
 @media (max-width: 820px) {
 }
 [data-profile-card] { min-height: 640px; width: 100%; box-sizing: border-box; }
@@ -115,12 +115,14 @@ html.static-mode [data-chapter-label] { position: relative !important; top: auto
   [data-hero-cards] { left: 0; right: 0; bottom: 12px; display: flex; gap: 8px; padding: 0 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
   [data-hero-cards]::-webkit-scrollbar { display: none; }
   [data-hero-card] { flex: 0 0 78%; scroll-snap-align: center; }
+  [data-hero-card] .hc-title, [data-hero-card] .hc-tags { white-space: normal; overflow: visible; text-overflow: clip; } /* phones: wrap, never cut */
   [data-hero-card]:hover, [data-hero-card]:focus-visible { transform: none; }
   [data-hero-cards]:hover [data-hero-card]:not(:hover) .hc-img { opacity: 1; }
   [data-hero-preview-line] { font-size: 14px; }
   [data-hero-preview] { top: 40%; }
 }
-html.static-mode [data-screen-label="3D panel"] > div { height: auto !important; min-height: 0; padding: 30vh 0 0; }
+/* Static layout: a still of the real scene, tall enough that a project name and its line sit clear above the cards. */
+html.static-mode [data-screen-label="3D panel"] > div { height: auto !important; min-height: min(82vh, 820px); display: flex; flex-direction: column; justify-content: flex-end; padding: 0; }
 html.static-mode [data-hero-cards] { position: relative; left: auto; right: auto; bottom: auto; padding: 0 22px 22px; }
 @media (max-width: 760px) { html.static-mode [data-hero-cards] { padding: 0 14px 14px; } }
 @media (prefers-reduced-motion: reduce) { [data-hero-card], [data-hero-card] .hc-img img, [data-hero-card] .hc-arrow, [data-hero-preview] *, [data-hero-panel] > canvas { transition: none; } [data-hero-card]:hover { transform: none; } }

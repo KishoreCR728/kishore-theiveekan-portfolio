@@ -1,3 +1,7 @@
+/* The size-matched fallbacks next/font makes only look for Arial. Linux machines (and many test servers) have the
+   metric-identical Liberation Sans or Arimo instead, so without this the headline re-wraps when the real fonts arrive. */
+@font-face { font-family: "sans Fallback"; src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans"), local("Arimo"), local("Helvetica"); ascent-override: 93.39%; descent-override: 29.18%; line-gap-override: 0%; size-adjust: 106.22%; }
+@font-face { font-family: "serif Fallback"; src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans"), local("Arimo"), local("Helvetica"); ascent-override: 121.98%; descent-override: 38.19%; line-gap-override: 0%; size-adjust: 81.16%; }
 html, body { margin: 0; background: #f0efe9; color: #0f0e0c; font-family: var(--font-sans), "DM Sans Variable", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; font-weight: 400; }
 a { color: #0f0e0c; text-decoration: none; }
 a:hover { color: #b8431c; } /* darker accent for text: 5.4:1 on white; #e0562a stays for fills */

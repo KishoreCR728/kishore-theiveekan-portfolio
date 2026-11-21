@@ -62,7 +62,7 @@ export function renderMarkdown(src: string): { nodes: ReactNode[] } {
       if (i >= lines.length) throw new Error("Unclosed code fence in Markdown");
       i++;
       nodes.push(
-        <pre key={k++} data-lang={lang || undefined}>
+        <pre key={k++} data-lang={lang || undefined} tabIndex={0} aria-label={lang ? `${lang} code` : "Code"}>
           <code>{body.join("\n")}</code>
         </pre>,
       );
