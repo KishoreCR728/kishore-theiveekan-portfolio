@@ -7,7 +7,7 @@ video: short-blank-page
 seoTitle: The build said success. Crawlers saw a blank page.
 description: My prerender fallback shipped empty pages to crawlers for up to two weeks while the build stayed green. How it was found and the gate that replaced it.
 problem: Hundreds of pages were empty to crawlers while the build stayed green.
-found: An outside audit flagged it; a 30-second curl check showed 0 characters in production and 15,147 locally.
+found: An outside audit flagged it; a 30-second curl check showed 0 characters in production and thousands locally.
 fix: Made the prerender strict by default and added a second check that counts the text on every page.
 result: An empty page now stops the deploy; proved by breaking it on purpose.
 ---
@@ -15,7 +15,7 @@ For up to two weeks, a site I lead shipped hundreds of pages that looked perfect
 
 ## Why we prerender
 
-The site is a React app in 18 languages. A plain React app sends this to every visitor:
+The site is a multilingual React app. A plain React app sends this to every visitor:
 
 ```html
 <div id="root"></div>
@@ -38,37 +38,37 @@ The server that builds production didn't have Chromium installed. Every deploy:
 
 1. printed a "head only" warning into a log nobody reads,
 2. exited 0,
-3. produced about 380 HTML files (the site has since grown to about 516 pages) that looked completely normal in a file listing.
+3. produced hundreds of HTML files that looked completely normal in a file listing.
 
 Open any of them in a browser and the JavaScript drew the page. Look at the raw HTML and the body was empty.
 
 ## How it was found
 
-Not by me. An external SEO audit in August flagged it. I checked it myself before believing it:
+Not by me. An external SEO audit flagged it. I checked it myself before believing it:
 
 ```bash
 curl -s https://<site>/ | sed 's/<[^>]*>//g' | tr -s ' \n' | wc -c
 ```
 
-Production home page: **0** visible characters. The same page from my local build: **15,147**. The Hindi and Tamil pages served English titles. UAT was the same.
+Production home page: **0** visible characters. The same page from my local build: thousands. The translated pages served English titles. The test environment was the same.
 
 ## The first fix wasn't enough
 
-On 11 August I made the prerender strict when it ran in CI: a missing browser or an empty page now exits 1.
+The next day I made the prerender strict when it ran in CI: a missing browser or an empty page now exits 1.
 
 Then I looked at how the site is actually deployed. The team that deploys it clones the repo on the server and runs `npm run build`. They don't run our CI pipeline. My strict mode would never run where it mattered.
 
 ## The real fix: strict by default
 
-On 12 August the script became strict by default. It fails the build if:
+A day later the script became strict by default. It fails the build if:
 
 - the full render throws,
 - any single page falls back to head-only,
 - anything unrecoverable happens.
 
-Slow pages are retried one at a time with 90- and 120-second timeouts before it gives up. There is an explicit `build:nostrict` for local experiments, and you have to type it on purpose.
+Slow pages are retried one at a time, with longer timeouts, before it gives up. There is an explicit `build:nostrict` for local experiments, and you have to type it on purpose.
 
-I also put a second, independent check after it. An SEO validator reads the generated files and fails any indexable page with fewer than 500 visible characters, with much higher floors for large pages like the tools and knowledge sections. It also fails if a raw translation key, like `home.hero.title`, appears in the output.
+I also put a second, independent check after it. An SEO validator reads the generated files and fails any indexable page with too little visible text, with higher minimums for the longer pages. It also fails if a raw translation key, like `home.hero.title`, appears in the output.
 
 So the build is now:
 
@@ -78,7 +78,7 @@ locale parity → lint → types → vite build → prerender (strict) → SEO v
 
 Every arrow is `&&`. Any failure stops the deploy before a single file is copied.
 
-By 28 August the fix was confirmed on production.
+Within a few weeks the fix was confirmed on production.
 
 ## What I took from it
 
