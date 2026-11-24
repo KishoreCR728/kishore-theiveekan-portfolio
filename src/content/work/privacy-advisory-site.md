@@ -4,7 +4,7 @@ order: 2
 description: A React site in 18 languages and Hinglish, prerendered in a real browser, with a build that refuses to ship blank or untranslated pages.
 oneLiner: 18 languages and Hinglish, about 516 prerendered pages, and a build that stops blank pages shipping.
 tags: React 19 · Vite · Puppeteer prerender · i18n · Build gates
-role: Lead developer from July 2026. 330 of 388 commits
+role: Sole developer from July 2026. 330 of 388 commits
 when: Jul 2026 – present
 team: Earlier versions were started by colleagues; others later added content, locale fixes and a theme
 stack: React 19, React Router, Vite 7, TypeScript, Tailwind, Puppeteer prerendering, axe-core, GSAP, Lenis; a small Node API for forms; static files on Nginx
@@ -16,7 +16,7 @@ metric2: 851 → 387 ms|mobile LCP
 metric3: 6|blocking build steps
 article: blank-page-build-gate
 video: spotlight-privacy
-impact1: Led it from July 2026: 330 of 388 commits.
+impact1: Sole developer from July 2026: 330 of 388 commits.
 impact2: My own fallback once shipped blank pages; I owned it and built the strict gate that stops it.
 impact3: Mobile LCP from about 850 ms to under 390 ms; 97 mobile Lighthouse.
 ---

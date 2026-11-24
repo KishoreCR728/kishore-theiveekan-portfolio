@@ -11,7 +11,7 @@ found: An outside audit flagged it; a 30-second curl check showed 0 characters i
 fix: Made the prerender strict by default and added a second check that counts the text on every page.
 result: An empty page now stops the deploy; proved by breaking it on purpose.
 ---
-For up to two weeks, a site I lead shipped hundreds of pages that looked perfect in a browser and were empty to anything that didn't run JavaScript. The build was green the whole time. I had designed it that way.
+For up to two weeks, a site where I am the only developer shipped hundreds of pages that looked perfect in a browser and were empty to anything that didn't run JavaScript. The build was green the whole time. I had designed it that way.
 
 ## Why we prerender
 
