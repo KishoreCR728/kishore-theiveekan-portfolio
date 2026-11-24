@@ -17,7 +17,7 @@ const promises: { title: string; text: string; proof: string; href: string }[] =
   {
     title: "Quality kept in the build",
     text: "SEO, translations and page content are checked on every build, so standards don't depend on anyone's memory.",
-    proof: "Six blocking build steps on a site in 18 languages",
+    proof: "Six blocking build steps on a large multilingual site",
     href: "/work/privacy-advisory-site",
   },
   {
@@ -37,9 +37,6 @@ const promises: { title: string; text: string; proof: string; href: string }[] =
 const facts: [string, string][] = [
   ["Role", "Frontend engineer · 3.5+ years"],
   ["Based in", "Chennai, India · IST (UTC+5:30)"],
-  ["Open to", "Relocation"],
-  ["Visa", "Needs employer visa sponsorship"],
-  ["Notice", "1 month (flexible)"],
   ["Works in", "English, written and spoken"],
   ["Stack", "Angular, React, Next.js, TypeScript"],
 ];

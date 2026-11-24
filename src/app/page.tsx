@@ -21,7 +21,7 @@ const person = {
   "@id": `${site.url}/#person`,
   name: site.name,
   jobTitle: "Frontend Engineer",
-  description: "Frontend engineer in Chennai, India, building fast, secure, multilingual web platforms in Angular, React and TypeScript. Open to relocation.",
+  description: "Frontend engineer in Chennai, India, building fast, secure, multilingual web platforms in Angular, React and TypeScript.",
   url: site.url,
   email: `mailto:${site.email}`,
   sameAs: [site.linkedin, site.github],

@@ -1,21 +1,20 @@
 ---
 title: Privacy Advisory Site
 order: 2
-description: A React site in 18 languages and Hinglish, prerendered in a real browser, with a build that refuses to ship blank or untranslated pages.
-oneLiner: 18 languages and Hinglish, about 516 prerendered pages, and a build that stops blank pages shipping.
+description: A large multilingual React site, prerendered in a real browser, with a build that refuses to ship blank or untranslated pages.
+oneLiner: A large multilingual site, hundreds of prerendered pages, and a build that stops blank pages shipping.
 tags: React 19 · Vite · Puppeteer prerender · i18n · Build gates
 role: Sole developer from July 2026. 330 of 388 commits
 when: Jul 2026 – present
 team: Earlier versions were started by colleagues; others later added content, locale fixes and a theme
 stack: React 19, React Router, Vite 7, TypeScript, Tailwind, Puppeteer prerendering, axe-core, GSAP, Lenis; a small Node API for forms; static files on Nginx
-scale: About 516 prerendered pages · English plus 17 languages and Hinglish
+scale: Hundreds of prerendered pages in many languages
 proof: 97 mobile / 100 desktop Lighthouse on the live site (my runs, Nov 2026) · 100 accessibility, best practices and SEO on 18 routes
 ai: Built with Claude Code as a pair; decisions, checks and verification are mine
 metric1: 97|mobile Lighthouse, live
 metric2: 851 → 387 ms|mobile LCP
 metric3: 6|blocking build steps
 article: blank-page-build-gate
-video: spotlight-privacy
 impact1: Sole developer from July 2026: 330 of 388 commits.
 impact2: My own fallback once shipped blank pages; I owned it and built the strict gate that stops it.
 impact3: Mobile LCP from about 850 ms to under 390 ms; 97 mobile Lighthouse.
@@ -58,12 +57,12 @@ Also measured and rejected: switching to `hydrateRoot` (no measurable gain) and 
 
 ## What broke, and the fix
 
-My first prerender design had a fallback: if Chromium was missing, write "head-only" pages and exit 0, "so the build can never go red". The deploy server had no Chromium. So for up to about two weeks the build printed a warning nobody saw, exited 0, and shipped about 380 normal-looking files, each with an empty `<div id="root">`.
+My first prerender design had a fallback: if Chromium was missing, write "head-only" pages and exit 0, "so the build can never go red". The deploy server had no Chromium. So for up to about two weeks the build printed a warning nobody saw, exited 0, and shipped hundreds of normal-looking files, each with an empty `<div id="root">`.
 
-- **Found:** an external SEO audit on 10 August 2026. I confirmed it with `curl` the next day: production home page 0 visible characters, my local build 15,147. Hindi and Tamil pages served English titles.
-- **Fix, 11 Aug:** strict mode in CI.
-- **Fix, 12 Aug:** strict **by default**, because the people who deploy don't run CI. Added the SEO validator to the build and a deploy check.
-- **Confirmed live** by 28 August.
+- **Found:** an external SEO audit. I confirmed it with `curl` the next day: production home page 0 visible characters, my local build thousands. Translated pages served English titles.
+- **First fix:** strict mode in CI.
+- **Real fix, a day later:** strict **by default**, because the people who deploy don't run CI. Added the SEO validator to the build and a deploy check.
+- **Confirmed live** within a few weeks.
 
 The full story is in the article [Our build said success. The crawlers saw a blank page.](/writing/blank-page-build-gate)
 

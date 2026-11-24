@@ -1,23 +1,22 @@
 ---
 title: ERP Product Platform
 order: 1
-description: A 121-page prerendered Angular marketing site where content lives in JSON, the build refuses weak pages, and security headers were proved on production.
-oneLiner: 121 prerendered pages from JSON, a build that refuses weak pages, and security headers proved on production.
+description: A prerendered Angular marketing site with 100+ pages where content lives in JSON, the build refuses weak pages, and security headers were proved on production.
+oneLiner: 100+ prerendered pages from JSON, a build that refuses weak pages, and security headers proved on production.
 tags: Angular 21 · Prerendering · JSON content · SEO lint · Security headers
 role: Lead developer. 430 of 462 commits on the main branch
 when: Nov 2025 – present
 team: Me, plus colleagues for SEO content, the CI pipeline and a few data fixes. The team that runs the servers owns them
 stack: Angular 21 (upgraded from 19), prerendering with @angular/ssr, TypeScript, Express, Vitest, GitLab CI with security scanning
-scale: 138 JSON content pages in 14 sections · 121 prerendered routes
+scale: 100+ JSON-driven pages in many sections · 100+ prerendered routes
 proof: 96 desktop Lighthouse on the live site (my run, Nov 2026) · production security findings 10 → 0
 ai: From May 2026 some commits were written with Claude Code. Decisions and verification were mine
-metric1: 121|prerendered routes
+metric1: 100+|prerendered routes
 metric2: 10 → 0|production security findings
 metric3: 146 → 8.8 MB|SVG assets
 impact1: Led it end to end: 430 of 462 commits, from architecture to deploy.
 impact2: Made the build refuse weak pages: an SEO lint gates every release.
 impact3: Took production security findings from 10 to 0, and proved the headers with curl.
-video: spotlight-erp
 ---
 
 ## The problem
@@ -62,13 +61,13 @@ In July 2026 a check showed production serving a two-month-old build **with no s
 Follow-ups in August 2026:
 
 - The CSP blocked every analytics hit, because `*.analytics.google.com` doesn't match the bare domain. Fixing the server alone did nothing: the browser enforces both the header and the meta CSP, so the page needed a rebuild too.
-- UAT Nginx sent 66 of 121 routes through a trailing-slash redirect and returned soft 404s. Fixed, plus real 404s on Apache.
+- UAT Nginx sent more than half the routes through a trailing-slash redirect and returned soft 404s. Fixed, plus real 404s on Apache.
 - Deploy excludes had left share images and icons missing or stale on both environments. Fixed.
 - The share-image generator clipped 29 of the 122 share-image titles it generated and had left 6 of 7 product pages without an image. Fixed.
 
 ## Results
 
-- 121 pages prerendered and in the sitemap, each passing the SEO lint when added or changed.
+- 100+ pages prerendered and in the sitemap, each passing the SEO lint when added or changed.
 - Security headers live on production, checked with `curl`.
 - Production findings from penetration testing: 10 → 0.
 - SVG assets cut from 146 MB to 8.8 MB in one optimisation pass.

@@ -23,7 +23,7 @@ export function SiteHeader({ current }: { current?: Section }) {
 export function SiteFooter() {
   return (
     <footer className="site-foot">
-      <span>{site.name} · Frontend engineer · Chennai, India · open to relocation</span>
+      <span>{site.name} · Frontend engineer · Chennai, India</span>
       <nav aria-label="Elsewhere">
         <a href="/#work">Work</a>
         <a href="/writing">Writing</a>

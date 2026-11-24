@@ -387,7 +387,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
           <section data-screen-label={"Hero"} style={{ position: "relative", zIndex: "2", padding: "150px 4.5vw 0" }}>
             <p style={{ margin: "0 0 22px", fontSize: "13px", letterSpacing: ".08em", textTransform: "uppercase", color: "#6e6a62", animation: "rise-t 1s both" }}>
               <b style={{ color: "#0f0e0c", fontWeight: "500" }}>{"Kishore Theiveekan"}</b>
-              {" · Frontend Engineer · Angular · React · TypeScript · Chennai, India · open to relocation"}
+              {" · Frontend Engineer · Angular · React · TypeScript · Chennai, India"}
             </p>
             <div
               style={{
@@ -592,7 +592,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                 }}
               >
                 {
-                  "Kishore Theiveekan is a frontend engineer based in Chennai, open to relocation, with more than three and a half years at Finstein building corporate sites, product platforms, a manufacturing execution console and automated testing for banking applications."
+                  "Kishore Theiveekan is a frontend engineer based in Chennai, India, with more than three and a half years at Finstein building corporate sites, product platforms, a manufacturing execution console and automated testing for banking applications."
                 }
               </p>
               <p
@@ -634,7 +634,7 @@ export function PageMarkup({ v }: { v: HomeView }) {
                   <span>{"Profile"}</span>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "#f0efe9" }}>
                     <i style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#7fd39f", boxShadow: "0 0 0 4px rgba(127,211,159,.18)" }}></i>
-                    {"Open to relocation"}
+                    {"Frontend engineer"}
                   </span>
                 </div>
                 <div style={{ marginTop: "auto" }}>
@@ -647,9 +647,6 @@ export function PageMarkup({ v }: { v: HomeView }) {
                     ["Focus", "Angular · React · TypeScript · three.js"],
                     ["Also", "Node and NestJS, build pipelines, security headers"],
                     ["Based in", "Chennai, India (IST, UTC+5:30)"],
-                    ["Open to", "Relocation"],
-                    ["Visa", "Needs employer visa sponsorship"],
-                    ["Notice", "1 month (flexible)"],
                     ["Languages", "English, Tamil"],
                   ].map(([k, val]) => (
                     <div key={k} style={{ display: "grid", gridTemplateColumns: "96px minmax(0,1fr)", gap: "12px", padding: "10px 0", borderTop: "1px solid rgba(240,239,233,.12)" }}>
@@ -2527,8 +2524,6 @@ export function PageMarkup({ v }: { v: HomeView }) {
           <div>
             <div style={{ fontWeight: "500", color: "#0f0e0c", marginBottom: "6px" }}>{"Kishore Theiveekan"}</div>
             {"Based in Chennai, India"}
-            <br />
-            {"Open to relocation"}
           </div>
           <div>
             <div style={{ fontWeight: "500", color: "#0f0e0c", marginBottom: "6px" }}>{"Elsewhere"}</div>

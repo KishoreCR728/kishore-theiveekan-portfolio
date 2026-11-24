@@ -54,7 +54,7 @@ function Erp() {
   const steps = ["Fetch blog posts", "Build indexes", "Generate routes", "Generate sitemap", "SEO lint", "Angular build"];
   return (
     <Frame title="ERP platform: JSON content flows through a gated build into prerendered HTML served by Nginx (UAT) and Apache (production)" height={500} caption="Content is data; every build step must pass; the headers that matter live in the server configs, because production never runs Node.">
-      <Box x={30} y={170} w={200} h={110} title="138 JSON files" sub="14 sections" tone="soft" />
+      <Box x={30} y={170} w={200} h={110} title="JSON content files" sub="one per page" tone="soft" />
       <Arrow d="M230 225 H300" />
       <rect x={300} y={40} width={300} height={420} rx={18} className="dg-group" />
       <Note x={450} y={70} anchor="middle" tone="muted">npm run build</Note>
@@ -65,7 +65,7 @@ function Erp() {
         </g>
       ))}
       <Arrow d="M600 250 H680" />
-      <Box x={680} y={195} w={210} h={110} title="121 prerendered" sub="HTML routes" tone="dark" />
+      <Box x={680} y={195} w={210} h={110} title="100+ prerendered" sub="HTML routes" tone="dark" />
       <Arrow d="M890 230 C940 230 940 140 980 140" />
       <Arrow d="M890 270 C940 270 940 360 980 360" />
       <Box x={980} y={95} w={190} h={90} title="UAT · Nginx" sub="headers in conf" />
@@ -96,7 +96,7 @@ function Privacy() {
       })}
       <Note x={20} y={50} tone="muted">npm run build (on the server that deploys, not only in CI)</Note>
       <Arrow d="M1170 150 H1188 V350 H820" />
-      <Box x={560} y={310} w={260} h={80} title="Static files → Nginx" sub="about 516 pages" tone="soft" />
+      <Box x={560} y={310} w={260} h={80} title="Static files → Nginx" sub="hundreds of pages" tone="soft" />
       <Note x={30} y={340} tone="muted">Before: Chromium missing → head-only pages → exit 0</Note>
       <line x1={30} y1={335} x2={455} y2={335} className="dg-cross" />
       <Note x={30} y={372}>Now: Chromium missing or any empty page → exit 1</Note>

@@ -83,7 +83,7 @@ export default async function ArticlePage({ params }: Props) {
           </section>
           <article className="prose">{a.meta.video && <VideoBlock id={a.meta.video} />}{nodes}</article>
           <aside className="author-card" aria-label="About the author">
-            <p><b>{site.name}</b> · Frontend engineer in Chennai, open to relocation.</p>
+            <p><b>{site.name}</b> · Frontend engineer in Chennai, India.</p>
             <div>
               <a className="pill dark" href={`mailto:${site.email}`}>Email</a>
               <a className="pill" href="/Kishore-Theiveekan-CV.pdf">CV</a>
