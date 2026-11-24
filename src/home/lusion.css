@@ -136,3 +136,10 @@ footer a { display: inline-flex; align-items: center; min-height: 24px; }
 /* Over the full-screen 3D city the top bar has no frosted band, so the whole view is visible (scene.js toggles it). */
 [data-topnav]::before { transition: opacity .4s ease; }
 html.in-journey [data-topnav]::before { opacity: 0; }
+
+/* Journey chapter rail: keep it clear of the Prev/Next buttons on short windows.
+   Buttons occupy the bottom 76px; keep 24px between them and the rail (half rail height 128px). */
+[data-ref="rail"] { top: min(calc(50% + 46px), calc(100% - 228px)) !important; }
+@media (max-height: 620px) {
+  [data-ref="rail"] { gap: 4px !important; padding: 8px 14px !important; top: min(calc(50% + 46px), calc(100% - 205px)) !important; }
+}
